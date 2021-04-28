@@ -25,25 +25,22 @@ export const LOGOUT = gql`
     logout
   }
 `
-
-export const ADD_ITEM = gql`
-  mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {
-    addItem(item: $item, _id: $_id, index: $index)
-  }
-`
-
-export const DELETE_ITEM = gql`
-  mutation DeleteItem($itemId: String!, $_id: String!) {
-    deleteItem(itemId: $itemId, _id: $_id) {
+export const UPDATE_USER = gql`
+  mutation UpdateUser(
+    $_id: String!
+    $email: String!
+    $password: String!
+    $name: String!
+  ) {
+    updateUser(_id: $_id, email: $email, password: $password, name: $name) {
       _id
-      description
-      due_date
-      assigned_to
-      completed
+      email
+      password
+      name
+
     }
   }
 `
-
 export const UPDATE_ITEM_FIELD = gql`
   mutation UpdateItemField(
     $_id: String!
@@ -59,6 +56,23 @@ export const UPDATE_ITEM_FIELD = gql`
       value: $value
       flag: $flag
     ) {
+      _id
+      description
+      due_date
+      assigned_to
+      completed
+    }
+  }
+`
+export const ADD_ITEM = gql`
+  mutation AddItem($item: ItemInput!, $_id: String!, $index: Int!) {
+    addItem(item: $item, _id: $_id, index: $index)
+  }
+`
+
+export const DELETE_ITEM = gql`
+  mutation DeleteItem($itemId: String!, $_id: String!) {
+    deleteItem(itemId: $itemId, _id: $_id) {
       _id
       description
       due_date

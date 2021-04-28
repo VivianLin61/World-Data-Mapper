@@ -66,6 +66,7 @@ module.exports = {
       }
       const hashed = await bcrypt.hash(password, 10)
       const _id = new ObjectId()
+
       const user = new User({
         _id: _id,
         name: name,
@@ -97,6 +98,25 @@ module.exports = {
       res.clearCookie('refresh-token')
       res.clearCookie('access-token')
       return true
+    },
+
+    /**
+     	@param 	 {object} args - updated info
+			@returns {object} the user object or an object with an error message
+     **/
+    updateUser: async (_, args) => {
+      console.log(args)
+      
+      const { _id, email, password, name } = args
+      const hashed = await bcrypt.hash(password, 10)
+      const objectId = new ObjectId(_id)
+      const updated = await User.updateOne(
+        { _id: objectId },
+        { $set: { name: name, email: email, password: hashed } }
+      )
+      
+      const user = await User.findOne({ _id: objectId })
+      return user
     },
   },
 }

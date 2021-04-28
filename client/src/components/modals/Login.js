@@ -1,6 +1,7 @@
 import React, { useState } 	from 'react';
 import { LOGIN } 			from '../../cache/mutations';
 import { useMutation }    	from '@apollo/client';
+import { useHistory } from 'react-router-dom'
 
 import { WModal, WMHeader, WMMain, WMFooter, WButton, WInput } from 'wt-frontend';
 
@@ -10,6 +11,7 @@ const Login = (props) => {
 	const [showErr, displayErrorMsg] = useState(false);
 	const errorMsg = "Email/Password not found.";
 	const [Login] = useMutation(LOGIN);
+	let history = useHistory()
 
 	const updateInput = (e) => {
 		const { name, value } = e.target;
@@ -30,6 +32,9 @@ const Login = (props) => {
 			props.reloadTodos();
 			toggleLoading(false)
 			props.setShowLogin(false)
+			history.push(`/home`)
+			
+
 		};
 	};
 

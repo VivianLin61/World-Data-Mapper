@@ -1,10 +1,13 @@
 #root {
   height: 100vh;
 }
-
-html {
+html,
+body {
   height: 100%;
 }
+// html {
+//   height: 100%;
+// }
 
 /* ----------------------------- Top-Level Setup ---------------------------- */
 .container-primary {
@@ -229,7 +232,6 @@ html {
   // margin: 0;
   position: relative;
   top: 10%;
-
   margin: auto;
   width: 50%;
   // border: 3px solid green;
@@ -247,4 +249,42 @@ html {
   text-align: center;
   font-size: 50px;
   font-weight: bolder;
+}
+
+.maps-container {
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  margin-left: 10%;
+  top: 15%;
+}
+
+.maps-left {
+  width: 100%;
+  height: 100%;
+}
+
+.maps-right {
+  width: 100%;
+  height: 100%;
+}
+
+.maps-header {
+  height: 100%;
+  text-align: center;
+}
+
+.maps {
+  display: flex;
+}
+
+.maps-image-container {
+  height: 90%;
+}
+
+.create-map-btn {
+  display: block;
+  margin: auto;
+  width: 100%;
+  height: 10%;
 }

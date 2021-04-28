@@ -1,5 +1,7 @@
 import React from 'react'
+import HomeScreen from './components/homescreen/HomeScreen'
 import WelcomeScreen from './components/welcomescreen/WelcomeScreen'
+import UpdateScreen from './components/updatescreen/UpdateScreen'
 import { useQuery } from '@apollo/client'
 import * as queries from './cache/queries'
 import { jsTPS } from './utils/jsTPS'
@@ -26,10 +28,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Redirect exact from='/' to={{ pathname: '/home' }} />
+        <Redirect exact from='/' to={{ pathname: '/welcome' }} />
+        {user && <Redirect exact from ="/welcome" to ={{pathname: '/home'}}/>}
         <Route
-          path='/home'
-          name='home'
+          path='/welcome'
+          name='welcome'
           render={() => (
             <WelcomeScreen
               tps={transactionStack}
@@ -39,7 +42,27 @@ const App = () => {
             />
           )}
         />
-        <Route />
+        
+        <Route
+          exact
+          path='/update'
+          render={({ match }) => (
+            <UpdateScreen fetchUser={refetch} user={user} match={match} />
+          )}
+        />
+        {!user && <Redirect exact from ="/home" to ={{pathname: '/welcome'}}/>}
+          <Route
+          path='/home'
+          name='home'
+          render={() => (
+            <HomeScreen
+              tps={transactionStack}
+              fetchUser={refetch}
+              user={user}
+              refreshTps={refreshTps}
+            />
+          )}
+        />
       </Switch>
     </BrowserRouter>
   )

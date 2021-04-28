@@ -9,8 +9,6 @@ import {
   WMFooter,
   WButton,
   WInput,
-  WRow,
-  WCol,
 } from 'wt-frontend'
 
 const CreateAccount = (props) => {
@@ -29,6 +27,7 @@ const CreateAccount = (props) => {
   }
 
   const handleCreateAccount = async (e) => {
+    console.log(input)
     for (let field in input) {
       if (!input[field]) {
         alert('All fields must be filled out to register')
@@ -70,7 +69,7 @@ const CreateAccount = (props) => {
           <WInput
             className='modal-input'
             onBlur={updateInput}
-            name='Name'
+            name='name'
             labelAnimation='up'
             barAnimation='solid'
             labelText='Name'

@@ -239,3 +239,17 @@ body {
 .logo-text {
   color: $primary-color;
 }
+
+.maps-header {
+  background-color: $primary-color;
+  font-size: 30px;
+  font-weight: bold;
+  top: 20px;
+}
+
+.maps-image-container {
+  background-color: var(--secondary-red);
+}
+.create-map-btn {
+  background-color: $primary-color;
+}

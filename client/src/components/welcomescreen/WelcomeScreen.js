@@ -1,4 +1,3 @@
-import Logo from '../navbar/Logo'
 import Login from '../modals/Login'
 import MainLogo from '../welcomescreen/MainLogo'
 import CreateAccount from '../modals/CreateAccount'
@@ -10,13 +9,8 @@ import React, { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
 import { WNavbar, WNavItem, WCard } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend'
-import {
-  UpdateListField_Transaction,
-  SortItems_Transaction,
-  UpdateListItems_Transaction,
-  ReorderItems_Transaction,
-  EditItem_Transaction,
-} from '../../utils/jsTPS'
+
+
 
 const WelcomeScreen = (props) => {
   const keyCombination = (e, callback) => {
@@ -124,14 +118,16 @@ const WelcomeScreen = (props) => {
       <WLHeader>
         <WNavbar color='colored'>
           <ul>
+
             <WNavItem>
-              <Logo className='logo' />
+              <div className='logo'>World Data Mapper</div>
             </WNavItem>
           </ul>
           <ul>
             <NavbarOptions
               fetchUser={props.fetchUser}
               auth={auth}
+              user={props.user}
               setShowCreate={setShowCreate}
               setShowLogin={setShowLogin}
               reloadTodos={refetch}
