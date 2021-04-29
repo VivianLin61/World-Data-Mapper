@@ -8,14 +8,12 @@ const LoggedIn = (props) => {
   const client = useApolloClient()
   const [Logout] = useMutation(LOGOUT)
   let history = useHistory()
-  console.log(props)
 
   const handleLogout = async (e) => {
     Logout()
     const { data } = await props.fetchUser()
     if (data) {
       let reset = await client.resetStore()
-      
     }
     history.push(`/welcome`)
   }
@@ -23,8 +21,6 @@ const LoggedIn = (props) => {
   const handleUpdate = async (e) => {
     history.push(`/update`)
   }
-
-
 
   return (
     <>

@@ -1,25 +1,47 @@
 import React, { useState } from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
+import { ADD_MAP } from '../../cache/mutations'
 import NavbarOptions from '../navbar/NavbarOptions'
-import MapContents from '../maps/MapContents'
+import MapList from '../maps/MapList'
 import globe from '../../images/globe.png'
-import { useHistory } from 'react-router-dom'
-import {
-  WRow,
-  WCol,
-  WLMain,
-  WCard,
-  WCFooter,
-  WButton,
-  WInput,
-  WLayout,
-  WLHeader,
-  WNavbar,
-  WNavItem,
-} from 'wt-frontend'
-import WLFooter from 'wt-frontend/build/components/wlayout/WLFooter'
+import CreateMap from '../homescreen/CreateMap'
+import { GET_DB_MAPS } from '../../cache/queries'
+import { WRow, WCol, WCard, WButton, WNavbar, WNavItem } from 'wt-frontend'
+import { WLayout, WLHeader, WLMain } from 'wt-frontend'
 
 const HomeScreen = (props) => {
+  let maps = []
+  const [showCreateMap, toggleShowCreateMap] = useState(false)
+  const [AddMap] = useMutation(ADD_MAP)
+  const { loading, error, data, refetch } = useQuery(GET_DB_MAPS)
+
+  if (loading) {
+    console.log(loading, 'loading')
+  }
+  if (error) {
+    console.log(error, 'error')
+  }
+  if (data) {
+    for (let map of data.getAllMaps) {
+      maps.push(map)
+    }
+  }
+  const setShowCreateMap = async (e) => {
+    toggleShowCreateMap(false)
+    toggleShowCreateMap(!showCreateMap)
+  }
+
+  const createNewMap = async (name) => {
+    console.log(name)
+    const { data } = await AddMap({
+      variables: {
+        name: name,
+        owner: props.user._id,
+      },
+      refetchQueries: [{ query: GET_DB_MAPS }],
+    })
+  }
+
   return (
     <WLayout wLayout='header'>
       <WLHeader>
@@ -42,6 +64,7 @@ const HomeScreen = (props) => {
               user={props.user}
               setShowCreate={false}
               setShowLogin={true}
+              // reloadMaps={refetch}
             />
           </ul>
         </WNavbar>
@@ -54,15 +77,22 @@ const HomeScreen = (props) => {
               <WRow>
                 <WCol size='6'>
                   <div className='maps-table'>
-                    <MapContents></MapContents>
+                    <div className='maps-list-container'>
+                      <MapList mapIDs={maps}></MapList>
+                    </div>
                   </div>
                 </WCol>
                 <WCol size='6'>
-                  <div className='maps-right' wLayout='content-footer'>
+                  <div className='maps-right'>
                     <div className='maps-image-container'>
                       <img className='center' src={globe}></img>
                     </div>
-                    <WButton className='create-map-btn'>Create Map</WButton>
+                    <WButton
+                      onClick={setShowCreateMap}
+                      className='create-map-btn'
+                    >
+                      Create Map
+                    </WButton>
                   </div>
                 </WCol>
               </WRow>
@@ -70,6 +100,15 @@ const HomeScreen = (props) => {
           </WCard>
         </div>
       </WLMain>
+
+      {showCreateMap && (
+        <CreateMap
+          fetchUser={props.fetchUser}
+          user={props.user}
+          setShowCreateMap={setShowCreateMap}
+          createNewMap={createNewMap}
+        />
+      )}
     </WLayout>
   )
 }

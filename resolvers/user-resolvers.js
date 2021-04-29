@@ -105,8 +105,6 @@ module.exports = {
 			@returns {object} the user object or an object with an error message
      **/
     updateUser: async (_, args) => {
-      console.log(args)
-      
       const { _id, email, password, name } = args
       const hashed = await bcrypt.hash(password, 10)
       const objectId = new ObjectId(_id)
@@ -114,7 +112,7 @@ module.exports = {
         { _id: objectId },
         { $set: { name: name, email: email, password: hashed } }
       )
-      
+
       const user = await User.findOne({ _id: objectId })
       return user
     },

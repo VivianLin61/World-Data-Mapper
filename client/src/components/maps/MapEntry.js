@@ -1,48 +1,54 @@
 import React, { useState } from 'react'
 import { WNavItem, WInput } from 'wt-frontend'
+import { useMutation } from '@apollo/client'
+import { RENAME_MAP } from '../../cache/mutations'
+import { WRow, WCol } from 'wt-frontend'
 
 const MapEntry = (props) => {
   const [editing, toggleEditing] = useState(false)
-  const [preEdit, setPreEdit] = useState(props.name)
+  const [RenameMap] = useMutation(RENAME_MAP)
+  const [mapName, setMapName] = useState(props.name)
+
   const handleEditing = (e) => {
     e.stopPropagation()
-    setPreEdit(props.name)
     toggleEditing(!editing)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     handleEditing(e)
-    const { name, value } = e.target
-    props.updateListField(props._id, name, value, preEdit)
+    const { value } = e.target
+
+    const { data } = await RenameMap({
+      variables: {
+        name: value,
+        _id: props._id,
+      },
+    })
+    setMapName(value)
   }
 
-  const entryStyle =
-    props._id === props.activeid ? 'list-item-active' : 'list-item '
-
   return (
-    <WNavItem
-      className={entryStyle}
-      onDoubleClick={handleEditing}
-      onClick={() => {
-        props.handleSetActive(props._id)
-      }}
-    >
-      {editing ? (
-        <WInput
-          className='list-item-edit'
-          inputClass='list-item-edit-input'
-          onKeyDown={(e) => {
-            if (e.keyCode === 13) handleSubmit(e)
-          }}
-          name='name'
-          onBlur={handleSubmit}
-          autoFocus={true}
-          defaultValue={props.name}
-        />
-      ) : (
-        <div className='list-text'>{props.name}</div>
-      )}
-    </WNavItem>
+    <WRow>
+      <WCol size='10'>
+        <div onDoubleClick={handleEditing}>
+          {editing ? (
+            <WInput
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) handleSubmit(e)
+              }}
+              name='name'
+              onBlur={handleSubmit}
+              autoFocus={true}
+              defaultValue={props.name}
+              className='map-name'
+            />
+          ) : (
+            <div className='map-name'>{mapName}</div>
+          )}
+        </div>
+      </WCol>
+      <WCol size='2'></WCol>
+    </WRow>
   )
 }
 

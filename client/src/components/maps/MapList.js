@@ -2,19 +2,17 @@ import React from 'react'
 import MapEntry from './MapEntry'
 
 const MapList = (props) => {
+  console.log(props.mapIDs)
   let tempID = 0
   return (
     <>
-      {props.listIDs &&
-        props.listIDs.map((entry) => (
+      {props.mapIDs &&
+        props.mapIDs.map((entry) => (
           <MapEntry
-          // handleSetActive={props.handleSetActive}
-          // activeid={props.activeid}
-          // id={tempID++}
-          // key={entry._id + props.activeid}
-          // name={entry.name}
-          // _id={entry._id}
-          // updateListField={props.updateListField}
+            createNewMap={props.createNewMap}
+            key={tempID++}
+            name={entry.name}
+            _id={entry._id}
           />
         ))}
     </>

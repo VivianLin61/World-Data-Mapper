@@ -1,17 +1,17 @@
-const { gql } = require('apollo-server');
-const userDef = require('./user-def').typeDefs;
-const todolistDef = require('./todolist-def').typeDefs;
+const { gql } = require('apollo-server')
+const userDef = require('./user-def').typeDefs
+const mapDef = require('./map-def').typeDefs
 
 const rootDef = gql`
-	type Query {
-		_empty: String
-	}
+  type Query {
+    _empty: String
+  }
 
-	type Mutation {
-		_empty: String
-	}
-`;
+  type Mutation {
+    _empty: String
+  }
+`
 
 module.exports = {
-	typeDefs: [rootDef, userDef, todolistDef] 
-}; 
+  typeDefs: [rootDef, userDef, mapDef],
+}

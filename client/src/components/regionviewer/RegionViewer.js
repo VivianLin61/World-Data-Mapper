@@ -46,7 +46,7 @@ const UpdateScreen = (props) => {
   if (props.user == null) {
     history.push(`/`)
   }
-  
+
   return (
     <WLayout wLayout='header'>
       <WLHeader>

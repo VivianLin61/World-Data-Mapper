@@ -248,8 +248,18 @@ body {
 }
 
 .maps-image-container {
-  background-color: var(--secondary-red);
+  background-color: var(--light-gray);
 }
 .create-map-btn {
   background-color: $primary-color;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.maps-table {
+  background-color: var(--secondary-red);
+}
+
+.maps-list-container {
+  background-color: var(--secondary-red);
 }
