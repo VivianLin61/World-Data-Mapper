@@ -3,10 +3,12 @@ import { useMutation } from '@apollo/client'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
-import { WLayout, WLHeader, WLMain } from 'wt-frontend'
+import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
 import { ADD_SUBREGION } from '../../cache/mutations.js'
+import { useHistory } from 'react-router-dom'
 
 const RegionSpreadSheet = (props) => {
+  let history = useHistory()
   let regions = []
   const [AddSubRegion] = useMutation(ADD_SUBREGION)
 
@@ -49,6 +51,7 @@ const RegionSpreadSheet = (props) => {
                 className='logo'
                 wType='texted'
                 hoverAnimation='text-primary'
+                onClick={() => history.push('/home')}
               >
                 World Data Mapper
               </WButton>
@@ -66,18 +69,41 @@ const RegionSpreadSheet = (props) => {
         </WNavbar>
       </WLHeader>
       <WLMain>
-        {/* <MainContents
-          addSubregion={addSubRegion}
-          //   deleteItem={deleteItem}
-          //   editItem={editItem}
-          //   reorderItem={reorderItem}
-          //   setShowDelete={setShowDelete}
-          //   undo={tpsUndo}
-          //   redo={tpsRedo}
-          //   canUndo={canUndo}
-          //   canRedo={canRedo}
-          //   sort={sort}
-        /> */}
+        <div>
+          <WCard className='regions-container' wLayout='header-content'>
+            <WLHeader className='region-header'>
+              <WButton
+                className={'add-button'}
+                // onClick={props.activeid ? disabledClick : props.createNewList}
+                // {...buttonOptions}
+              >
+                <i className='material-icons'>add</i>
+              </WButton>
+              <WButton className={'undo-button'}>
+                <i className='material-icons'>undo</i>
+              </WButton>
+              <WButton className={'redo-button'}>
+                <i className='material-icons'>redo</i>
+              </WButton>
+              <div>Region Name: United States </div>
+            </WLHeader>
+            <div className='regions'>
+              <MainContents
+                addSubregion={addSubRegion}
+                regions={regions}
+                //   deleteItem={deleteItem}
+                //   editItem={editItem}
+                //   reorderItem={reorderItem}
+                //   setShowDelete={setShowDelete}
+                //   undo={tpsUndo}
+                //   redo={tpsRedo}
+                //   canUndo={canUndo}
+                //   canRedo={canRedo}
+                //   sort={sort}
+              />
+            </div>
+          </WCard>
+        </div>
       </WLMain>
     </WLayout>
   )

@@ -17,11 +17,11 @@ const MainContents = (props) => {
       // sort={props.sort}
       />
       <TableContents
-      // key={props.activeList._id}
-      // activeList={props.activeList}
-      // deleteItem={props.deleteItem}
-      // reorderItem={props.reorderItem}
-      // editItem={props.editItem}
+        // key={props.activeList._id}
+        regions={props.regions}
+        // deleteItem={props.deleteItem}
+        // reorderItem={props.reorderItem}
+        // editItem={props.editItem}
       />
     </div>
   )

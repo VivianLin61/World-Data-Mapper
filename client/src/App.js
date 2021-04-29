@@ -67,7 +67,7 @@ const App = () => {
         <Route
           path='/region'
           name='region'
-          render={() => <RegionSpreadSheet></RegionSpreadSheet>}
+          render={() => <RegionSpreadSheet fetchUser={refetch} user={user} />}
         ></Route>
       </Switch>
     </BrowserRouter>

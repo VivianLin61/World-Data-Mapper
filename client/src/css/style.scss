@@ -27,14 +27,14 @@
   --light-green: #99cc7d;
   --lighter-green: #bdfc9b;
   --light-orange: #f5bc75;
-  --light-blue: #8ed4f8;
+  --baby-blue: #589abc;
   --light-purple: #dbbdf9;
   --light-pink: #fbb4d2;
   -primary-red: #9c3c34;
   --secondary-red: #7f4b48;
   --light-yellow: #e6db74;
   --light-beige: #d9d6cc;
-  --light-gray: #e9edf0;
+  --light-gray: #949494;
   --bright-orange: #fca234;
   --yellow-orange: #ffc800;
   --hover-light: rgba(255, 255, 255, 0.7);
@@ -281,4 +281,19 @@ body {
 
 .map-item-edit-input {
   font-size: 1.125rem !important;
+}
+
+.region-header {
+  background-color: rgb(51, 51, 51);
+  color: var(--baby-blue);
+  font-weight: bold;
+}
+
+.material-icons {
+  font-size: 2rem;
+  background-color: rgb(51, 51, 51);
+  font-weight: bolder;
+}
+.table {
+  background-color: var(--light-gray);
 }
