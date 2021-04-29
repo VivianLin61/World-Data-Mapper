@@ -29,7 +29,9 @@ module.exports = {
      @param   {object} args - a region id and an empty region object
      @returns {string} the objectID of the region or an error message
    **/
-    addSubregion: async (_, args) => {},
+    addSubregion: async (_, args) => {
+      console.log(args)
+    },
     /**
      @param   {object} args - an empty map object
      @returns {string} the objectID of the map or an error message

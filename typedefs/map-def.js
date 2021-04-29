@@ -28,7 +28,7 @@ const typeDefs = gql`
 
   extend type Mutation {
     addMap(name: String, owner: String): Boolean
-    renameMap(_id: String, name: String!): String
+    renameMap(_id: String, name: String!): 
     deleteMap(_id: String!): Boolean
     deleteSubregion(regionId: String!, _id: String!): [Region]
     addSubregion(region: RegionInput!, _id: String!, index: Int!): String

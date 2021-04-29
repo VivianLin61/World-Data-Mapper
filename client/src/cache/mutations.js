@@ -58,3 +58,8 @@ export const DELETE_MAP = gql`
     deleteMap(_id: $_id)
   }
 `
+export const ADD_SUBREGION = gql`
+  mutation AddSubRegion($region: RegionInput!) {
+    addSubregion(region: $region)
+  }
+`

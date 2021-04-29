@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { WNavItem, WInput } from 'wt-frontend'
-
+import { WInput } from 'wt-frontend'
+import { useHistory } from 'react-router-dom'
 import { WRow, WCol, WButton } from 'wt-frontend'
 
 const MapEntry = (props) => {
+  let history = useHistory()
   const [editing, toggleEditing] = useState(false)
 
   const handleEditing = (e) => {
@@ -20,10 +21,19 @@ const MapEntry = (props) => {
   const handleDeleteMap = (e) => {
     props.deleteMap(props._id)
   }
+
+  const naviageToRegionSpreadsheet = (e) => {
+    history.push(`/region`)
+    console.log('navigate')
+  }
   return (
     <WRow>
       <WCol size='10'>
-        <div className='map-entry' onDoubleClick={handleEditing}>
+        <div
+          className='map-entry'
+          onDoubleClick={handleEditing}
+          onClick={naviageToRegionSpreadsheet}
+        >
           {editing ? (
             <WInput
               onKeyDown={(e) => {

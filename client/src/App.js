@@ -2,6 +2,7 @@ import React from 'react'
 import HomeScreen from './components/homescreen/HomeScreen'
 import WelcomeScreen from './components/welcomescreen/WelcomeScreen'
 import UpdateScreen from './components/updatescreen/UpdateScreen'
+import RegionSpreadSheet from './components/regionspreedsheet/RegionSpreadSheet'
 import { useQuery } from '@apollo/client'
 import * as queries from './cache/queries'
 import { jsTPS } from './utils/jsTPS'
@@ -29,7 +30,7 @@ const App = () => {
     <BrowserRouter>
       <Switch>
         <Redirect exact from='/' to={{ pathname: '/welcome' }} />
-        {user && <Redirect exact from ="/welcome" to ={{pathname: '/home'}}/>}
+        {user && <Redirect exact from='/welcome' to={{ pathname: '/home' }} />}
         <Route
           path='/welcome'
           name='welcome'
@@ -42,7 +43,7 @@ const App = () => {
             />
           )}
         />
-        
+
         <Route
           exact
           path='/update'
@@ -50,8 +51,8 @@ const App = () => {
             <UpdateScreen fetchUser={refetch} user={user} match={match} />
           )}
         />
-        {!user && <Redirect exact from ="/home" to ={{pathname: '/welcome'}}/>}
-          <Route
+        {!user && <Redirect exact from='/home' to={{ pathname: '/welcome' }} />}
+        <Route
           path='/home'
           name='home'
           render={() => (
@@ -63,9 +64,13 @@ const App = () => {
             />
           )}
         />
+        <Route
+          path='/region'
+          name='region'
+          render={() => <RegionSpreadSheet></RegionSpreadSheet>}
+        ></Route>
       </Switch>
     </BrowserRouter>
   )
 }
-
 export default App
