@@ -255,12 +255,14 @@ body {
   top: 15%;
 }
 
-.maps-table {
+.maps-table,
+.viewer-left {
   width: 100%;
   height: 100%;
 }
 
-.maps-right {
+.maps-right,
+.viewer-right {
   width: 100%;
   height: 100%;
 }
@@ -270,11 +272,13 @@ body {
   text-align: center;
 }
 
-.maps {
+.maps,
+.viewer-details {
   display: flex;
 }
 
-.maps-image-container {
+.maps-image-container,
+.landmarks-list-container {
   height: 90%;
 }
 
@@ -334,4 +338,56 @@ body {
   position: absolute;
   margin-left: 5%;
   top: 15%;
+}
+.viewer-container {
+  width: 95%;
+  height: 85%;
+  position: absolute;
+  margin-left: 2.5%;
+  top: 10%;
+}
+
+.viewer-header {
+  height: 100%;
+  text-align: center;
+}
+
+.region-details {
+  font-size: 24px;
+  font-weight: bold;
+  padding-top: 20px;
+  padding-left: 10%;
+}
+
+.region-flag-container {
+  height: 50%;
+}
+
+.region-details-container {
+  height: 50%;
+}
+.region-landmarks-text {
+  margin-left: 50%;
+}
+
+.add-landmark-button {
+  height: 100%;
+
+  background-color: gray;
+  padding-left: 20%;
+}
+
+.add-landmark {
+  height: 10%;
+}
+
+.landmark-input {
+  width: 100%;
+  height: 100%;
+  background-color: darkgray;
+}
+
+.winput.outlined input {
+  height: 100% !important;
+  padding-left: 2%;
 }

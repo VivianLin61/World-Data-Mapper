@@ -2,6 +2,7 @@ import React from 'react'
 import HomeScreen from './components/homescreen/HomeScreen'
 import WelcomeScreen from './components/welcomescreen/WelcomeScreen'
 import UpdateScreen from './components/updatescreen/UpdateScreen'
+import RegionViewer from './components/regionviewer/RegionViewer'
 import RegionSpreadSheet from './components/regionspreedsheet/RegionSpreadSheet'
 import { useQuery } from '@apollo/client'
 import * as queries from './cache/queries'
@@ -68,6 +69,11 @@ const App = () => {
           path='/region'
           name='region'
           render={() => <RegionSpreadSheet fetchUser={refetch} user={user} />}
+        ></Route>
+        <Route
+          name='/regionviewer'
+          path='/regionviewer'
+          render={() => <RegionViewer fetchUser={refetch} user={user} />}
         ></Route>
       </Switch>
     </BrowserRouter>

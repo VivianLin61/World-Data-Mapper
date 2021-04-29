@@ -1,51 +1,22 @@
 import React, { useState } from 'react'
-import { UPDATE_USER } from '../../cache/mutations'
-
 import { useMutation } from '@apollo/client'
 import NavbarOptions from '../navbar/NavbarOptions'
-import Logo from '../navbar/Logo'
 import { useHistory } from 'react-router-dom'
 import {
-  WModal,
-  WMHeader,
-  WMMain,
-  WMFooter,
+  WLMain,
+  WRow,
   WButton,
-  WInput,
+  WCol,
+  WCard,
   WLayout,
   WLHeader,
   WNavbar,
   WNavItem,
 } from 'wt-frontend'
+import WInput from 'wt-frontend/build/components/winput/WInput'
 
-const UpdateScreen = (props) => {
-  const [UpdateUser] = useMutation(UPDATE_USER)
-  const [input, setInput] = useState({
-    email: '',
-    password: '',
-    name: '',
-  })
+const RegionViewer = (props) => {
   let history = useHistory()
-  const updateInput = (e) => {
-    const { name, value } = e.target
-    const updated = { ...input, [name]: value }
-    setInput(updated)
-  }
-
-  const handleUpdateAccount = async (e) => {
-    const { data } = await UpdateUser({
-      variables: {
-        _id: props.user._id,
-        email: input.email,
-        password: input.password,
-        name: input.name,
-      },
-    })
-  }
-
-  if (props.user == null) {
-    history.push(`/`)
-  }
 
   return (
     <WLayout wLayout='header'>
@@ -73,65 +44,64 @@ const UpdateScreen = (props) => {
           </ul>
         </WNavbar>
       </WLHeader>
-      <WModal className='signup-modal' cover='true' visible={true}>
-        <WMHeader
-          className='modal-header'
-          onClose={() => history.push('/home')}
-        >
-          Update Account
-        </WMHeader>
-        <WMMain>
-          <WInput
-            className='modal-input'
-            onBlur={updateInput}
-            name='name'
-            labelAnimation='up'
-            barAnimation='solid'
-            labelText='Name'
-            wType='outlined'
-            inputType='text'
-          />
-
-          <div className='modal-spacer'>&nbsp;</div>
-          <WInput
-            className='modal-input'
-            onBlur={updateInput}
-            name='email'
-            labelAnimation='up'
-            barAnimation='solid'
-            labelText='Email Address'
-            wType='outlined'
-            inputType='text'
-          />
-          <div className='modal-spacer'>&nbsp;</div>
-          <WInput
-            className='modal-input'
-            onBlur={updateInput}
-            name='password'
-            labelAnimation='up'
-            barAnimation='solid'
-            labelText='Password'
-            wType='outlined'
-            inputType='password'
-          />
-          <div className='modal-spacer'>&nbsp;</div>
-        </WMMain>
-        <WMFooter>
-          <WButton
-            className='modal-button'
-            onClick={handleUpdateAccount}
-            span
-            clickAnimation='ripple-light'
-            hoverAnimation='darken'
-            shape='rounded'
-            color='primary'
-          >
-            Submit
-          </WButton>
-        </WMFooter>
-      </WModal>
+      <WLMain>
+        <div>
+          <WCard className='viewer-container' wLayout='header-content'>
+            <WLHeader className='viewer-header'>
+              <WButton className={'undo-button'}>
+                <i className='material-icons'>undo</i>
+              </WButton>
+              <WButton className={'redo-button'}>
+                <i className='material-icons'>redo</i>
+              </WButton>
+              <div className='region-landmarks-text'>Regional Landmarks:</div>
+            </WLHeader>
+            <div className='viewer-details'>
+              <WRow>
+                <WCol size='6'>
+                  <div className='viewer-left'>
+                    <div className='region-flag-container'></div>
+                    <div className='region-details-container'>
+                      <div className='region-details'>Region Viewer: {}</div>
+                      <div className='region-details'>Parent Region: {}</div>
+                      <div className='region-details'>Region Captial: {}</div>
+                      <div className='region-details'>Region Leader: {}</div>
+                      <div className='region-details'># of Sub Regions: {}</div>
+                    </div>
+                  </div>
+                </WCol>
+                <WCol size='6'>
+                  <div className='viewer-right'>
+                    <div className='landmarks-list-container'>
+                      {/* <img className='center' src={globe}></img> */}
+                    </div>
+                    <div className='add-landmark'>
+                      <WRow style={{ height: '100%' }}>
+                        <WCol size='1' style={{ backgroundColor: 'gray' }}>
+                          <WButton
+                            className={'add-landmark-button'}
+                            // onClick={props.activeid ? disabledClick : props.createNewList}
+                            // {...buttonOptions}
+                          >
+                            <i className='material-icons add-landmark-icon'>
+                              add
+                            </i>
+                          </WButton>
+                        </WCol>
+                        <WCol size='11'>
+                          <WInput className='landmark-input'></WInput>
+                        </WCol>
+                      </WRow>
+                    </div>
+                  </div>
+                </WCol>
+              </WRow>
+            </div>
+          </WCard>
+        </div>
+      </WLMain>
     </WLayout>
   )
 }
 
-export default UpdateScreen
+export default RegionViewer

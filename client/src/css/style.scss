@@ -297,3 +297,32 @@ body {
 .table {
   background-color: var(--light-gray);
 }
+
+.viewer-header {
+  background-color: $background-color;
+}
+
+.region-landmarks-text {
+  font-size: 36px;
+  font-weight: bold;
+  color: white;
+  padding-top: 10px;
+}
+
+.region-details {
+  background-color: $background-color;
+  color: white;
+}
+
+.region-details-container {
+  background-color: $background-color;
+}
+
+.add-landmark-icon {
+  background-color: gray;
+  color: #45d670;
+}
+
+.landmarks-list-container {
+  background-color: black;
+}
