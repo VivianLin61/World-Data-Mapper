@@ -291,8 +291,21 @@ body {
 
 .map-name {
   width: 100%;
+  margin-left: 15px;
 }
 
 .maps-list-container {
   height: 100%;
+}
+
+.map-item-edit-input {
+  padding: 23px 24px 24px 24px !important;
+}
+
+.map-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.125rem;
+  padding: 12px 24px;
 }

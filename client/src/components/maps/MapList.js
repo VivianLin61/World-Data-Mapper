@@ -9,7 +9,8 @@ const MapList = (props) => {
       {props.mapIDs &&
         props.mapIDs.map((entry) => (
           <MapEntry
-            createNewMap={props.createNewMap}
+            renameMap={props.renameMap}
+            deleteMap={props.deleteMap}
             key={tempID++}
             name={entry.name}
             _id={entry._id}

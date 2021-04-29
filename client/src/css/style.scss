@@ -263,3 +263,21 @@ body {
 .maps-list-container {
   background-color: var(--secondary-red);
 }
+
+.map-entry {
+  border-bottom: 1px solid;
+  color: $text-color;
+  transition: 0.05s ease-in-out;
+  height: 46px;
+}
+
+.map-name {
+  font-size: 35px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.map-item-edit-input {
+  font-size: 1.125rem !important;
+}

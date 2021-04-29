@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
 import { WNavItem, WInput } from 'wt-frontend'
-import { useMutation } from '@apollo/client'
-import { RENAME_MAP } from '../../cache/mutations'
-import { WRow, WCol } from 'wt-frontend'
+
+import { WRow, WCol, WButton } from 'wt-frontend'
 
 const MapEntry = (props) => {
   const [editing, toggleEditing] = useState(false)
-  const [RenameMap] = useMutation(RENAME_MAP)
-  const [mapName, setMapName] = useState(props.name)
 
   const handleEditing = (e) => {
     e.stopPropagation()
@@ -17,20 +14,16 @@ const MapEntry = (props) => {
   const handleSubmit = async (e) => {
     handleEditing(e)
     const { value } = e.target
-
-    const { data } = await RenameMap({
-      variables: {
-        name: value,
-        _id: props._id,
-      },
-    })
-    setMapName(value)
+    props.renameMap(value, props._id)
   }
 
+  const handleDeleteMap = (e) => {
+    props.deleteMap(props._id)
+  }
   return (
     <WRow>
       <WCol size='10'>
-        <div onDoubleClick={handleEditing}>
+        <div className='map-entry' onDoubleClick={handleEditing}>
           {editing ? (
             <WInput
               onKeyDown={(e) => {
@@ -40,14 +33,19 @@ const MapEntry = (props) => {
               onBlur={handleSubmit}
               autoFocus={true}
               defaultValue={props.name}
-              className='map-name'
+              className='map-item-edit'
+              inputClass='map-item-edit-input'
             />
           ) : (
-            <div className='map-name'>{mapName}</div>
+            <div className='map-name'>{props.name}</div>
           )}
         </div>
       </WCol>
-      <WCol size='2'></WCol>
+      <WCol size='2'>
+        <WButton className='map-text' onClick={handleDeleteMap} wType='texted'>
+          <i className='material-icons'>close</i>
+        </WButton>
+      </WCol>
     </WRow>
   )
 }

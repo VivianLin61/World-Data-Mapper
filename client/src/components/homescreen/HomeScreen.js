@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { ADD_MAP } from '../../cache/mutations'
+import { ADD_MAP, DELETE_MAP } from '../../cache/mutations'
+import { RENAME_MAP } from '../../cache/mutations'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MapList from '../maps/MapList'
 import globe from '../../images/globe.png'
@@ -13,6 +14,8 @@ const HomeScreen = (props) => {
   let maps = []
   const [showCreateMap, toggleShowCreateMap] = useState(false)
   const [AddMap] = useMutation(ADD_MAP)
+  const [DeleteMap] = useMutation(DELETE_MAP)
+  const [RenameMap] = useMutation(RENAME_MAP)
   const { loading, error, data, refetch } = useQuery(GET_DB_MAPS)
 
   if (loading) {
@@ -32,11 +35,29 @@ const HomeScreen = (props) => {
   }
 
   const createNewMap = async (name) => {
-    console.log(name)
     const { data } = await AddMap({
       variables: {
         name: name,
         owner: props.user._id,
+      },
+      refetchQueries: [{ query: GET_DB_MAPS }],
+    })
+  }
+
+  const deleteMap = async (_id) => {
+    const { data } = await DeleteMap({
+      variables: {
+        _id: _id,
+      },
+      refetchQueries: [{ query: GET_DB_MAPS }],
+    })
+  }
+
+  const renameMap = async (value, _id) => {
+    const { data } = await RenameMap({
+      variables: {
+        name: value,
+        _id: _id,
       },
       refetchQueries: [{ query: GET_DB_MAPS }],
     })
@@ -78,7 +99,11 @@ const HomeScreen = (props) => {
                 <WCol size='6'>
                   <div className='maps-table'>
                     <div className='maps-list-container'>
-                      <MapList mapIDs={maps}></MapList>
+                      <MapList
+                        renameMap={renameMap}
+                        deleteMap={deleteMap}
+                        mapIDs={maps}
+                      ></MapList>
                     </div>
                   </div>
                 </WCol>
