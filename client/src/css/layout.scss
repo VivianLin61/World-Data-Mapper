@@ -298,6 +298,11 @@ body {
   height: 100%;
 }
 
+.wbutton.primary {
+  width: 100%;
+  text-align: center !important;
+}
+
 .map-item-edit-input {
   padding: 23px 24px 24px 24px !important;
 }
@@ -383,11 +388,10 @@ body {
 
 .landmark-input {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   background-color: darkgray;
 }
 
-.winput.outlined input {
+.landmark-input input {
   height: 100% !important;
-  padding-left: 2%;
 }

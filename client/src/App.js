@@ -66,9 +66,11 @@ const App = () => {
           )}
         />
         <Route
-          path='/region'
+          path='/region/:id'
           name='region'
-          render={() => <RegionSpreadSheet fetchUser={refetch} user={user} />}
+          render={({ match }) => (
+            <RegionSpreadSheet fetchUser={refetch} user={user} match={match} />
+          )}
         ></Route>
         <Route
           name='/regionviewer'

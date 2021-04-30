@@ -62,7 +62,7 @@ const RegionViewer = (props) => {
                   <div className='viewer-left'>
                     <div className='region-flag-container'></div>
                     <div className='region-details-container'>
-                      <div className='region-details'>Region Viewer: {}</div>
+                      <div className='region-details'>Region Name: {}</div>
                       <div className='region-details'>Parent Region: {}</div>
                       <div className='region-details'>Region Captial: {}</div>
                       <div className='region-details'>Region Leader: {}</div>

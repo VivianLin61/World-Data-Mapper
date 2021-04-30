@@ -11,6 +11,7 @@ const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
   const [AddSubRegion] = useMutation(ADD_SUBREGION)
+  console.log(props.match.params.id)
 
   const addSubRegion = async () => {
     const region = {
