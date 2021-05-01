@@ -58,8 +58,14 @@ export const DELETE_MAP = gql`
     deleteMap(_id: $_id)
   }
 `
+// export const ADD_SUBREGION = gql`
+//   mutation AddSubRegion($region: RegionInput, $ids: [String!], $index: Int) {
+//     addSubRegion(region: $region, ids: $ids, index: $index)
+//   }
+// `
+
 export const ADD_SUBREGION = gql`
-  mutation AddSubRegion($region: RegionInput!) {
-    addSubregion(region: $region)
+  mutation AddSubRegion($region: RegionInput, $ids: [String!], $index: Int!) {
+    addSubRegion(region: $region, ids: $ids, index: $index)
   }
 `

@@ -29,8 +29,23 @@ module.exports = {
      @param   {object} args - a region id and an empty region object
      @returns {string} the objectID of the region or an error message
    **/
-    addSubregion: async (_, args) => {
+    addSubRegion: async (_, args) => {
       console.log(args)
+      // const { region, _id } = args
+      // const mapId = new ObjectId(_id)
+      // const found = await Map.findOne({ _id: mapId })
+      // if (!found) return 'Map not found'
+      // let mapSubregions = found.subregions
+      // if (_id == region.parent) {
+      //   if (index < 0) mapSubregions.push(region)
+      //   else mapSubregions.splice(index, 0, region)
+      // } else {
+      // }
+      // const updated = await Map.updateOne(
+      //   { _id: mapId },
+      //   { subregions: mapSubregions }
+      // )
+      return JSON.stringify(args)
     },
     /**
      @param   {object} args - an empty map object
@@ -42,9 +57,8 @@ module.exports = {
       const map = new Map({
         _id: _id,
         name: name,
-        child: null,
         owner: owner,
-        subregions: null,
+        subregions: [null],
       })
       const saved = await map.save()
 

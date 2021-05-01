@@ -5,7 +5,6 @@ const typeDefs = gql`
     _id: String!
     name: String!
     owner: String!
-    child: Region
     subregions: [Region]
   }
 
@@ -14,9 +13,8 @@ const typeDefs = gql`
     name: String!
     capital: String!
     leader: String!
-    parent: Region!
-    child: Region
-    # flag: [img]
+    parent: String!
+    mapId: String!
     landmarks: [String!]
     subregions: [Region]
   }
@@ -31,7 +29,7 @@ const typeDefs = gql`
     renameMap(_id: String, name: String!): Boolean
     deleteMap(_id: String!): Boolean
     deleteSubregion(regionId: String!, _id: String!): [Region]
-    addSubregion(region: RegionInput!, _id: String!, index: Int!): String
+    addSubRegion(region: RegionInput, ids: [String!], index: Int!): String
     sortRegions(_id: String!, field: String!): Boolean
     updateRegionField(_id: String!, field: String!, value: String!): [Region]
     addLandmark(_id: String!, landmark: String!): String
@@ -43,7 +41,6 @@ const typeDefs = gql`
     _id: String
     name: String
     owner: String
-    child: RegionInput
     subregions: [RegionInput]
   }
 
@@ -52,8 +49,8 @@ const typeDefs = gql`
     name: String
     capital: String
     leader: String
-    parent: RegionInput
-    child: RegionInput
+    parent: String
+    mapId: String
     # flag: [img]
     landmarks: [String]
     subregions: [RegionInput]

@@ -6,7 +6,7 @@ import NavbarOptions from '../navbar/NavbarOptions'
 import MapList from '../maps/MapList'
 import globe from '../../images/globe.png'
 import CreateMap from '../homescreen/CreateMap'
-import { GET_DB_MAPS } from '../../cache/queries'
+import { GET_DB_MAPS } from '../../cache/queries'  
 import { WRow, WCol, WCard, WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain } from 'wt-frontend'
 

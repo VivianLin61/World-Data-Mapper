@@ -16,17 +16,18 @@ export const GET_DB_MAPS = gql`
       _id
       name
       owner
-      child {
-        _id
-        name
-        subregions {
-          _id
-          name
-          capital
-          leader
-          landmarks
-        }
-      }
+    }
+  }
+`
+
+export const GET_DB_REGIONS = gql`
+  query GetDBRegions {
+    getAllRegions {
+      _id
+      name
+      capital
+      leader
+      landmarks
     }
   }
 `

@@ -9,6 +9,10 @@ const regionSchema = new Schema({
     type: String,
     required: true,
   },
+  mapId: {
+    type: String,
+    required: true,
+  },
   capital: {
     type: String,
     required: true,
@@ -18,11 +22,7 @@ const regionSchema = new Schema({
     required: true,
   },
   parent: {
-    type: this,
-    required: true,
-  },
-  child: {
-    type: this,
+    type: String,
     required: true,
   },
   landmarks: [String],

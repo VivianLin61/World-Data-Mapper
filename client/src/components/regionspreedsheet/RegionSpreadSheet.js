@@ -1,33 +1,58 @@
 import React from 'react'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
 import { ADD_SUBREGION } from '../../cache/mutations.js'
+import { GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
+import { Route, Link, Switch } from 'react-router-dom'
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
   const [AddSubRegion] = useMutation(ADD_SUBREGION)
-  console.log(props.match.params.id)
+  let ids = props.location.pathname.split('/')
+  ids.splice(0, 2)
+  // const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
+  //   variables: { ids },
+  // })
 
-  const addSubRegion = async () => {
+  const handleAddSubRegion = async (e) => {
+    console.log(ids)
     const region = {
       _id: '',
       name: 'No Name',
-      capital: 'No Capital',
+      capital: 'No Capial',
       leader: 'No Leader',
-      parent: null,
-      child: null,
+      parent: ids[ids.length - 1],
+      mapId: ids[0],
       landmarks: [''],
       subregions: [null],
     }
-
+    //  "_id": "",
+    //       "name": "No Name",
+    //       "capital": "No Capial",
+    //       "leader": "No Leader",
+    //       "parent": "608c4d1d30f1a80ebacc71e4",
+    //       "mapId": "608c4d1d30f1a80ebacc71e4",
+    //       "landmarks": [""],
+    //       "subregions": [null],
     const { data } = await AddSubRegion({
       variables: {
-        region: region,
+        region: {
+          _id: '',
+          name: 'No Name',
+          capital: 'No Capial',
+          leader: 'No Leader',
+          parent: ids[ids.length - 1],
+          mapId: ids[0],
+          landmarks: [''],
+          subregions: [null],
+        },
+        ids: ids,
+        index: -1,
       },
     })
     // let transaction = new UpdateListItems_Transaction(
@@ -42,71 +67,93 @@ const RegionSpreadSheet = (props) => {
     // tpsRedo()
   }
 
+  const addSubRegion = async () => {}
+
   return (
-    <WLayout wLayout='header'>
-      <WLHeader>
-        <WNavbar color='colored'>
-          <ul>
-            <WNavItem>
-              <WButton
-                className='logo'
-                wType='texted'
-                hoverAnimation='text-primary'
-                onClick={() => history.push('/home')}
-              >
-                World Data Mapper
-              </WButton>
-            </WNavItem>
-          </ul>
-          <ul>
-            <NavbarOptions
-              fetchUser={props.fetchUser}
-              auth={true}
-              user={props.user}
-              setShowCreate={false}
-              setShowLogin={true}
-            />
-          </ul>
-        </WNavbar>
-      </WLHeader>
-      <WLMain>
-        <div>
-          <WCard className='regions-container' wLayout='header-content'>
-            <WLHeader className='region-header'>
-              <WButton
-                className={'add-button'}
-                // onClick={props.activeid ? disabledClick : props.createNewList}
-                // {...buttonOptions}
-              >
-                <i className='material-icons'>add</i>
-              </WButton>
-              <WButton className={'undo-button'}>
-                <i className='material-icons'>undo</i>
-              </WButton>
-              <WButton className={'redo-button'}>
-                <i className='material-icons'>redo</i>
-              </WButton>
-              <div>Region Name: United States </div>
+    <>
+      {props.match.isExact && (
+        <>
+          <WLayout wLayout='header'>
+            <WLHeader>
+              <WNavbar color='colored'>
+                <ul>
+                  <WNavItem>
+                    <WButton
+                      className='logo'
+                      wType='texted'
+                      hoverAnimation='text-primary'
+                      onClick={() => history.push('/home')}
+                    >
+                      World Data Mapper
+                    </WButton>
+                  </WNavItem>
+                </ul>
+                <ul>
+                  <NavbarOptions
+                    fetchUser={props.fetchUser}
+                    auth={true}
+                    user={props.user}
+                    setShowCreate={false}
+                    setShowLogin={true}
+                  />
+                </ul>
+              </WNavbar>
             </WLHeader>
-            <div className='regions'>
-              <MainContents
-                addSubregion={addSubRegion}
-                regions={regions}
-                //   deleteItem={deleteItem}
-                //   editItem={editItem}
-                //   reorderItem={reorderItem}
-                //   setShowDelete={setShowDelete}
-                //   undo={tpsUndo}
-                //   redo={tpsRedo}
-                //   canUndo={canUndo}
-                //   canRedo={canRedo}
-                //   sort={sort}
-              />
-            </div>
-          </WCard>
-        </div>
-      </WLMain>
-    </WLayout>
+            <WLMain>
+              <div>
+                <WCard className='regions-container' wLayout='header-content'>
+                  <WLHeader className='region-header'>
+                    <WButton
+                      className={'add-button'}
+                      onClick={handleAddSubRegion}
+                      // onClick={props.activeid ? disabledClick : props.createNewList}
+                      // {...buttonOptions}
+                    >
+                      <i className='material-icons'>add</i>
+                    </WButton>
+                    <WButton className={'undo-button'}>
+                      <i className='material-icons'>undo</i>
+                    </WButton>
+                    <WButton className={'redo-button'}>
+                      <i className='material-icons'>redo</i>
+                    </WButton>
+                    <div>Region Name: United States </div>
+                  </WLHeader>
+                  <div className='regions'>
+                    <MainContents
+                      addSubregion={addSubRegion}
+                      regions={regions}
+                      //   deleteItem={deleteItem}
+                      //   editItem={editItem}
+                      //   reorderItem={reorderItem}
+                      //   setShowDelete={setShowDelete}
+                      //   undo={tpsUndo}
+                      //   redo={tpsRedo}
+                      //   canUndo={canUndo}
+                      //   canRedo={canRedo}
+                      //   sort={sort}
+                    />
+                  </div>
+                </WCard>
+              </div>
+            </WLMain>
+          </WLayout>
+        </>
+      )}
+      <Switch>
+        <Route
+          path={`${props.match.path}/:id`}
+          render={({ match, location }) => (
+            <RegionSpreadSheet
+              fetchUser={props.fetchUser}
+              user={props.user}
+              match={match}
+              location={location}
+            />
+          )}
+        />
+      </Switch>
+    </>
   )
 }
 

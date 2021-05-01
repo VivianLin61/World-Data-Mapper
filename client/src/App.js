@@ -68,8 +68,13 @@ const App = () => {
         <Route
           path='/region/:id'
           name='region'
-          render={({ match }) => (
-            <RegionSpreadSheet fetchUser={refetch} user={user} match={match} />
+          render={({ match, location }) => (
+            <RegionSpreadSheet
+              fetchUser={refetch}
+              user={user}
+              match={match}
+              location={location}
+            />
           )}
         ></Route>
         <Route
