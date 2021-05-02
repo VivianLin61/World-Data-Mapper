@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
+import { useHistory, Link } from 'react-router-dom'
 
 const TableEntry = (props) => {
+  let history = useHistory()
   const { data } = props
+
+  console.log(data)
 
   const name = data.name
   const capital = data.capital
@@ -22,7 +26,7 @@ const TableEntry = (props) => {
   }
 
   const handleCapitalEdit = (e) => {
-    // toggleCapitalEdit(false)
+    toggleCapitalEdit(false)
     // const newDescr = e.target.value ? e.target.value : 'No Description'
     // const prevDescr = description
     // if (newDescr !== prevDescr) {
@@ -39,8 +43,34 @@ const TableEntry = (props) => {
     // }
   }
 
+  const goToSubRegion = (e) => {
+    history.push(`${props.url}/${props.data._id}`)
+  }
+
   return (
     <WRow className='table-entry'>
+      <WCol size='2'>
+        {editingName ? (
+          <WInput
+            className='table-input'
+            onBlur={handleNameEdit}
+            autoFocus={true}
+            defaultValue={name}
+            type='text'
+            wtype='outlined'
+            baranimation='solid'
+            inputclass='table-input-class'
+          />
+        ) : (
+          <div
+            className='table-text'
+            onDoubleClick={() => toggleNameEdit(!editingName)}
+            onClick={goToSubRegion}
+          >
+            {name}
+          </div>
+        )}
+      </WCol>
       <WCol size='2'>
         {editingCapital || capital === '' ? (
           <WInput
@@ -57,7 +87,7 @@ const TableEntry = (props) => {
         ) : (
           <div
             className='table-text'
-            onClick={() => toggleCapitalEdit(!editingCapital)}
+            onDoubleClick={() => toggleCapitalEdit(!editingCapital)}
           >
             {capital}
           </div>
@@ -65,31 +95,10 @@ const TableEntry = (props) => {
       </WCol>
 
       <WCol size='2'>
-        {editingName ? (
-          <WInput
-            className='table-input'
-            onBlur={handleNameEdit}
-            autoFocus={true}
-            defaultValue={name}
-            type='text'
-            wtype='outlined'
-            baranimation='solid'
-            inputclass='table-input-class'
-          />
-        ) : (
-          <div
-            className='table-text'
-            onClick={() => toggleNameEdit(!editingName)}
-          >
-            {name}
-          </div>
-        )}
-      </WCol>
-      <WCol size='2'>
         {editingLeader ? (
           <WInput
             className='table-input'
-            onBlur={handleNameEdit}
+            onBlur={handleLeaderEdit}
             autoFocus={true}
             defaultValue={leader}
             type='text'
@@ -100,7 +109,7 @@ const TableEntry = (props) => {
         ) : (
           <div
             className='table-text'
-            onClick={() => toggleNameEdit(!editingLeader)}
+            onDoubleClick={() => toggleLeaderEdit(!editingLeader)}
           >
             {leader}
           </div>

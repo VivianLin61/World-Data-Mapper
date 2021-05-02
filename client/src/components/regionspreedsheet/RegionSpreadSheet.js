@@ -7,7 +7,7 @@ import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
 import { ADD_SUBREGION } from '../../cache/mutations.js'
 import { GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
-import { Route, Link, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
@@ -15,45 +15,44 @@ const RegionSpreadSheet = (props) => {
   const [AddSubRegion] = useMutation(ADD_SUBREGION)
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
-  // const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
-  //   variables: { ids },
-  // })
+  const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
+    variables: { ids },
+  })
+
+  if (loading) {
+    console.log(loading, 'loading')
+  }
+  if (error) {
+    console.log(error, 'error')
+  }
+  if (data) {
+    console.log(data)
+    for (let region of data.getAllRegions) {
+      regions.push(region)
+      console.log(region)
+    }
+  }
+
+  console.log(regions)
 
   const handleAddSubRegion = async (e) => {
-    console.log(ids)
     const region = {
       _id: '',
       name: 'No Name',
       capital: 'No Capial',
       leader: 'No Leader',
-      parent: ids[ids.length - 1],
+      parentId: ids[ids.length - 1],
       mapId: ids[0],
-      landmarks: [''],
-      subregions: [null],
+      landmarks: [],
+      subregions: [],
     }
-    //  "_id": "",
-    //       "name": "No Name",
-    //       "capital": "No Capial",
-    //       "leader": "No Leader",
-    //       "parent": "608c4d1d30f1a80ebacc71e4",
-    //       "mapId": "608c4d1d30f1a80ebacc71e4",
-    //       "landmarks": [""],
-    //       "subregions": [null],
     const { data } = await AddSubRegion({
       variables: {
-        region: {
-          _id: '',
-          name: 'No Name',
-          capital: 'No Capial',
-          leader: 'No Leader',
-          parent: ids[ids.length - 1],
-          mapId: ids[0],
-          landmarks: [''],
-          subregions: [null],
-        },
+        region: region,
         ids: ids,
         index: -1,
       },
+      refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
     })
     // let transaction = new UpdateListItems_Transaction(
     //   listID,
@@ -106,8 +105,6 @@ const RegionSpreadSheet = (props) => {
                     <WButton
                       className={'add-button'}
                       onClick={handleAddSubRegion}
-                      // onClick={props.activeid ? disabledClick : props.createNewList}
-                      // {...buttonOptions}
                     >
                       <i className='material-icons'>add</i>
                     </WButton>
@@ -123,6 +120,7 @@ const RegionSpreadSheet = (props) => {
                     <MainContents
                       addSubregion={addSubRegion}
                       regions={regions}
+                      url={props.match.url}
                       //   deleteItem={deleteItem}
                       //   editItem={editItem}
                       //   reorderItem={reorderItem}

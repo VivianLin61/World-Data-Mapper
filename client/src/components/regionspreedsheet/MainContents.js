@@ -19,6 +19,7 @@ const MainContents = (props) => {
       <TableContents
         // key={props.activeList._id}
         regions={props.regions}
+        url={props.url}
         // deleteItem={props.deleteItem}
         // reorderItem={props.reorderItem}
         // editItem={props.editItem}

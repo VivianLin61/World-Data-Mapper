@@ -3,6 +3,7 @@ import TableEntry from './TableEntry'
 
 const TableContents = (props) => {
   let entries = props.regions
+  console.log(entries)
   let entryCount = 0
   if (entries) {
     entries = entries.filter((entry) => entry !== null)
@@ -16,6 +17,7 @@ const TableContents = (props) => {
           data={entry}
           key={entry._id}
           index={index}
+          url={props.url}
           entryCount={entryCount}
           deleteItem={props.deleteItem}
           reorderItem={props.reorderItem}

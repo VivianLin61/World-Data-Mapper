@@ -21,7 +21,7 @@ const regionSchema = new Schema({
     type: String,
     required: true,
   },
-  parent: {
+  parentId: {
     type: String,
     required: true,
   },

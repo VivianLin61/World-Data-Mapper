@@ -23,6 +23,26 @@ module.exports = {
      @returns {object} a map on success and an empty object on failure
    **/
     getMapById: async (_, args) => {},
+    /**
+     @param   {object} args - a region id
+     @returns {object} a region on success and an empty object on failure
+   **/
+    getAllRegions: async (_, args) => {
+      const { ids } = args
+      const mapId = new ObjectId(ids[0])
+      const map = await Map.findOne({ _id: mapId })
+      let mapSubregions = map.subregions
+      let regions
+      if (ids.length == 1) {
+        regions = mapSubregions
+      } else {
+        // let regionVariable = []
+        regions = getRegions(mapSubregions, ids[ids.length - 1])
+      }
+      if (regions) {
+        return regions
+      }
+    },
   },
   Mutation: {
     /**
@@ -30,21 +50,26 @@ module.exports = {
      @returns {string} the objectID of the region or an error message
    **/
     addSubRegion: async (_, args) => {
-      console.log(args)
-      // const { region, _id } = args
-      // const mapId = new ObjectId(_id)
-      // const found = await Map.findOne({ _id: mapId })
-      // if (!found) return 'Map not found'
-      // let mapSubregions = found.subregions
-      // if (_id == region.parent) {
-      //   if (index < 0) mapSubregions.push(region)
-      //   else mapSubregions.splice(index, 0, region)
-      // } else {
-      // }
-      // const updated = await Map.updateOne(
-      //   { _id: mapId },
-      //   { subregions: mapSubregions }
-      // )
+      const { region, ids, index } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+      if (region._id == '') {
+        region._id = new ObjectId()
+      }
+      if (ids.length == 1) {
+        if (index < 0) mapSubregions.push(region)
+        else mapSubregions.splice(index, 0, region)
+      } else {
+        // console.log('mapSubregions: ' + mapSubregions)
+
+        addToSubRegion(mapSubregions, region.parentId, region)
+      }
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
       return JSON.stringify(args)
     },
     /**
@@ -58,7 +83,7 @@ module.exports = {
         _id: _id,
         name: name,
         owner: owner,
-        subregions: [null],
+        subregions: [],
       })
       const saved = await map.save()
 
@@ -124,4 +149,30 @@ module.exports = {
    **/
     updateLandmark: async (_, args) => {},
   },
+}
+
+function addToSubRegion(arr, value, region) {
+  arr.forEach((i) => {
+    if (i._id == value) {
+      let temp = i.subregions
+      temp.push(region)
+      i.subregions = temp
+    } else {
+      addToSubRegion(i.subregions, value, region)
+    }
+  })
+}
+
+function getRegions(arr, value) {
+  let regions
+  arr.forEach((i) => {
+    if (i._id == value) {
+      regions = i.subregions
+      console.log(regions)
+    } else {
+      getRegions(i.subregions, value)
+    }
+  })
+  console.log(regions)
+  return regions
 }

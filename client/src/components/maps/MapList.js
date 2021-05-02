@@ -6,8 +6,8 @@ const MapList = (props) => {
   let tempID = 0
   return (
     <>
-      {props.mapIDs &&
-        props.mapIDs.map((entry) => (
+      {props.maps &&
+        props.maps.map((entry) => (
           <MapEntry
             renameMap={props.renameMap}
             deleteMap={props.deleteMap}

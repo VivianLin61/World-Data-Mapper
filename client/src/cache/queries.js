@@ -21,13 +21,29 @@ export const GET_DB_MAPS = gql`
 `
 
 export const GET_DB_REGIONS = gql`
-  query GetDBRegions {
-    getAllRegions {
+  query GetDBRegions($ids: [String]) {
+    getAllRegions(ids: $ids) {
       _id
       name
       capital
       leader
       landmarks
+      parentId
+      mapId
     }
   }
 `
+
+// export const GET_DB_REGIONS = gql`
+//   query GetDBRegions($ids: [String]) {
+//     getAllRegions(ids: $ids) {
+//       _id
+//       name
+//       capital
+//       leader
+//       landmarks
+//       parentId
+//       mapId
+//     }
+//   }
+// `

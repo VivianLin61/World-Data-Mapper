@@ -13,7 +13,7 @@ const typeDefs = gql`
     name: String!
     capital: String!
     leader: String!
-    parent: String!
+    parentId: String!
     mapId: String!
     landmarks: [String!]
     subregions: [Region]
@@ -22,6 +22,8 @@ const typeDefs = gql`
   extend type Query {
     getAllMaps: [Map]
     getMapById(_id: String!): Region
+    # getAllRegions(_id: String!): [Region]
+    getAllRegions(ids: [String]): [Region]
   }
 
   extend type Mutation {
@@ -49,7 +51,7 @@ const typeDefs = gql`
     name: String
     capital: String
     leader: String
-    parent: String
+    parentId: String
     mapId: String
     # flag: [img]
     landmarks: [String]

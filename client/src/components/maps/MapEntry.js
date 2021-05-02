@@ -11,7 +11,7 @@ const MapEntry = (props) => {
     e.stopPropagation()
     toggleEditing(!editing)
   }
-  
+
   const handleSubmit = async (e) => {
     handleEditing(e)
     const { value } = e.target
