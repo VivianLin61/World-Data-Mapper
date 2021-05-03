@@ -41,7 +41,7 @@ const UpdateScreen = (props) => {
         name: input.name,
       },
     })
-    history.push('/home')
+    history.push(`/home`, { user: props.user })
   }
 
   if (props.user == null) {

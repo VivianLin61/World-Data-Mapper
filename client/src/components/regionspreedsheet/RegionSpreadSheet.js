@@ -77,7 +77,9 @@ const RegionSpreadSheet = (props) => {
                       className='logo'
                       wType='texted'
                       hoverAnimation='text-primary'
-                      onClick={() => history.push('/home')}
+                      onClick={() =>
+                        history.push(`/home`, { user: props.user })
+                      }
                     >
                       World Data Mapper
                     </WButton>
