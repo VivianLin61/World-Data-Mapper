@@ -18,9 +18,7 @@ const HomeScreen = (props) => {
   const [RenameMap] = useMutation(RENAME_MAP)
 
   let userId
-  if (props.location.state) {
-    console.log(props.location.state)
-  } else {
+  if (!props.location.state) {
     userId = props.user._id
   }
 

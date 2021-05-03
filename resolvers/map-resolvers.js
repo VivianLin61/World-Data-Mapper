@@ -9,37 +9,20 @@ module.exports = {
      @param   {object} req - the request object containing a user id
      @returns {array} an array of map objects on success, and an empty array on failure
    **/
-    // getAllMaps: async (_, __, { req }) => {
-    //   const _id = new ObjectId(req.userId)
-    //   console.log(req)
-    //   if (!_id) {
-    //     return []
-    //   }
-    //   const maps = await Map.find({ owner: _id })
-    //   if (maps) {
-    //     return maps
-    //   }
-    // },
     getAllMaps: async (_, __, { req }, args) => {
+      let _id
       if (req.userId) {
-        const _id = new ObjectId(req.userId)
-        if (!_id) {
-          return []
-        }
-        const maps = await Map.find({ owner: _id })
-        if (maps) {
-          return maps
-        }
+        _id = new ObjectId(req.userId)
       } else {
         const { id } = args
-        const _id = new ObjectId(id)
-        if (!_id) {
-          return []
-        }
-        const maps = await Map.find({ owner: _id })
-        if (maps) {
-          return maps
-        }
+        _id = new ObjectId(id)
+      }
+      if (!_id) {
+        return []
+      }
+      const maps = await Map.find({ owner: _id })
+      if (maps) {
+        return maps
       }
     },
     /**
