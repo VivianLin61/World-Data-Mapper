@@ -56,12 +56,13 @@ const App = () => {
         <Route
           path='/home'
           name='home'
-          render={() => (
+          render={({ location }) => (
             <HomeScreen
               tps={transactionStack}
               fetchUser={refetch}
               user={user}
               refreshTps={refreshTps}
+              location={location}
             />
           )}
         />

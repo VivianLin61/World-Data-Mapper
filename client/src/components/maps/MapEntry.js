@@ -52,7 +52,7 @@ const MapEntry = (props) => {
       </WCol>
       <WCol size='1'>
         <WButton className='map-text' wType='texted'>
-          <i class='material-icons' onClick={handleEditing}>
+          <i className='material-icons' onClick={handleEditing}>
             mode_edit
           </i>
         </WButton>

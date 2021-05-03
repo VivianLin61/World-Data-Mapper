@@ -36,10 +36,12 @@ const Login = (props) => {
       return
     }
     if (data) {
-      props.fetchUser()
+      const user = await props.fetchUser()
       toggleLoading(false)
       props.setShowLogin(false)
-      history.push(`/home`)
+      if (user) {
+        history.push(`/home`, { user: user })
+      }
     }
   }
 

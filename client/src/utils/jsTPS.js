@@ -4,7 +4,7 @@ export class jsTPS_Transaction {
   undoTransaction() {}
 }
 /*  Handles list name changes, or any other top level details of a todolist that may be added   */
-export class UpdateListField_Transaction extends jsTPS_Transaction {
+export class Update_Transaction extends jsTPS_Transaction {
   constructor(_id, field, prev, update, callback) {
     super()
     this.prev = prev
@@ -23,106 +23,6 @@ export class UpdateListField_Transaction extends jsTPS_Transaction {
     const { data } = await this.updateFunction({
       variables: { _id: this._id, field: this.field, value: this.prev },
     })
-    return data
-  }
-}
-
-/*  Handles item reordering */
-export class ReorderItems_Transaction extends jsTPS_Transaction {
-  constructor(listID, itemID, dir, callback) {
-    super()
-    this.listID = listID
-    this.itemID = itemID
-    this.dir = dir
-    this.revDir = dir === 1 ? -1 : 1
-    this.updateFunction = callback
-  }
-
-  async doTransaction() {
-    const { data } = await this.updateFunction({
-      variables: { itemId: this.itemID, _id: this.listID, direction: this.dir },
-    })
-    return data
-  }
-
-  async undoTransaction() {
-    const { data } = await this.updateFunction({
-      variables: {
-        itemId: this.itemID,
-        _id: this.listID,
-        direction: this.revDir,
-      },
-    })
-    return data
-  }
-}
-
-export class SortItems_Transaction extends jsTPS_Transaction {
-  constructor(listID, nextSortRule, prevSortRule, callback) {
-    super()
-    this.listID = listID
-    this.nextSortRule = nextSortRule
-    this.prevSortRule = prevSortRule
-    this.updateFunction = callback
-  }
-  async doTransaction() {
-    const { data } = await this.updateFunction({
-      variables: { _id: this.listID, criteria: this.nextSortRule },
-    })
-    if (data) {
-      console.log(data)
-      return data
-    }
-  }
-
-  async undoTransaction() {
-    const { data } = await this.updateFunction({
-      variables: { _id: this.listID, criteria: this.prevSortRule },
-    })
-    if (data) {
-      console.log(data)
-      return data
-    }
-  }
-}
-
-export class EditItem_Transaction extends jsTPS_Transaction {
-  constructor(listID, itemID, field, prev, update, flag, callback) {
-    super()
-    this.listID = listID
-    this.itemID = itemID
-    this.field = field
-    this.prev = prev
-    this.update = update
-    this.flag = flag
-    this.updateFunction = callback
-  }
-
-  async doTransaction() {
-    const { data } = await this.updateFunction({
-      variables: {
-        itemId: this.itemID,
-        _id: this.listID,
-        field: this.field,
-        value: this.update,
-        flag: this.flag,
-      },
-    })
-    return data
-  }
-
-  async undoTransaction() {
-    console.log('undo: ', this.prev, this.update)
-    const { data } = await this.updateFunction({
-      variables: {
-        itemId: this.itemID,
-        _id: this.listID,
-        field: this.field,
-        value: this.prev,
-        flag: this.flag,
-      },
-    })
-    if (data) console.log(data)
     return data
   }
 }

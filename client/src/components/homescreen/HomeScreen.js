@@ -16,7 +16,17 @@ const HomeScreen = (props) => {
   const [AddMap] = useMutation(ADD_MAP)
   const [DeleteMap] = useMutation(DELETE_MAP)
   const [RenameMap] = useMutation(RENAME_MAP)
-  const { loading, error, data, refetch } = useQuery(GET_DB_MAPS)
+
+  let userId
+  if (props.location.state) {
+    console.log(props.location.state)
+  } else {
+    userId = props.user._id
+  }
+
+  const { loading, error, data, refetch } = useQuery(GET_DB_MAPS, {
+    variables: { userId: userId },
+  })
 
   if (loading) {
     console.log(loading, 'loading')
@@ -25,6 +35,7 @@ const HomeScreen = (props) => {
     console.log(error, 'error')
   }
   if (data) {
+    console.log(data)
     for (let map of data.getAllMaps) {
       maps.push(map)
     }

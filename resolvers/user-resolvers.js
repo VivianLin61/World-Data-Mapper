@@ -53,25 +53,28 @@ module.exports = {
 			@returns {object} the user object or an object with an error message
 		**/
     register: async (_, args, { res }) => {
-      const { email, password, name } = args
+      const { email, password, firstName, lastName } = args
       const alreadyRegistered = await User.findOne({ email: email })
       if (alreadyRegistered) {
         console.log('User with that email already registered.')
         return new User({
           _id: '',
-          name: '',
+          firstName: '',
+          lastName: '',
           email: 'already exists',
           password: '',
+          initials: '',
         })
       }
       const hashed = await bcrypt.hash(password, 10)
       const _id = new ObjectId()
-
       const user = new User({
         _id: _id,
-        name: name,
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: hashed,
+        initials: `${firstName[0]}.${lastName[0]}.`,
       })
       const saved = await user.save()
       // After registering the user, their tokens are generated here so they
@@ -99,13 +102,11 @@ module.exports = {
       res.clearCookie('access-token')
       return true
     },
-
     /**
      	@param 	 {object} args - updated info
 			@returns {object} the user object or an object with an error message
      **/
     updateUser: async (_, args) => {
-      console.log(args)
       const { _id, email, password, name } = args
       const hashed = await bcrypt.hash(password, 10)
       const objectId = new ObjectId(_id)
