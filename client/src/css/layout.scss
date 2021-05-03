@@ -261,10 +261,18 @@ body {
   height: 100%;
 }
 
+.maps-table {
+  height: 550px;
+}
+
 .maps-right,
 .viewer-right {
   width: 100%;
   height: 100%;
+}
+
+.maps-right {
+  height: 550px;
 }
 
 .maps-header {
@@ -398,4 +406,5 @@ body {
 
 .map-entries {
   overflow-y: scroll;
+  overflow-x: hidden;
 }

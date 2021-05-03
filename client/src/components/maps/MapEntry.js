@@ -30,7 +30,7 @@ const MapEntry = (props) => {
       <WCol size='10'>
         <div
           className='map-entry'
-          onDoubleClick={handleEditing}
+          // onDoubleClick={handleEditing}
           onClick={naviageToRegionSpreadsheet}
         >
           {editing ? (
@@ -50,7 +50,14 @@ const MapEntry = (props) => {
           )}
         </div>
       </WCol>
-      <WCol size='2'>
+      <WCol size='1'>
+        <WButton className='map-text' wType='texted'>
+          <i class='material-icons' onClick={handleEditing}>
+            mode_edit
+          </i>
+        </WButton>
+      </WCol>
+      <WCol size='1'>
         <WButton className='map-text' onClick={handleDeleteMap} wType='texted'>
           <i className='material-icons'>close</i>
         </WButton>

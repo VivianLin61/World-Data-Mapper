@@ -122,7 +122,7 @@ module.exports = {
       )
 
       const map = await Map.findOne({ _id: objectId })
-      return map.name
+      return true
     },
     /**
      @param   {object} args - a map objectID, an region objectID, field, and update value.

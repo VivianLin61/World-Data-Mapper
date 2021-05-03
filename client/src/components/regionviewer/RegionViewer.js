@@ -73,7 +73,7 @@ const RegionViewer = (props) => {
                       </div>
                       <div
                         className='region-details'
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', color: 'var(--baby-blue)' }}
                         onClick={navigateBackToRegionSpreadshhet}
                       >
                         Parent Region: {parent.name}
