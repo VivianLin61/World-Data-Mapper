@@ -33,7 +33,6 @@ const HomeScreen = (props) => {
     console.log(error, 'error')
   }
   if (data) {
-    console.log(data)
     for (let map of data.getAllMaps) {
       maps.push(map)
     }
@@ -49,7 +48,7 @@ const HomeScreen = (props) => {
         name: name,
         owner: props.user._id,
       },
-      refetchQueries: [{ query: GET_DB_MAPS }],
+      refetchQueries: [{ query: GET_DB_MAPS, variables: { userId: userId } }],
     })
   }
 
@@ -58,7 +57,7 @@ const HomeScreen = (props) => {
       variables: {
         _id: _id,
       },
-      refetchQueries: [{ query: GET_DB_MAPS }],
+      refetchQueries: [{ query: GET_DB_MAPS, variables: { userId: userId } }],
     })
   }
 
@@ -68,7 +67,7 @@ const HomeScreen = (props) => {
         name: value,
         _id: _id,
       },
-      refetchQueries: [{ query: GET_DB_MAPS }],
+      refetchQueries: [{ query: GET_DB_MAPS, variables: { userId: userId } }],
     })
   }
 

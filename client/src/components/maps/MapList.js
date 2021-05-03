@@ -2,7 +2,6 @@ import React from 'react'
 import MapEntry from './MapEntry'
 
 const MapList = (props) => {
-  console.log(props.mapIDs)
   let tempID = 0
   return (
     <>

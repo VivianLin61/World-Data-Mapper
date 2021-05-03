@@ -27,7 +27,6 @@ const CreateAccount = (props) => {
   }
 
   const handleCreateAccount = async (e) => {
-    console.log(input)
     for (let field in input) {
       if (!input[field]) {
         alert('All fields must be filled out to register')
@@ -42,7 +41,6 @@ const CreateAccount = (props) => {
       return `Error: ${error.message}`
     }
     if (data) {
-      console.log(data)
       toggleLoading(false)
       if (data.register.email === 'already exists') {
         alert('User with that email already registered')

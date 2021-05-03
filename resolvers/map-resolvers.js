@@ -69,8 +69,6 @@ module.exports = {
         if (index < 0) mapSubregions.push(region)
         else mapSubregions.splice(index, 0, region)
       } else {
-        // console.log('mapSubregions: ' + mapSubregions)
-
         addToSubRegion(mapSubregions, region.parentId, region)
       }
       const updated = await Map.updateOne(
