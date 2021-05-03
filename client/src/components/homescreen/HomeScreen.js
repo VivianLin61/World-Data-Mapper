@@ -98,7 +98,7 @@ const HomeScreen = (props) => {
               <WRow>
                 <WCol size='6'>
                   <div className='maps-table'>
-                    <div className='maps-list-container'>
+                    <div className='maps-list-container map-entries'>
                       <MapList
                         renameMap={renameMap}
                         deleteMap={deleteMap}

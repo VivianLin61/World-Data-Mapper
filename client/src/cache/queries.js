@@ -30,6 +30,15 @@ export const GET_DB_REGIONS = gql`
       landmarks
       parentId
       mapId
+      subregions {
+        _id
+        name
+        capital
+        leader
+        landmarks
+        parentId
+        mapId
+      }
     }
   }
 `

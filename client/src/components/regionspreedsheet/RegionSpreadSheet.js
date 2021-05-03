@@ -26,14 +26,10 @@ const RegionSpreadSheet = (props) => {
     console.log(error, 'error')
   }
   if (data) {
-    console.log(data)
     for (let region of data.getAllRegions) {
       regions.push(region)
-      console.log(region)
     }
   }
-
-  console.log(regions)
 
   const handleAddSubRegion = async (e) => {
     const region = {
@@ -114,13 +110,14 @@ const RegionSpreadSheet = (props) => {
                     <WButton className={'redo-button'}>
                       <i className='material-icons'>redo</i>
                     </WButton>
-                    <div>Region Name: United States </div>
+                    <div>Region Name: {props.location.state.data.name}</div>
                   </WLHeader>
                   <div className='regions'>
                     <MainContents
                       addSubregion={addSubRegion}
                       regions={regions}
                       url={props.match.url}
+                      parent={props.location.state.data}
                       //   deleteItem={deleteItem}
                       //   editItem={editItem}
                       //   reorderItem={reorderItem}

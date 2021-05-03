@@ -17,7 +17,12 @@ import WInput from 'wt-frontend/build/components/winput/WInput'
 
 const RegionViewer = (props) => {
   let history = useHistory()
+  let data = props.location.state.data
+  let parent = props.location.state.parent
 
+  const navigateBackToRegionSpreadshhet = (e) => {
+    history.push(`${props.location.state.url}/${parent._id}`, { data: parent })
+  }
   return (
     <WLayout wLayout='header'>
       <WLHeader>
@@ -28,6 +33,7 @@ const RegionViewer = (props) => {
                 className='logo'
                 wType='texted'
                 hoverAnimation='text-primary'
+                onClick={() => history.push('/home')}
               >
                 World Data Mapper
               </WButton>
@@ -62,11 +68,26 @@ const RegionViewer = (props) => {
                   <div className='viewer-left'>
                     <div className='region-flag-container'></div>
                     <div className='region-details-container'>
-                      <div className='region-details'>Region Name: {}</div>
-                      <div className='region-details'>Parent Region: {}</div>
-                      <div className='region-details'>Region Captial: {}</div>
-                      <div className='region-details'>Region Leader: {}</div>
-                      <div className='region-details'># of Sub Regions: {}</div>
+                      <div className='region-details'>
+                        Region Name: {data.name}
+                      </div>
+                      <div
+                        className='region-details'
+                        style={{ cursor: 'pointer' }}
+                        onClick={navigateBackToRegionSpreadshhet}
+                      >
+                        Parent Region: {parent.name}
+                      </div>
+                      <div className='region-details'>
+                        Region Captial: {data.capital}
+                      </div>
+                      <div className='region-details'>
+                        Region Leader: {data.leader}
+                      </div>
+                      <div className='region-details'>
+                        # of Sub Regions:{' '}
+                        {data.subregions ? data.subregions.length : 0}
+                      </div>
                     </div>
                   </div>
                 </WCol>

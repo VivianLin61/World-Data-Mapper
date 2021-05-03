@@ -22,7 +22,6 @@ const typeDefs = gql`
   extend type Query {
     getAllMaps: [Map]
     getMapById(_id: String!): Region
-    # getAllRegions(_id: String!): [Region]
     getAllRegions(ids: [String]): [Region]
   }
 

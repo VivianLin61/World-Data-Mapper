@@ -6,12 +6,11 @@ const TableEntry = (props) => {
   let history = useHistory()
   const { data } = props
 
-  console.log(data)
-
   const name = data.name
   const capital = data.capital
   const leader = data.leader
-  const landmarks = data.landmarks
+  const landmarks = data.landmarks.length == 0 ? 'No Landmarks' : data.landmarks
+
   const [editingName, toggleNameEdit] = useState(false)
   const [editingCapital, toggleCapitalEdit] = useState(false)
   const [editingLeader, toggleLeaderEdit] = useState(false)
@@ -44,9 +43,16 @@ const TableEntry = (props) => {
   }
 
   const goToSubRegion = (e) => {
-    history.push(`${props.url}/${props.data._id}`)
+    history.push(`${props.url}/${props.data._id}`, { data: data })
   }
 
+  const goToRegionViewer = (e) => {
+    history.push(`/regionviewer/${props.data._id}`, {
+      data: data,
+      parent: props.parent,
+      url: props.url,
+    })
+  }
   return (
     <WRow className='table-entry'>
       <WCol size='2'>
@@ -115,29 +121,13 @@ const TableEntry = (props) => {
           </div>
         )}
       </WCol>
-      {/* <WCol size='2'>
-        {editingLeader ? (
-          <WInput
-            className='table-input'
-            onBlur={handleNameEdit}
-            autoFocus={true}
-            defaultValue={leader}
-            type='text'
-            wtype='outlined'
-            baranimation='solid'
-            inputclass='table-input-class'
-          />
-        ) : (
-          <div
-            className='table-text'
-            onClick={() => toggleNameEdit(!editingLeader)}
-          >
-            {leader}
-          </div>
-        )}
-      </WCol> */}
-      <WCol size='2'>
-        <div className='table-text'>{landmarks}</div>
+      <WCol size='1'>
+        <div className='table-text'>No Flag</div>
+      </WCol>
+      <WCol size='5'>
+        <div className='table-text' onClick={goToRegionViewer}>
+          {landmarks}
+        </div>
       </WCol>
     </WRow>
   )

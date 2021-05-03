@@ -23,7 +23,7 @@ const MapEntry = (props) => {
   }
 
   const naviageToRegionSpreadsheet = (e) => {
-    history.push(`/region/${props._id}`)
+    history.push(`/region/${props._id}`, { data: props.data })
   }
   return (
     <WRow>

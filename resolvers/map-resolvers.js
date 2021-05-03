@@ -1,6 +1,7 @@
 const ObjectId = require('mongoose').Types.ObjectId
 const Map = require('../models/map-model')
 const Region = require('../models/region-model')
+let queryRegions
 
 module.exports = {
   Query: {
@@ -32,18 +33,18 @@ module.exports = {
       const mapId = new ObjectId(ids[0])
       const map = await Map.findOne({ _id: mapId })
       let mapSubregions = map.subregions
-      let regions
+
       if (ids.length == 1) {
-        regions = mapSubregions
+        queryRegions = mapSubregions
       } else {
-        // let regionVariable = []
-        regions = getRegions(mapSubregions, ids[ids.length - 1])
+        getRegions(mapSubregions, ids[ids.length - 1])
       }
-      if (regions) {
-        return regions
+      if (queryRegions) {
+        return queryRegions
       }
     },
   },
+  //#region
   Mutation: {
     /**
      @param   {object} args - a region id and an empty region object
@@ -163,16 +164,16 @@ function addToSubRegion(arr, value, region) {
   })
 }
 
-function getRegions(arr, value) {
+//#endregion
+
+function getRegions(arr, value, regionVariable) {
   let regions
   arr.forEach((i) => {
     if (i._id == value) {
-      regions = i.subregions
-      console.log(regions)
+      queryRegions = i.subregions
     } else {
-      getRegions(i.subregions, value)
+      getRegions(i.subregions, value, regionVariable)
     }
   })
-  console.log(regions)
   return regions
 }

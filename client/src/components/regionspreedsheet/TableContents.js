@@ -3,7 +3,6 @@ import TableEntry from './TableEntry'
 
 const TableContents = (props) => {
   let entries = props.regions
-  console.log(entries)
   let entryCount = 0
   if (entries) {
     entries = entries.filter((entry) => entry !== null)
@@ -22,6 +21,7 @@ const TableContents = (props) => {
           deleteItem={props.deleteItem}
           reorderItem={props.reorderItem}
           editItem={props.editItem}
+          parent={props.parent}
         />
       ))}
     </div>

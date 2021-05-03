@@ -41,12 +41,13 @@ const UpdateScreen = (props) => {
         name: input.name,
       },
     })
+    history.push('/home')
   }
 
   if (props.user == null) {
     history.push(`/`)
   }
-  
+
   return (
     <WLayout wLayout='header'>
       <WLHeader>

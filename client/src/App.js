@@ -78,9 +78,16 @@ const App = () => {
           )}
         ></Route>
         <Route
-          name='/regionviewer'
+          name='/regionviewer/:id'
           path='/regionviewer'
-          render={() => <RegionViewer fetchUser={refetch} user={user} />}
+          render={({ match, location }) => (
+            <RegionViewer
+              fetchUser={refetch}
+              user={user}
+              match={match}
+              location={location}
+            />
+          )}
         ></Route>
       </Switch>
     </BrowserRouter>

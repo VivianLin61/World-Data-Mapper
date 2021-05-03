@@ -12,6 +12,7 @@ const MapList = (props) => {
             renameMap={props.renameMap}
             deleteMap={props.deleteMap}
             key={tempID++}
+            data={entry}
             name={entry.name}
             _id={entry._id}
           />
