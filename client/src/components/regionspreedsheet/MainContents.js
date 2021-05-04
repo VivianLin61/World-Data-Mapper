@@ -3,7 +3,6 @@ import TableHeader from './TableHeader'
 import TableContents from './TableContents'
 
 const MainContents = (props) => {
-  
   return (
     <div className='table '>
       <TableHeader
@@ -22,6 +21,7 @@ const MainContents = (props) => {
         regions={props.regions}
         url={props.url}
         parent={props.parent}
+        deleteRegion={props.deleteRegion}
         // deleteItem={props.deleteItem}
         // reorderItem={props.reorderItem}
         // editItem={props.editItem}

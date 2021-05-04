@@ -3,38 +3,15 @@ export class jsTPS_Transaction {
   doTransaction() {}
   undoTransaction() {}
 }
-/*  Handles list name changes, or any other top level details of a todolist that may be added   */
-export class Update_Transaction extends jsTPS_Transaction {
-  constructor(_id, field, prev, update, callback) {
-    super()
-    this.prev = prev
-    this.update = update
-    this.field = field
-    this._id = _id
-    this.updateFunction = callback
-  }
-  async doTransaction() {
-    const { data } = await this.updateFunction({
-      variables: { _id: this._id, field: this.field, value: this.update },
-    })
-    return data
-  }
-  async undoTransaction() {
-    const { data } = await this.updateFunction({
-      variables: { _id: this._id, field: this.field, value: this.prev },
-    })
-    return data
-  }
-}
 
 /*  Handles create/delete of list items */
-export class UpdateListItems_Transaction extends jsTPS_Transaction {
+export class UpdateRegion_Transaction extends jsTPS_Transaction {
   // opcodes: 0 - delete, 1 - add
-  constructor(listID, itemID, item, opcode, addfunc, delfunc, index = -1) {
+  constructor(idPath, regionId, region, opcode, addfunc, delfunc, index = -1) {
     super()
-    this.listID = listID
-    this.itemID = itemID
-    this.item = item
+    this.idPath = idPath
+    this.regionId = regionId
+    this.region = region
     this.addFunction = addfunc
     this.deleteFunction = delfunc
     this.opcode = opcode
@@ -44,28 +21,47 @@ export class UpdateListItems_Transaction extends jsTPS_Transaction {
     let data
     this.opcode === 0
       ? ({ data } = await this.deleteFunction({
-          variables: { itemId: this.itemID, _id: this.listID },
+          variables: {
+            regionId: this.regionId,
+            ids: this.idPath,
+            index: this.index,
+          },
         }))
       : ({ data } = await this.addFunction({
-          variables: { item: this.item, _id: this.listID, index: this.index },
+          variables: {
+            region: this.region,
+            ids: this.idPath,
+            index: this.index,
+          },
         }))
+
     if (this.opcode !== 0) {
-      this.item._id = this.itemID = data.addItem
+      this.region._id = this.regionId = data.addSubRegion
     }
     return data
   }
   // Since delete/add are opposites, flip matching opcode
   async undoTransaction() {
     let data
+    console.log(this.region)
     this.opcode === 1
       ? ({ data } = await this.deleteFunction({
-          variables: { itemId: this.itemID, _id: this.listID },
+          variables: {
+            regionId: this.regionId,
+            ids: this.idPath,
+            index: this.index,
+          },
         }))
       : ({ data } = await this.addFunction({
-          variables: { item: this.item, _id: this.listID, index: this.index },
+          variables: {
+            region: this.region,
+            ids: this.idPath,
+            index: this.index,
+          },
         }))
+
     if (this.opcode !== 1) {
-      this.item._id = this.itemID = data.addItem
+      this.region._id = this.regionId = data.addSubRegion
     }
     return data
   }

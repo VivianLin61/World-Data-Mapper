@@ -1,18 +1,22 @@
 import React from 'react'
 import { useMutation, useQuery } from '@apollo/client'
+import { useState } from 'react'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
-import { ADD_SUBREGION } from '../../cache/mutations.js'
+import { ADD_SUBREGION, DELETE_SUBREGION } from '../../cache/mutations.js'
 import { GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom'
+import { UpdateRegion_Transaction } from '../../utils/jsTPS'
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
-  const [AddSubRegion] = useMutation(ADD_SUBREGION)
+  const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
+  const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
+
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
   const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
@@ -31,6 +35,29 @@ const RegionSpreadSheet = (props) => {
     }
   }
 
+  const mutationOptions = {
+    refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
+    awaitRefetchQueries: true,
+  }
+  const [AddSubRegion] = useMutation(ADD_SUBREGION, mutationOptions)
+  const [DeleteSubRegion] = useMutation(DELETE_SUBREGION, mutationOptions)
+
+  const tpsUndo = async () => {
+    const ret = await props.tps.undoTransaction()
+    if (ret) {
+      setCanUndo(props.tps.hasTransactionToUndo())
+      setCanRedo(props.tps.hasTransactionToRedo())
+    }
+  }
+
+  const tpsRedo = async () => {
+    const ret = await props.tps.doTransaction()
+    if (ret) {
+      setCanUndo(props.tps.hasTransactionToUndo())
+      setCanRedo(props.tps.hasTransactionToRedo())
+    }
+  }
+
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -42,27 +69,50 @@ const RegionSpreadSheet = (props) => {
       landmarks: [],
       subregions: [],
     }
-    const { data } = await AddSubRegion({
-      variables: {
-        region: region,
-        ids: ids,
-        index: -1,
-      },
-      refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
-    })
-    // let transaction = new UpdateListItems_Transaction(
-    //   listID,
-    //   itemID,
-    //   newItem,
-    //   opcode,
-    //   AddTodoItem,
-    //   DeleteTodoItem
-    // )
-    // props.tps.addTransaction(transaction)
-    // tpsRedo()
+
+    let opcode = 1
+    let idPath = ids
+    let regionId = region._id
+    let transaction = new UpdateRegion_Transaction(
+      idPath,
+      regionId,
+      region,
+      opcode,
+      AddSubRegion,
+      DeleteSubRegion
+    )
+    props.tps.addTransaction(transaction)
+    tpsRedo()
   }
 
-  const addSubRegion = async () => {}
+  const deleteRegion = async (region, id, index) => {
+    // console.log(region)
+    const deletedRegion = {
+      _id: region._id,
+      name: region.name,
+      capital: region.capital,
+      leader: region.leader,
+      parentId: ids[ids.length - 1],
+      mapId: ids[0],
+      landmarks: region.landmarks,
+      subregions: region.subregions,
+    }
+    let opcode = 0
+    let idPath = ids
+    let regionId = id
+    let transaction = new UpdateRegion_Transaction(
+      idPath,
+      regionId,
+      deletedRegion,
+      opcode,
+      AddSubRegion,
+      DeleteSubRegion,
+      index
+    )
+    props.tps.addTransaction(transaction)
+    // console.log(id, index)
+    tpsRedo()
+  }
 
   return (
     <>
@@ -106,21 +156,22 @@ const RegionSpreadSheet = (props) => {
                     >
                       <i className='material-icons'>add</i>
                     </WButton>
-                    <WButton className={'undo-button'}>
+                    <WButton className={'undo-button'} onClick={tpsUndo}>
                       <i className='material-icons'>undo</i>
                     </WButton>
                     <WButton className={'redo-button'}>
-                      <i className='material-icons'>redo</i>
+                      <i className='material-icons' onClick={tpsRedo}>
+                        redo
+                      </i>
                     </WButton>
                     <div>Region Name: {props.location.state.data.name}</div>
                   </WLHeader>
                   <div className='regions'>
                     <MainContents
-                      addSubregion={addSubRegion}
                       regions={regions}
                       url={props.match.url}
                       parent={props.location.state.data}
-                      //   deleteItem={deleteItem}
+                      deleteRegion={deleteRegion}
                       //   editItem={editItem}
                       //   reorderItem={reorderItem}
                       //   setShowDelete={setShowDelete}
@@ -142,6 +193,7 @@ const RegionSpreadSheet = (props) => {
           path={`${props.match.path}/:id`}
           render={({ match, location }) => (
             <RegionSpreadSheet
+              tps={props.tps}
               fetchUser={props.fetchUser}
               user={props.user}
               match={match}

@@ -71,6 +71,7 @@ const App = () => {
           name='region'
           render={({ match, location }) => (
             <RegionSpreadSheet
+              tps={transactionStack}
               fetchUser={refetch}
               user={user}
               match={match}

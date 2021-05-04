@@ -32,7 +32,7 @@ const TableHeader = (props) => {
 
   return (
     <WRow className='table-header'>
-      <WCol size='2'>
+      <WCol size='3'>
         <WButton
           onClick={props.disabled ? () => {} : () => props.sort('name')}
           className='table-header-section'
@@ -41,6 +41,7 @@ const TableHeader = (props) => {
           Name
         </WButton>
       </WCol>
+
       <WCol size='2'>
         <WButton
           onClick={props.disabled ? () => {} : () => props.sort('capital')}
@@ -64,7 +65,7 @@ const TableHeader = (props) => {
           Flag
         </WButton>
       </WCol>
-      <WCol size='5'>
+      <WCol size='4'>
         <WButton className='table-header-section' wType='texted'>
           Landmarks
         </WButton>

@@ -50,7 +50,7 @@ module.exports = {
       }
     },
   },
-  //#region
+
   Mutation: {
     /**
      @param   {object} args - a region id and an empty region object
@@ -69,13 +69,13 @@ module.exports = {
         if (index < 0) mapSubregions.push(region)
         else mapSubregions.splice(index, 0, region)
       } else {
-        addToSubRegion(mapSubregions, region.parentId, region)
+        addToSubRegion(mapSubregions, region.parentId, region, index)
       }
       const updated = await Map.updateOne(
         { _id: mapId },
         { subregions: mapSubregions }
       )
-      return JSON.stringify(args)
+      return region._id
     },
     /**
      @param   {object} args - an empty map object
@@ -99,7 +99,28 @@ module.exports = {
      @returns {array} the updated item array on success or the initial
               array on failure
    **/
-    deleteSubregion: async (_, args) => {},
+    deleteSubregion: async (_, args) => {
+      const { regionId, ids, index } = args
+
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+
+      if (ids.length == 1) {
+        mapSubregions = mapSubregions.filter(
+          (region) => region._id.toString() !== regionId
+        )
+      } else {
+        deleteFromRegion(mapSubregions, ids[ids.length - 1], regionId)
+      }
+
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+      return true
+    },
     /**
      @param   {object} args - a map objectID
      @returns {boolean} true on successful delete, false on failure
@@ -156,19 +177,22 @@ module.exports = {
   },
 }
 
-function addToSubRegion(arr, value, region) {
+function addToSubRegion(arr, value, region, index) {
   arr.forEach((i) => {
     if (i._id == value) {
       let temp = i.subregions
-      temp.push(region)
+      if (index < 0) {
+        temp.push(region)
+      } else {
+        temp.splice(index, 0, region)
+      }
+      console.log(temp)
       i.subregions = temp
     } else {
-      addToSubRegion(i.subregions, value, region)
+      addToSubRegion(i.subregions, value, region, index)
     }
   })
 }
-
-//#endregion
 
 function getRegions(arr, value, regionVariable) {
   let regions
@@ -180,4 +204,17 @@ function getRegions(arr, value, regionVariable) {
     }
   })
   return regions
+}
+
+function deleteFromRegion(arr, value, regionId) {
+  arr.forEach((i) => {
+    if (i._id == value) {
+      console.log(regionId)
+      let temp = i.subregions
+      temp = temp.filter((region) => region._id.toString() !== regionId)
+      i.subregions = temp
+    } else {
+      deleteFromRegion(i.subregions, value, regionId)
+    }
+  })
 }

@@ -18,9 +18,9 @@ const TableContents = (props) => {
           index={index}
           url={props.url}
           entryCount={entryCount}
-          deleteItem={props.deleteItem}
-          reorderItem={props.reorderItem}
-          editItem={props.editItem}
+          deleteRegion={props.deleteRegion}
+          // reorderItem={props.reorderItem}
+          // editItem={props.editItem}
           parent={props.parent}
         />
       ))}

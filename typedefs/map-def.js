@@ -29,7 +29,7 @@ const typeDefs = gql`
     addMap(name: String, owner: String): Boolean
     renameMap(_id: String, name: String!): Boolean
     deleteMap(_id: String!): Boolean
-    deleteSubregion(regionId: String!, _id: String!): [Region]
+    deleteSubregion(regionId: String!, ids: [String!], index: Int!): Boolean
     addSubRegion(region: RegionInput, ids: [String!], index: Int!): String
     sortRegions(_id: String!, field: String!): Boolean
     updateRegionField(_id: String!, field: String!, value: String!): [Region]

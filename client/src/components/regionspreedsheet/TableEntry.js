@@ -53,6 +53,9 @@ const TableEntry = (props) => {
       url: props.url,
     })
   }
+  const handleDeleteRegion = (e) => {
+    props.deleteRegion(data, data._id, props.index)
+  }
   return (
     <WRow className='table-entry'>
       <WCol size='2'>
@@ -76,6 +79,24 @@ const TableEntry = (props) => {
             {name}
           </div>
         )}
+      </WCol>
+      <WCol size='1'>
+        <WRow>
+          <WCol size='1'>
+            <WButton
+              className='name-text'
+              wType='texted'
+              onClick={handleDeleteRegion}
+            >
+              <i className='name-button material-icons'>close</i>
+            </WButton>
+          </WCol>
+          <WCol size='1'>
+            <WButton className='name-text'>
+              <i className='name-button material-icons'>mode_edit</i>
+            </WButton>
+          </WCol>
+        </WRow>
       </WCol>
       <WCol size='2'>
         {editingCapital || capital === '' ? (
@@ -124,7 +145,7 @@ const TableEntry = (props) => {
       <WCol size='1'>
         <div className='table-text'>No Flag</div>
       </WCol>
-      <WCol size='5'>
+      <WCol size='4'>
         <div className='table-text' onClick={goToRegionViewer}>
           {landmarks}
         </div>
