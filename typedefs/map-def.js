@@ -31,7 +31,7 @@ const typeDefs = gql`
     deleteMap(_id: String!): Boolean
     deleteSubregion(regionId: String!, ids: [String!], index: Int!): Boolean
     addSubRegion(region: RegionInput, ids: [String!], index: Int!): String
-    sortRegions(_id: String!, field: String!): Boolean
+    sortRegions(ids: [String!], criteria: String!): Boolean
     updateRegionField(
       regionId: String!
       ids: [String!]

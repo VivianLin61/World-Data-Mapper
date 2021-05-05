@@ -181,7 +181,48 @@ module.exports = {
      @param   {object} args - a map objectID and field to sort by
      @returns {array} the sorted item array on success, or initial ordering on failure
    **/
-    sortRegions: async (_, args) => {},
+    sortRegions: async (_, args) => {
+      const { ids, criteria } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+
+      let mapSubregions = found.subregions
+      // console.log(mapId, found, mapSubregions)
+      if (ids.length == 1) {
+        let oldRegionsIds = []
+        let regionsToSort = []
+        for (let i = 0; i < mapSubregions.length; i++) {
+          let region = mapSubregions[i]
+          oldRegionsIds.push(region._id)
+          regionsToSort.push(region)
+        }
+        let sortIncreasing = true
+        // IS IT ALREADY SORTED ACCORDING TO THE SELECTED
+        // CRITERIA IN INCREASING ORDER?
+        if (isInIncreasingOrder(regionsToSort, criteria)) {
+          sortIncreasing = false
+        }
+        let compareFunction = makeCompareFunction(criteria, sortIncreasing)
+        regionsToSort = regionsToSort.sort(compareFunction)
+        // NOW GET THE SORTED ORDER FOR IDS
+        let newRegions = []
+        for (let i = 0; i < regionsToSort.length; i++) {
+          let region = regionsToSort[i]
+          newRegions.push(region)
+        }
+        mapSubregions = newRegions
+      } else {
+        sortSubRegions(mapSubregions, ids[ids.length - 1], criteria)
+      }
+
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+
+      // console.log(args)
+      return true
+    },
     /**
      @param   {object} args - a region objectID and landmark name
      @returns {array} the sorted region array on success, or initial ordering on failure
@@ -254,4 +295,63 @@ function updateRegion(arr, value, regionId, update, field) {
       updateRegion(i.subregions, value, regionId, update, field)
     }
   })
+}
+
+function sortSubRegions(arr, value, criteria) {
+  arr.forEach((i) => {
+    if (i._id == value) {
+      let temp = i.subregions
+      //temp is the region we are going to sort
+      let oldRegionsIds = []
+      let regionsToSort = []
+      for (let i = 0; i < temp.length; i++) {
+        let region = temp[i]
+        oldRegionsIds.push(region._id)
+        regionsToSort.push(region)
+      }
+      let sortIncreasing = true
+      // IS IT ALREADY SORTED ACCORDING TO THE SELECTED
+      // CRITERIA IN INCREASING ORDER?
+      if (isInIncreasingOrder(regionsToSort, criteria)) {
+        sortIncreasing = false
+      }
+      let compareFunction = makeCompareFunction(criteria, sortIncreasing)
+      regionsToSort = regionsToSort.sort(compareFunction)
+      // NOW GET THE SORTED ORDER FOR IDS
+      let newRegions = []
+      for (let i = 0; i < regionsToSort.length; i++) {
+        let region = regionsToSort[i]
+        newRegions.push(region)
+      }
+      temp = newRegions
+      i.subregions = temp
+    } else {
+      sortSubRegions(i.subregions, value, criteria)
+    }
+  })
+}
+function isInIncreasingOrder(regionToTest, sortingCriteria) {
+  for (let i = 0; i < regionToTest.length - 1; i++) {
+    if (regionToTest[i][sortingCriteria] > regionToTest[i + 1][sortingCriteria])
+      return false
+  }
+  return true
+}
+
+makeCompareFunction = (criteria, increasing) => {
+  return function (item1, item2) {
+    let negate = -1
+    if (increasing) {
+      negate = 1
+    }
+    let value1 = item1[criteria]
+    let value2 = item2[criteria]
+    if (value1 < value2) {
+      return -1 * negate
+    } else if (value1 === value2) {
+      return 0
+    } else {
+      return 1 * negate
+    }
+  }
 }

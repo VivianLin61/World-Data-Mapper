@@ -6,10 +6,11 @@ const MainContents = (props) => {
   return (
     <div className='table '>
       <TableHeader
-      // undo={props.undo}
-      // redo={props.redo}
-      // canUndo={props.canUndo}
-      // canRedo={props.canRedo}      // sort={props.sort}
+        // undo={props.undo}
+        // redo={props.redo}
+        // canUndo={props.canUndo}
+        // canRedo={props.canRedo}
+        sort={props.sort}
       />
       <TableContents
         // key={props.activeList._id}

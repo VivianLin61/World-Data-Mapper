@@ -10,6 +10,7 @@ import {
   ADD_SUBREGION,
   DELETE_SUBREGION,
   UPDATE_SUBREGION,
+  SORT_REGIONS,
 } from '../../cache/mutations.js'
 import { GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
@@ -17,11 +18,13 @@ import { Route, Switch } from 'react-router-dom'
 import {
   UpdateRegion_Transaction,
   EditRegion_Transaction,
+  SortRegions_Transaction,
 } from '../../utils/jsTPS'
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
+
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
   const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
   const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
@@ -50,6 +53,7 @@ const RegionSpreadSheet = (props) => {
   if (error) {
     console.log(error, 'error')
   }
+
   if (data) {
     for (let region of data.getAllRegions) {
       regions.push(region)
@@ -65,6 +69,7 @@ const RegionSpreadSheet = (props) => {
   const [AddSubRegion] = useMutation(ADD_SUBREGION, mutationOptions)
   const [DeleteSubRegion] = useMutation(DELETE_SUBREGION, mutationOptions)
   const [UpdateRegionField] = useMutation(UPDATE_SUBREGION, mutationOptions)
+  const [SortRegions] = useMutation(SORT_REGIONS, mutationOptions)
   //#region UNDO REDO
   const tpsUndo = async () => {
     const ret = await props.tps.undoTransaction()
@@ -148,6 +153,11 @@ const RegionSpreadSheet = (props) => {
     tpsRedo()
   }
 
+  const sort = async (criteria) => {
+    let transaction = new SortRegions_Transaction(ids, criteria, SortRegions)
+    props.tps.addTransaction(transaction)
+    tpsRedo()
+  }
   return (
     <>
       {props.match.isExact && (
@@ -215,7 +225,7 @@ const RegionSpreadSheet = (props) => {
                       //   redo={tpsRedo}
                       //   canUndo={canUndo}
                       //   canRedo={canRedo}
-                      //   sort={sort}
+                      sort={sort}
                     />
                   </div>
                 </WCard>

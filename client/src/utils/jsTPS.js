@@ -105,6 +105,36 @@ export class EditRegion_Transaction extends jsTPS_Transaction {
     return data
   }
 }
+
+export class SortRegions_Transaction extends jsTPS_Transaction {
+  constructor(idPath, criteria, callback) {
+    super()
+    this.idPath = idPath
+    this.criteria = criteria
+    this.updateFunction = callback
+  }
+  async doTransaction() {
+    // console.log(this.idPath, this.criteria)
+    const { data } = await this.updateFunction({
+      variables: { ids: this.idPath, criteria: this.criteria },
+    })
+    if (data) {
+      console.log(data)
+      return data
+    }
+  }
+
+  async undoTransaction() {
+    const { data } = await this.updateFunction({
+      variables: { ids: this.idPath, criteria: this.criteria },
+    })
+    if (data) {
+      console.log(data)
+      return data
+    }
+  }
+}
+
 export class jsTPS {
   constructor() {
     // THE TRANSACTION STACK

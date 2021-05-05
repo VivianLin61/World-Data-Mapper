@@ -86,3 +86,9 @@ export const UPDATE_SUBREGION = gql`
     )
   }
 `
+
+export const SORT_REGIONS = gql`
+  mutation sortRegions($ids: [String!], $criteria: String!) {
+    sortRegions(ids: $ids, criteria: $criteria)
+  }
+`
