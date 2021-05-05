@@ -20,6 +20,7 @@ const TableContents = (props) => {
           entryCount={entryCount}
           deleteRegion={props.deleteRegion}
           editRegion={props.editRegion}
+          showDeleteRegionModal={props.showDeleteRegionModal}
           // reorderItem={props.reorderItem}
           // editItem={props.editItem}
           parent={props.parent}

@@ -18,6 +18,7 @@ const MainContents = (props) => {
         parent={props.parent}
         deleteRegion={props.deleteRegion}
         editRegion={props.editRegion}
+        showDeleteRegionModal={props.showDeleteRegionModal}
         // deleteItem={props.deleteItem}
         // reorderItem={props.reorderItem}
         // editItem={props.editItem}

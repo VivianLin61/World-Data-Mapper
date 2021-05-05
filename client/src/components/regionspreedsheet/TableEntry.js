@@ -54,7 +54,12 @@ const TableEntry = (props) => {
     })
   }
   const handleDeleteRegion = (e) => {
-    props.deleteRegion(data, data._id, props.index)
+    props.showDeleteRegionModal({
+      region: data,
+      regionId: data._id,
+      index: props.index,
+    })
+    // props.deleteRegion(data, data._id, props.index)
   }
   return (
     <WRow className='table-entry'>

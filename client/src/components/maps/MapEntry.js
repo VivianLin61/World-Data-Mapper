@@ -20,7 +20,6 @@ const MapEntry = (props) => {
 
   const handleDeleteMap = (e) => {
     props.showDeleteModal(props._id)
-    // props.setShowDeleteMap(false)
   }
 
   const naviageToRegionSpreadsheet = (e) => {

@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
+import DeleteRegion from '../modals/DeleteRegion'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
 import {
@@ -23,9 +24,21 @@ const RegionSpreadSheet = (props) => {
   let regions = []
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
   const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
+  const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
+  const [regionToDeleteParams, setRegionToDeleteParams] = useState({})
 
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
+
+  const setShowDeleteRegion = async (e) => {
+    toggleShowDeleteRegion(false)
+    toggleShowDeleteRegion(!showDeleteRegion)
+  }
+
+  const showDeleteRegionModal = async (regionParams) => {
+    setRegionToDeleteParams({ regionParams })
+    setShowDeleteRegion(false)
+  }
   //#region QUERY REGIONS
   const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
     variables: { ids },
@@ -123,7 +136,6 @@ const RegionSpreadSheet = (props) => {
   }
 
   const editRegion = async (regionId, field, value, prev) => {
-
     let transaction = new EditRegion_Transaction(
       ids,
       regionId,
@@ -195,6 +207,7 @@ const RegionSpreadSheet = (props) => {
                       parent={props.location.state.data}
                       deleteRegion={deleteRegion}
                       editRegion={editRegion}
+                      showDeleteRegionModal={showDeleteRegionModal}
                       //   editItem={editItem}
                       //   reorderItem={reorderItem}
                       //   setShowDelete={setShowDelete}
@@ -208,6 +221,14 @@ const RegionSpreadSheet = (props) => {
                 </WCard>
               </div>
             </WLMain>
+
+            {showDeleteRegion && (
+              <DeleteRegion
+                deleteRegion={deleteRegion}
+                regionToDeleteParams={regionToDeleteParams}
+                setShowDeleteRegion={setShowDeleteRegion}
+              />
+            )}
           </WLayout>
         </>
       )}
