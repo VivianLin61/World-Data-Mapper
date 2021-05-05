@@ -17,29 +17,29 @@ const TableEntry = (props) => {
 
   const handleNameEdit = (e) => {
     toggleNameEdit(false)
-    // const newDate = e.target.value ? e.target.value : 'No Date'
-    // const prevDate = due_date
-    // if (newDate !== prevDate) {
-    //   props.editItem(data._id, 'due_date', newDate, prevDate)
-    // }
+    const newName = e.target.value ? e.target.value : 'No Name'
+    const prevName = name
+    if (newName !== prevName) {
+      props.editRegion(data._id, 'name', newName, prevName)
+    }
   }
 
   const handleCapitalEdit = (e) => {
     toggleCapitalEdit(false)
-    // const newDescr = e.target.value ? e.target.value : 'No Description'
-    // const prevDescr = description
-    // if (newDescr !== prevDescr) {
-    //   props.editItem(data._id, 'description', newDescr, prevDescr)
-    // }
+    const newCapital = e.target.value ? e.target.value : 'No Capital'
+    const prevCapital = capital
+    if (newCapital !== prevCapital) {
+      props.editRegion(data._id, 'capital', newCapital, prevCapital)
+    }
   }
 
   const handleLeaderEdit = (e) => {
     toggleLeaderEdit(false)
-    // const newStatus = e.target.value ? e.target.value : false
-    // const prevStatus = status
-    // if (newStatus !== prevStatus) {
-    //   props.editItem(data._id, 'completed', newStatus, prevStatus)
-    // }
+    const newLeader = e.target.value ? e.target.value : 'No Leader'
+    const prevLeader = leader
+    if (newLeader !== prevLeader) {
+      props.editRegion(data._id, 'leader', newLeader, prevLeader)
+    }
   }
 
   const goToSubRegion = (e) => {
@@ -71,11 +71,7 @@ const TableEntry = (props) => {
             inputclass='table-input-class'
           />
         ) : (
-          <div
-            className='table-text'
-            onDoubleClick={() => toggleNameEdit(!editingName)}
-            onClick={goToSubRegion}
-          >
+          <div className='table-text' onClick={goToSubRegion}>
             {name}
           </div>
         )}
@@ -92,7 +88,10 @@ const TableEntry = (props) => {
             </WButton>
           </WCol>
           <WCol size='1'>
-            <WButton className='name-text'>
+            <WButton
+              className='name-text'
+              onClick={() => toggleNameEdit(!editingName)}
+            >
               <i className='name-button material-icons'>mode_edit</i>
             </WButton>
           </WCol>

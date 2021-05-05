@@ -153,7 +153,30 @@ module.exports = {
      @param   {object} args - a map objectID, an region objectID, field, and update value.
      @returns {array} the updated item array on success, or the initial item array on failure
    **/
-    updateRegionField: async (_, args) => {},
+    updateRegionField: async (_, args) => {
+      const { ids, regionId, field } = args
+      let { value } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+
+      if (ids.length == 1) {
+        mapSubregions.map((region) => {
+          if (region._id.toString() == regionId) {
+            region[field] = value
+          }
+        })
+      } else {
+        updateRegion(mapSubregions, ids[ids.length - 1], regionId, value, field)
+      }
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+
+      return false
+    },
     /**
      @param   {object} args - a map objectID and field to sort by
      @returns {array} the sorted item array on success, or initial ordering on failure
@@ -186,7 +209,6 @@ function addToSubRegion(arr, value, region, index) {
       } else {
         temp.splice(index, 0, region)
       }
-      console.log(temp)
       i.subregions = temp
     } else {
       addToSubRegion(i.subregions, value, region, index)
@@ -209,12 +231,27 @@ function getRegions(arr, value, regionVariable) {
 function deleteFromRegion(arr, value, regionId) {
   arr.forEach((i) => {
     if (i._id == value) {
-      console.log(regionId)
       let temp = i.subregions
       temp = temp.filter((region) => region._id.toString() !== regionId)
       i.subregions = temp
     } else {
       deleteFromRegion(i.subregions, value, regionId)
+    }
+  })
+}
+
+function updateRegion(arr, value, regionId, update, field) {
+  arr.forEach((i) => {
+    if (i._id == value) {
+      let temp = i.subregions
+      temp.map((region) => {
+        if (region._id.toString() == regionId) {
+          region[field] = update
+        }
+      })
+      i.subregions = temp
+    } else {
+      updateRegion(i.subregions, value, regionId, update, field)
     }
   })
 }

@@ -32,7 +32,12 @@ const typeDefs = gql`
     deleteSubregion(regionId: String!, ids: [String!], index: Int!): Boolean
     addSubRegion(region: RegionInput, ids: [String!], index: Int!): String
     sortRegions(_id: String!, field: String!): Boolean
-    updateRegionField(_id: String!, field: String!, value: String!): [Region]
+    updateRegionField(
+      regionId: String!
+      ids: [String!]
+      field: String!
+      value: String!
+    ): Boolean
     addLandmark(_id: String!, landmark: String!): String
     deleteLandmark(_id: String!, landmark: String!): String
     updateLandmark(_id: String!, landmark: String!, name: String!): String!

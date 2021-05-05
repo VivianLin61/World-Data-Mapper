@@ -70,3 +70,19 @@ export const DELETE_SUBREGION = gql`
     deleteSubregion(regionId: $regionId, ids: $ids, index: $index)
   }
 `
+
+export const UPDATE_SUBREGION = gql`
+  mutation UpdateRegionField(
+    $regionId: String!
+    $ids: [String!]
+    $field: String!
+    $value: String!
+  ) {
+    updateRegionField(
+      regionId: $regionId
+      ids: $ids
+      field: $field
+      value: $value
+    )
+  }
+`

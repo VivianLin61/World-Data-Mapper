@@ -5,11 +5,18 @@ import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
-import { ADD_SUBREGION, DELETE_SUBREGION } from '../../cache/mutations.js'
+import {
+  ADD_SUBREGION,
+  DELETE_SUBREGION,
+  UPDATE_SUBREGION,
+} from '../../cache/mutations.js'
 import { GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom'
-import { UpdateRegion_Transaction } from '../../utils/jsTPS'
+import {
+  UpdateRegion_Transaction,
+  EditRegion_Transaction,
+} from '../../utils/jsTPS'
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
@@ -19,6 +26,7 @@ const RegionSpreadSheet = (props) => {
 
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
+  //#region QUERY REGIONS
   const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
     variables: { ids },
   })
@@ -39,9 +47,12 @@ const RegionSpreadSheet = (props) => {
     refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
     awaitRefetchQueries: true,
   }
+  //#endregion
+
   const [AddSubRegion] = useMutation(ADD_SUBREGION, mutationOptions)
   const [DeleteSubRegion] = useMutation(DELETE_SUBREGION, mutationOptions)
-
+  const [UpdateRegionField] = useMutation(UPDATE_SUBREGION, mutationOptions)
+  //#region UNDO REDO
   const tpsUndo = async () => {
     const ret = await props.tps.undoTransaction()
     if (ret) {
@@ -57,7 +68,7 @@ const RegionSpreadSheet = (props) => {
       setCanRedo(props.tps.hasTransactionToRedo())
     }
   }
-
+  //#endregion
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -84,9 +95,7 @@ const RegionSpreadSheet = (props) => {
     props.tps.addTransaction(transaction)
     tpsRedo()
   }
-
   const deleteRegion = async (region, id, index) => {
-    // console.log(region)
     const deletedRegion = {
       _id: region._id,
       name: region.name,
@@ -110,7 +119,20 @@ const RegionSpreadSheet = (props) => {
       index
     )
     props.tps.addTransaction(transaction)
-    // console.log(id, index)
+    tpsRedo()
+  }
+
+  const editRegion = async (regionId, field, value, prev) => {
+
+    let transaction = new EditRegion_Transaction(
+      ids,
+      regionId,
+      field,
+      prev,
+      value,
+      UpdateRegionField
+    )
+    props.tps.addTransaction(transaction)
     tpsRedo()
   }
 
@@ -172,6 +194,7 @@ const RegionSpreadSheet = (props) => {
                       url={props.match.url}
                       parent={props.location.state.data}
                       deleteRegion={deleteRegion}
+                      editRegion={editRegion}
                       //   editItem={editItem}
                       //   reorderItem={reorderItem}
                       //   setShowDelete={setShowDelete}
