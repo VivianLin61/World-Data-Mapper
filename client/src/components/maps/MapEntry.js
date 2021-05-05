@@ -19,7 +19,8 @@ const MapEntry = (props) => {
   }
 
   const handleDeleteMap = (e) => {
-    props.deleteMap(props._id)
+    props.showDeleteModal(props._id)
+    // props.setShowDeleteMap(false)
   }
 
   const naviageToRegionSpreadsheet = (e) => {
@@ -28,11 +29,7 @@ const MapEntry = (props) => {
   return (
     <WRow>
       <WCol size='10'>
-        <div
-          className='map-entry'
-          // onDoubleClick={handleEditing}
-          onClick={naviageToRegionSpreadsheet}
-        >
+        <div className='map-entry' onClick={naviageToRegionSpreadsheet}>
           {editing ? (
             <WInput
               onKeyDown={(e) => {

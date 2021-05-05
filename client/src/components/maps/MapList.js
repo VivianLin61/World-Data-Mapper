@@ -9,11 +9,12 @@ const MapList = (props) => {
         props.maps.map((entry) => (
           <MapEntry
             renameMap={props.renameMap}
-            deleteMap={props.deleteMap}
+            showDeleteModal={props.showDeleteModal}
             key={tempID++}
             data={entry}
             name={entry.name}
             _id={entry._id}
+            setShowDeleteMap={props.setShowDeleteMap}
           />
         ))}
     </>

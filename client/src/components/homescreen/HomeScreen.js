@@ -4,6 +4,7 @@ import { ADD_MAP, DELETE_MAP } from '../../cache/mutations'
 import { RENAME_MAP } from '../../cache/mutations'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MapList from '../maps/MapList'
+import Delete from '../modals/Delete'
 import globe from '../../images/globe.png'
 import CreateMap from '../homescreen/CreateMap'
 import { GET_DB_MAPS } from '../../cache/queries'
@@ -13,6 +14,8 @@ import { WLayout, WLHeader, WLMain } from 'wt-frontend'
 const HomeScreen = (props) => {
   let maps = []
   const [showCreateMap, toggleShowCreateMap] = useState(false)
+  const [showDeleteMap, toggleShowDeleteMap] = useState(false)
+  const [mapToDeleteId, setMapToDeleteId] = useState('')
   const [AddMap] = useMutation(ADD_MAP)
   const [DeleteMap] = useMutation(DELETE_MAP)
   const [RenameMap] = useMutation(RENAME_MAP)
@@ -42,6 +45,11 @@ const HomeScreen = (props) => {
     toggleShowCreateMap(!showCreateMap)
   }
 
+  const setShowDeleteMap = async (e) => {
+    toggleShowDeleteMap(false)
+    toggleShowDeleteMap(!showDeleteMap)
+  }
+
   const createNewMap = async (name) => {
     const { data } = await AddMap({
       variables: {
@@ -59,6 +67,12 @@ const HomeScreen = (props) => {
       },
       refetchQueries: [{ query: GET_DB_MAPS, variables: { userId: userId } }],
     })
+  }
+
+  const showDeleteModal = async (_id) => {
+    // mapToDeleteId = _id
+    setMapToDeleteId(_id)
+    setShowDeleteMap(false)
   }
 
   const renameMap = async (value, _id) => {
@@ -109,7 +123,8 @@ const HomeScreen = (props) => {
                     <div className='map-entries maps-list-container'>
                       <MapList
                         renameMap={renameMap}
-                        deleteMap={deleteMap}
+                        showDeleteModal={showDeleteModal}
+                        setShowDeleteMap={setShowDeleteMap}
                         maps={maps}
                       ></MapList>
                     </div>
@@ -140,6 +155,13 @@ const HomeScreen = (props) => {
           user={props.user}
           setShowCreateMap={setShowCreateMap}
           createNewMap={createNewMap}
+        />
+      )}
+      {showDeleteMap && (
+        <Delete
+          deleteMap={deleteMap}
+          mapToDeleteId={mapToDeleteId}
+          setShowDeleteMap={setShowDeleteMap}
         />
       )}
     </WLayout>
