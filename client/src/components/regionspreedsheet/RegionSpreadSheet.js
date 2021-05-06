@@ -12,7 +12,7 @@ import {
   UPDATE_SUBREGION,
   SORT_REGIONS,
 } from '../../cache/mutations.js'
-import { GET_DB_REGIONS } from '../../cache/queries'
+import { GET_DB_REGIONS, GET_REGION } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom'
 import {
@@ -24,6 +24,10 @@ import {
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
+  var parent
+  var prevSibling
+  var nextSibling
+  var ancestor
 
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
   const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
@@ -32,6 +36,9 @@ const RegionSpreadSheet = (props) => {
 
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
+  let parentIdPath = ids.slice(0, ids.length - 1)
+
+  // console.log(ids.slice(0, ids.length - 1))
 
   const setShowDeleteRegion = async (e) => {
     toggleShowDeleteRegion(false)
@@ -43,28 +50,82 @@ const RegionSpreadSheet = (props) => {
     setShowDeleteRegion(false)
   }
   //#region QUERY REGIONS
-  const { loading, error, data, refetch } = useQuery(GET_DB_REGIONS, {
+  const {
+    loading: loadingAll,
+    error: errorAll,
+    data: dataAll,
+    refetch: refetchAll,
+  } = useQuery(GET_DB_REGIONS, {
     variables: { ids },
   })
 
-  if (loading) {
-    console.log(loading, 'loading')
+  if (loadingAll) {
+    console.log(loadingAll, 'loading all')
   }
-  if (error) {
-    console.log(error, 'error')
+  if (errorAll) {
+    console.log(errorAll, 'error loading all')
   }
 
-  if (data) {
-    for (let region of data.getAllRegions) {
+  if (dataAll) {
+    for (let region of dataAll.getAllRegions) {
       regions.push(region)
     }
   }
+  //#endregion
+  //#region QUERY PARENT
+  const {
+    loading: loadingParent,
+    error: errorParent,
+    data: dataParent,
+    refetch: refetchParent,
+  } = useQuery(GET_REGION, {
+    variables: { ids: ids.slice(0, ids.length - 1) },
+    skip: ids.length <= 1,
+  })
+  if (loadingParent) {
+    console.log(loadingParent, 'loading parent')
+  }
+  if (errorParent) {
+    console.log(errorParent, 'error loading parent')
+  }
+  if (dataParent) {
+    parent = dataParent.getRegion
+    let indexOfChild = parent.subregions.findIndex(
+      (region) => region._id == ids[ids.length - 1]
+    )
+    if (indexOfChild > 0) {
+      prevSibling = parent.subregions[indexOfChild - 1]
+    }
+    if (indexOfChild < parent.subregions.length - 1) {
+      nextSibling = parent.subregions[indexOfChild + 1]
+    }
+  }
+  //#endregion
+  //#region QUERY ANCESTOR
+  const {
+    loading: loadingAncestor,
+    error: errorAncestor,
+    data: dataAncestor,
+    refetch: refetchAncestor,
+  } = useQuery(GET_REGION, {
+    variables: { ids: ids.slice(0, ids.length - 2) },
+    skip: ids.length <= 2,
+  })
+  if (loadingAncestor) {
+    console.log(loadingAncestor, 'loading ancestor')
+  }
+  if (errorAncestor) {
+    console.log(errorAncestor, 'error loading ancestor')
+  }
+  if (dataAncestor) {
+    ancestor = dataAncestor.getRegion
+  }
+  //#endregion
 
   const mutationOptions = {
     refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
     awaitRefetchQueries: true,
   }
-  //#endregion
 
   const [AddSubRegion] = useMutation(ADD_SUBREGION, mutationOptions)
   const [DeleteSubRegion] = useMutation(DELETE_SUBREGION, mutationOptions)
@@ -87,6 +148,7 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
+
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -158,6 +220,30 @@ const RegionSpreadSheet = (props) => {
     props.tps.addTransaction(transaction)
     tpsRedo()
   }
+
+  const goToNextSibling = (e) => {
+    if (nextSibling) {
+      let path = props.match.url
+      path = path.split('/')
+      path.pop()
+      path.push(nextSibling._id)
+      path = path.toString()
+      path = path.replaceAll(',', '/')
+      history.push(path, { data: nextSibling })
+    }
+  }
+
+  const goToPreviousSibling = (e) => {
+    if (prevSibling) {
+      let path = props.match.url
+      path = path.split('/')
+      path.pop()
+      path.push(prevSibling._id)
+      path = path.toString()
+      path = path.replaceAll(',', '/')
+      history.push(path, { data: prevSibling })
+    }
+  }
   return (
     <>
       {props.match.isExact && (
@@ -178,7 +264,33 @@ const RegionSpreadSheet = (props) => {
                       World Data Mapper
                     </WButton>
                   </WNavItem>
+                  <WNavItem>
+                    {<div>{ancestor ? ancestor.name + '>' : ''}</div>}
+                  </WNavItem>
+                  <WNavItem>
+                    <div>{parent ? parent.name : ''}</div>
+                  </WNavItem>
                 </ul>
+
+                <ul>
+                  <WNavItem>
+                    <WButton
+                      onClick={goToPreviousSibling}
+                      className={'arrow-back'}
+                    >
+                      <i className='arrows material-icons'>arrow_back</i>
+                    </WButton>
+                  </WNavItem>
+                  <WNavItem>
+                    <WButton
+                      onClick={goToNextSibling}
+                      className={'arrow-forward'}
+                    >
+                      <i className='arrows material-icons'>arrow_forward</i>
+                    </WButton>
+                  </WNavItem>
+                </ul>
+
                 <ul>
                   <NavbarOptions
                     fetchUser={props.fetchUser}
@@ -186,6 +298,10 @@ const RegionSpreadSheet = (props) => {
                     user={props.user}
                     setShowCreate={false}
                     setShowLogin={true}
+                    parent={parent}
+                    ancestor={ancestor}
+                    prevSibling={prevSibling}
+                    nextSibling={nextSibling}
                   />
                 </ul>
               </WNavbar>

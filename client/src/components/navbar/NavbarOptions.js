@@ -34,6 +34,7 @@ const LoggedIn = (props) => {
           {props.user && props.user.name}
         </WButton>
       </WNavItem>
+
       <WNavItem hoverAnimation='lighten'>
         <WButton
           className='navbar-options'

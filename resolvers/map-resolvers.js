@@ -2,7 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId
 const Map = require('../models/map-model')
 const Region = require('../models/region-model')
 let queryRegions
-
+let queryRegion
 module.exports = {
   Query: {
     /**
@@ -29,7 +29,20 @@ module.exports = {
      @param   {object} args - a map id
      @returns {object} a map on success and an empty object on failure
    **/
-    getMapById: async (_, args) => {},
+    getRegion: async (_, args) => {
+      const { ids } = args
+      const mapId = new ObjectId(ids[0])
+      const map = await Map.findOne({ _id: mapId })
+      let mapSubregions = map.subregions
+      if (ids.length == 1) {
+        queryRegion = map
+      } else {
+        getDbRegion(mapSubregions, ids[ids.length - 1])
+      }
+      if (queryRegion) {
+        return queryRegion
+      }
+    },
     /**
      @param   {object} args - a region id
      @returns {object} a region on success and an empty object on failure
@@ -45,6 +58,7 @@ module.exports = {
       } else {
         getRegions(mapSubregions, ids[ids.length - 1])
       }
+
       if (queryRegions) {
         return queryRegions
       }
@@ -187,7 +201,7 @@ module.exports = {
       const found = await Map.findOne({ _id: mapId })
 
       let mapSubregions = found.subregions
-      // console.log(mapId, found, mapSubregions)
+
       if (ids.length == 1) {
         let oldRegionsIds = []
         let regionsToSort = []
@@ -220,7 +234,6 @@ module.exports = {
         { subregions: mapSubregions }
       )
 
-      // console.log(args)
       return true
     },
     /**
@@ -354,4 +367,14 @@ makeCompareFunction = (criteria, increasing) => {
       return 1 * negate
     }
   }
+}
+
+function getDbRegion(arr, value) {
+  arr.forEach((i) => {
+    if (i._id == value) {
+      queryRegion = i
+    } else {
+      getDbRegion(i.subregions, value)
+    }
+  })
 }

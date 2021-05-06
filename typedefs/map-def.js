@@ -21,7 +21,7 @@ const typeDefs = gql`
 
   extend type Query {
     getAllMaps(userId: String): [Map]
-    getMapById(_id: String!): Region
+    getRegion(ids: [String!]): Region
     getAllRegions(ids: [String]): [Region]
   }
 
