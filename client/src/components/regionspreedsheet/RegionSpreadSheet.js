@@ -12,7 +12,7 @@ import {
   UPDATE_SUBREGION,
   SORT_REGIONS,
 } from '../../cache/mutations.js'
-import { GET_DB_REGIONS, GET_REGION } from '../../cache/queries'
+import { GET_ANCESTORS, GET_DB_REGIONS, GET_REGION } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom'
 import {
@@ -99,51 +99,27 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
-  //#region QUERY ANCESTOR
-  // const {
-  //   loading: loadingAncestor,
-  //   error: errorAncestor,
-  //   data: dataAncestor,
-  //   refetch: refetchAncestor,
-  // } = useQuery(GET_REGION, {
-  //   variables: { ids: ids.slice(0, ids.length - 2) },
-  //   skip: ids.length <= 2,
-  // })
-  // if (loadingAncestor) {
-  //   console.log(loadingAncestor, 'loading ancestor')
-  // }
-  // if (errorAncestor) {
-  //   console.log(errorAncestor, 'error loading ancestor')
-  // }
-  // if (dataAncestor) {
-  //   // ancestor = dataAncestor.getRegion
-  // }
+  //#region QUERY ANCESTORS
+  const {
+    loading: loadingAncestors,
+    error: errorAncestors,
+    data: dataAncestors,
+    refetch: refetchAncestors,
+  } = useQuery(GET_ANCESTORS, {
+    variables: { ids: ids },
+  })
+  if (loadingAncestors) {
+    console.log(loadingAncestors, 'loading ancestors')
+  }
+  if (errorAncestors) {
+    console.log(errorAncestors, 'error loading ancestors')
+  }
+  if (dataAncestors) {
+    console.log(dataAncestors.getAncestors)
+  }
+
   //#endregion
 
-  // const Ancestor = (props) => {
-  //   console.log(props.value, ancestors.length)
-  //   const {
-  //     loading: loadingAncestor,
-  //     error: errorAncestor,
-  //     data: dataAncestor,
-  //     refetch: refetchAncestor,
-  //   } = useQuery(GET_REGION, {
-  //     variables: { ids: ids.slice(0, props.value) },
-  //     // skip: props.value == ancestors.length,
-  //   })
-
-  //   if (loadingAncestor) {
-  //     console.log(loadingAncestor, 'loading ancestor')
-  //   }
-  //   if (errorAncestor) {
-  //     console.log(errorAncestor, 'error loading ancestor')
-  //   }
-  //   if (dataAncestor) {
-  //     ancestors.push(dataAncestor.getRegion)
-  //     console.log(ancestors)
-  //   }
-  //   return <></>
-  // }
   const mutationOptions = {
     refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
     awaitRefetchQueries: true,
@@ -270,13 +246,6 @@ const RegionSpreadSheet = (props) => {
     <>
       {props.match.isExact && (
         <>
-          {/* {ids.map((value, index) => {
-            if (index > 0) {
-              if (ids.length > 1) {
-                return <Ancestor key={index} value={index}></Ancestor>
-              }
-            }
-          })} */}
           <WLayout wLayout='header'>
             <WLHeader>
               <WNavbar color='colored'>

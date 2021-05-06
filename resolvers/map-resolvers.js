@@ -3,7 +3,6 @@ const Map = require('../models/map-model')
 const Region = require('../models/region-model')
 let queryRegions
 let queryRegion
-let queryAncestors = []
 module.exports = {
   Query: {
     /**
@@ -67,7 +66,7 @@ module.exports = {
 
     getAncestors: async (_, args) => {
       const { ids } = args
-
+      let queryAncestors = []
       const mapId = new ObjectId(ids[0])
       const map = await Map.findOne({ _id: mapId })
       let mapSubregions = map.subregions
