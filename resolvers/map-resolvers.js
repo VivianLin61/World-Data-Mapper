@@ -3,6 +3,7 @@ const Map = require('../models/map-model')
 const Region = require('../models/region-model')
 let queryRegions
 let queryRegion
+let queryAncestors = []
 module.exports = {
   Query: {
     /**
@@ -61,6 +62,35 @@ module.exports = {
 
       if (queryRegions) {
         return queryRegions
+      }
+    },
+
+    getAncestors: async (_, args) => {
+      const { ids } = args
+
+      const mapId = new ObjectId(ids[0])
+      const map = await Map.findOne({ _id: mapId })
+      let mapSubregions = map.subregions
+
+      if (ids.length > 1) {
+        if (ids.length == 2) {
+          queryAncestors.push(map)
+        } else {
+          queryAncestors.push(map) //ROOT
+          for (let i = 1; i < ids.length - 1; i++) {
+            if (mapSubregions) {
+              let temp = mapSubregions.filter(
+                (region) => region._id.toString() == ids[i]
+              )
+              queryAncestors.push(temp[0])
+              mapSubregions = temp[0].subregions
+            }
+          }
+        }
+      }
+
+      if (queryAncestors) {
+        return queryAncestors
       }
     },
   },

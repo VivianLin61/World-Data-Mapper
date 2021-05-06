@@ -27,7 +27,7 @@ const RegionSpreadSheet = (props) => {
   var parent
   var prevSibling
   var nextSibling
-  var ancestor
+  var ancestors = []
 
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
   const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
@@ -37,8 +37,6 @@ const RegionSpreadSheet = (props) => {
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
   let parentIdPath = ids.slice(0, ids.length - 1)
-
-  // console.log(ids.slice(0, ids.length - 1))
 
   const setShowDeleteRegion = async (e) => {
     toggleShowDeleteRegion(false)
@@ -102,26 +100,50 @@ const RegionSpreadSheet = (props) => {
   }
   //#endregion
   //#region QUERY ANCESTOR
-  const {
-    loading: loadingAncestor,
-    error: errorAncestor,
-    data: dataAncestor,
-    refetch: refetchAncestor,
-  } = useQuery(GET_REGION, {
-    variables: { ids: ids.slice(0, ids.length - 2) },
-    skip: ids.length <= 2,
-  })
-  if (loadingAncestor) {
-    console.log(loadingAncestor, 'loading ancestor')
-  }
-  if (errorAncestor) {
-    console.log(errorAncestor, 'error loading ancestor')
-  }
-  if (dataAncestor) {
-    ancestor = dataAncestor.getRegion
-  }
+  // const {
+  //   loading: loadingAncestor,
+  //   error: errorAncestor,
+  //   data: dataAncestor,
+  //   refetch: refetchAncestor,
+  // } = useQuery(GET_REGION, {
+  //   variables: { ids: ids.slice(0, ids.length - 2) },
+  //   skip: ids.length <= 2,
+  // })
+  // if (loadingAncestor) {
+  //   console.log(loadingAncestor, 'loading ancestor')
+  // }
+  // if (errorAncestor) {
+  //   console.log(errorAncestor, 'error loading ancestor')
+  // }
+  // if (dataAncestor) {
+  //   // ancestor = dataAncestor.getRegion
+  // }
   //#endregion
 
+  // const Ancestor = (props) => {
+  //   console.log(props.value, ancestors.length)
+  //   const {
+  //     loading: loadingAncestor,
+  //     error: errorAncestor,
+  //     data: dataAncestor,
+  //     refetch: refetchAncestor,
+  //   } = useQuery(GET_REGION, {
+  //     variables: { ids: ids.slice(0, props.value) },
+  //     // skip: props.value == ancestors.length,
+  //   })
+
+  //   if (loadingAncestor) {
+  //     console.log(loadingAncestor, 'loading ancestor')
+  //   }
+  //   if (errorAncestor) {
+  //     console.log(errorAncestor, 'error loading ancestor')
+  //   }
+  //   if (dataAncestor) {
+  //     ancestors.push(dataAncestor.getRegion)
+  //     console.log(ancestors)
+  //   }
+  //   return <></>
+  // }
   const mutationOptions = {
     refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
     awaitRefetchQueries: true,
@@ -248,6 +270,13 @@ const RegionSpreadSheet = (props) => {
     <>
       {props.match.isExact && (
         <>
+          {/* {ids.map((value, index) => {
+            if (index > 0) {
+              if (ids.length > 1) {
+                return <Ancestor key={index} value={index}></Ancestor>
+              }
+            }
+          })} */}
           <WLayout wLayout='header'>
             <WLHeader>
               <WNavbar color='colored'>
@@ -265,7 +294,7 @@ const RegionSpreadSheet = (props) => {
                     </WButton>
                   </WNavItem>
                   <WNavItem>
-                    {<div>{ancestor ? ancestor.name + '>' : ''}</div>}
+                    {/* {<div>{ancestor ? ancestor.name + '>' : ''}</div>} */}
                   </WNavItem>
                   <WNavItem>
                     <div>{parent ? parent.name : ''}</div>
@@ -299,7 +328,7 @@ const RegionSpreadSheet = (props) => {
                     setShowCreate={false}
                     setShowLogin={true}
                     parent={parent}
-                    ancestor={ancestor}
+                    // ancestor={ancestor}
                     prevSibling={prevSibling}
                     nextSibling={nextSibling}
                   />

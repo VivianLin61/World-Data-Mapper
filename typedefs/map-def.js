@@ -23,6 +23,7 @@ const typeDefs = gql`
     getAllMaps(userId: String): [Map]
     getRegion(ids: [String!]): Region
     getAllRegions(ids: [String]): [Region]
+    getAncestors(ids: [String!]): [Region]
   }
 
   extend type Mutation {
