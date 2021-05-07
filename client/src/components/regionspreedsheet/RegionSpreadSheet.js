@@ -4,6 +4,7 @@ import { useState } from 'react'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import DeleteRegion from '../modals/DeleteRegion'
+import Ancestor from '../regionspreedsheet/Ancestor'
 import { WButton, WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain, WCard } from 'wt-frontend'
 import {
@@ -36,7 +37,6 @@ const RegionSpreadSheet = (props) => {
 
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
-  let parentIdPath = ids.slice(0, ids.length - 1)
 
   const setShowDeleteRegion = async (e) => {
     toggleShowDeleteRegion(false)
@@ -70,35 +70,6 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
-  //#region QUERY PARENT
-  const {
-    loading: loadingParent,
-    error: errorParent,
-    data: dataParent,
-    refetch: refetchParent,
-  } = useQuery(GET_REGION, {
-    variables: { ids: ids.slice(0, ids.length - 1) },
-    skip: ids.length <= 1,
-  })
-  if (loadingParent) {
-    console.log(loadingParent, 'loading parent')
-  }
-  if (errorParent) {
-    console.log(errorParent, 'error loading parent')
-  }
-  if (dataParent) {
-    parent = dataParent.getRegion
-    let indexOfChild = parent.subregions.findIndex(
-      (region) => region._id == ids[ids.length - 1]
-    )
-    if (indexOfChild > 0) {
-      prevSibling = parent.subregions[indexOfChild - 1]
-    }
-    if (indexOfChild < parent.subregions.length - 1) {
-      nextSibling = parent.subregions[indexOfChild + 1]
-    }
-  }
-  //#endregion
   //#region QUERY ANCESTORS
   const {
     loading: loadingAncestors,
@@ -115,7 +86,24 @@ const RegionSpreadSheet = (props) => {
     console.log(errorAncestors, 'error loading ancestors')
   }
   if (dataAncestors) {
-    console.log(dataAncestors.getAncestors)
+    ancestors = dataAncestors.getAncestors
+    if (ancestors.length >= 1) {
+      if (ancestors.length == 1) {
+        parent = ancestors[0]
+      } else {
+        parent = ancestors[ancestors.length - 1]
+      }
+
+      let indexOfChild = parent.subregions.findIndex(
+        (region) => region._id == ids[ids.length - 1]
+      )
+      if (indexOfChild > 0) {
+        prevSibling = parent.subregions[indexOfChild - 1]
+      }
+      if (indexOfChild < parent.subregions.length - 1) {
+        nextSibling = parent.subregions[indexOfChild + 1]
+      }
+    }
   }
 
   //#endregion
@@ -242,6 +230,21 @@ const RegionSpreadSheet = (props) => {
       history.push(path, { data: prevSibling })
     }
   }
+
+  const navigateToAncestorRegion = (region, index) => {
+    let path = props.match.url
+    path = path.split('/')
+    path = path.splice(0, 2)
+    for (let i = 0; i < ids.length; i++) {
+      if (i == index + 1) {
+        break
+      }
+      path.push(ids[i])
+    }
+    path = path.toString()
+    path = path.replaceAll(',', '/')
+    history.push(path, { data: region })
+  }
   return (
     <>
       {props.match.isExact && (
@@ -262,12 +265,15 @@ const RegionSpreadSheet = (props) => {
                       World Data Mapper
                     </WButton>
                   </WNavItem>
-                  <WNavItem>
-                    {/* {<div>{ancestor ? ancestor.name + '>' : ''}</div>} */}
-                  </WNavItem>
-                  <WNavItem>
-                    <div>{parent ? parent.name : ''}</div>
-                  </WNavItem>
+                  {ancestors.map((entry, index) => (
+                    <Ancestor
+                      data={entry}
+                      key={index}
+                      name={entry.name}
+                      index={index}
+                      navigateToAncestorRegion={navigateToAncestorRegion}
+                    />
+                  ))}
                 </ul>
 
                 <ul>
@@ -287,19 +293,12 @@ const RegionSpreadSheet = (props) => {
                       <i className='arrows material-icons'>arrow_forward</i>
                     </WButton>
                   </WNavItem>
-                </ul>
-
-                <ul>
                   <NavbarOptions
                     fetchUser={props.fetchUser}
                     auth={true}
                     user={props.user}
                     setShowCreate={false}
                     setShowLogin={true}
-                    parent={parent}
-                    // ancestor={ancestor}
-                    prevSibling={prevSibling}
-                    nextSibling={nextSibling}
                   />
                 </ul>
               </WNavbar>
@@ -332,13 +331,8 @@ const RegionSpreadSheet = (props) => {
                       deleteRegion={deleteRegion}
                       editRegion={editRegion}
                       showDeleteRegionModal={showDeleteRegionModal}
-                      //   editItem={editItem}
-                      //   reorderItem={reorderItem}
-                      //   setShowDelete={setShowDelete}
                       //   undo={tpsUndo}
                       //   redo={tpsRedo}
-                      //   canUndo={canUndo}
-                      //   canRedo={canRedo}
                       sort={sort}
                     />
                   </div>
