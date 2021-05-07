@@ -105,7 +105,6 @@ const RegionSpreadSheet = (props) => {
       }
     }
   }
-
   //#endregion
 
   const mutationOptions = {
@@ -275,7 +274,6 @@ const RegionSpreadSheet = (props) => {
                     />
                   ))}
                 </ul>
-
                 <ul>
                   <WNavItem>
                     <WButton
@@ -328,9 +326,11 @@ const RegionSpreadSheet = (props) => {
                       regions={regions}
                       url={props.match.url}
                       parent={props.location.state.data}
+                      ancestors={ancestors}
                       deleteRegion={deleteRegion}
                       editRegion={editRegion}
                       showDeleteRegionModal={showDeleteRegionModal}
+                      ids={ids}
                       //   undo={tpsUndo}
                       //   redo={tpsRedo}
                       sort={sort}

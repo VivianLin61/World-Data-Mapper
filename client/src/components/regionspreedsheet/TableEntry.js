@@ -51,6 +51,8 @@ const TableEntry = (props) => {
       data: data,
       parent: props.parent,
       url: props.url,
+      ancestors: props.ancestors,
+      ids: props.ids,
     })
   }
   const handleDeleteRegion = (e) => {

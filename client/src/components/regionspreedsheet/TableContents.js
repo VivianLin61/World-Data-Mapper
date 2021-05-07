@@ -21,6 +21,8 @@ const TableContents = (props) => {
           deleteRegion={props.deleteRegion}
           editRegion={props.editRegion}
           showDeleteRegionModal={props.showDeleteRegionModal}
+          ancestors={props.ancestors}
+          ids={props.ids}
           // reorderItem={props.reorderItem}
           // editItem={props.editItem}
           parent={props.parent}

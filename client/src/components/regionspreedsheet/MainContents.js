@@ -16,10 +16,12 @@ const MainContents = (props) => {
         // key={props.activeList._id}
         regions={props.regions}
         url={props.url}
+        ancestors={props.ancestors}
         parent={props.parent}
         deleteRegion={props.deleteRegion}
         editRegion={props.editRegion}
         showDeleteRegionModal={props.showDeleteRegionModal}
+        ids={props.ids}
         // deleteItem={props.deleteItem}
         // reorderItem={props.reorderItem}
         // editItem={props.editItem}
