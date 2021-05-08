@@ -31,6 +31,9 @@ const Login = (props) => {
     if (loading) {
       toggleLoading(true)
     }
+    if (error) {
+      console.log(error)
+    }
     if (data.login._id === null) {
       displayErrorMsg(true)
       return

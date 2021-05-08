@@ -13,7 +13,7 @@ import {
   UPDATE_SUBREGION,
   SORT_REGIONS,
 } from '../../cache/mutations.js'
-import { GET_ANCESTORS, GET_DB_REGIONS, GET_REGION } from '../../cache/queries'
+import { GET_ANCESTORS, GET_DB_REGIONS } from '../../cache/queries'
 import { useHistory } from 'react-router-dom'
 import { Route, Switch } from 'react-router-dom'
 import {
@@ -25,9 +25,6 @@ import {
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
   let regions = []
-  var parent
-  var prevSibling
-  var nextSibling
   var ancestors = []
 
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
@@ -87,23 +84,6 @@ const RegionSpreadSheet = (props) => {
   }
   if (dataAncestors) {
     ancestors = dataAncestors.getAncestors
-    if (ancestors.length >= 1) {
-      if (ancestors.length == 1) {
-        parent = ancestors[0]
-      } else {
-        parent = ancestors[ancestors.length - 1]
-      }
-
-      let indexOfChild = parent.subregions.findIndex(
-        (region) => region._id == ids[ids.length - 1]
-      )
-      if (indexOfChild > 0) {
-        prevSibling = parent.subregions[indexOfChild - 1]
-      }
-      if (indexOfChild < parent.subregions.length - 1) {
-        nextSibling = parent.subregions[indexOfChild + 1]
-      }
-    }
   }
   //#endregion
 
@@ -211,7 +191,7 @@ const RegionSpreadSheet = (props) => {
     path = path.split('/')
     path = path.splice(0, 2)
     for (let i = 0; i < ids.length; i++) {
-      if (i == index + 1) {
+      if (i === index + 1) {
         break
       }
       path.push(ids[i])

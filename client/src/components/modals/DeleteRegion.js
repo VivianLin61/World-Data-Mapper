@@ -1,13 +1,5 @@
-import React, { useState } from 'react'
-import {
-  WModal,
-  WMHeader,
-  WMMain,
-  WMFooter,
-  WButton,
-  WInput,
-  WRow,
-} from 'wt-frontend'
+import React from 'react'
+import { WModal, WMHeader, WMFooter, WButton, WRow } from 'wt-frontend'
 import WCol from 'wt-frontend/build/components/wgrid/WCol'
 
 const DeleteRegion = (props) => {
@@ -26,7 +18,6 @@ const DeleteRegion = (props) => {
         Delete Region?
       </WMHeader>
       <div />
-
       <WMFooter>
         <WRow>
           <WCol size='5'>

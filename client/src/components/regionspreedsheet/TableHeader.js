@@ -3,33 +3,6 @@ import React from 'react'
 import { WButton, WRow, WCol } from 'wt-frontend'
 
 const TableHeader = (props) => {
-  const clickDisabled = () => {}
-  const buttonStyle = props.disabled
-    ? ' table-header-button-disabled '
-    : 'table-header-button '
-
-  const undoOptions = {
-    className:
-      props.disabled || !props.canUndo
-        ? ' table-header-button-disabled '
-        : 'table-header-button',
-    onClick: props.disabled || !props.canUndo ? clickDisabled : props.undo,
-    wType: 'texted',
-    clickAnimation: props.disabled || !props.canUndo ? '' : 'ripple-light',
-    shape: 'rounded',
-  }
-
-  const redoOptions = {
-    className:
-      props.disabled || !props.canRedo
-        ? ' table-header-button-disabled '
-        : 'table-header-button ',
-    onClick: props.disabled || !props.canRedo ? clickDisabled : props.redo,
-    wType: 'texted',
-    clickAnimation: props.disabled || !props.canRedo ? '' : 'ripple-light',
-    shape: 'rounded',
-  }
-
   return (
     <WRow className='table-header'>
       <WCol size='3'>

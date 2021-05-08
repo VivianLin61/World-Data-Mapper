@@ -1,5 +1,5 @@
 import React from 'react'
-import { WButton, WNavbar, WNavItem } from 'wt-frontend'
+import { WButton } from 'wt-frontend'
 
 const Ancestor = (props) => {
   const handleGoToAncestorRegion = (e) => {

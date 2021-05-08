@@ -3,7 +3,6 @@ import { UPDATE_USER } from '../../cache/mutations'
 
 import { useMutation } from '@apollo/client'
 import NavbarOptions from '../navbar/NavbarOptions'
-import Logo from '../navbar/Logo'
 import { useHistory } from 'react-router-dom'
 import {
   WModal,

@@ -5,15 +5,8 @@ import TableContents from './TableContents'
 const MainContents = (props) => {
   return (
     <div className='table '>
-      <TableHeader
-        // undo={props.undo}
-        // redo={props.redo}
-        // canUndo={props.canUndo}
-        // canRedo={props.canRedo}
-        sort={props.sort}
-      />
+      <TableHeader sort={props.sort} />
       <TableContents
-        // key={props.activeList._id}
         regions={props.regions}
         url={props.url}
         ancestors={props.ancestors}
@@ -22,9 +15,6 @@ const MainContents = (props) => {
         editRegion={props.editRegion}
         showDeleteRegionModal={props.showDeleteRegionModal}
         ids={props.ids}
-        // deleteItem={props.deleteItem}
-        // reorderItem={props.reorderItem}
-        // editItem={props.editItem}
       />
     </div>
   )

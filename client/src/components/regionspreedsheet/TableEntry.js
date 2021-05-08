@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 const TableEntry = (props) => {
   let history = useHistory()
@@ -9,7 +9,8 @@ const TableEntry = (props) => {
   const name = data.name
   const capital = data.capital
   const leader = data.leader
-  const landmarks = data.landmarks.length == 0 ? 'No Landmarks' : data.landmarks
+  const landmarks =
+    data.landmarks.length === 0 ? 'No Landmarks' : data.landmarks
 
   const [editingName, toggleNameEdit] = useState(false)
   const [editingCapital, toggleCapitalEdit] = useState(false)
@@ -61,7 +62,6 @@ const TableEntry = (props) => {
       regionId: data._id,
       index: props.index,
     })
-    // props.deleteRegion(data, data._id, props.index)
   }
   return (
     <WRow className='table-entry'>

@@ -70,7 +70,6 @@ const HomeScreen = (props) => {
   }
 
   const showDeleteModal = async (_id) => {
-    // mapToDeleteId = _id
     setMapToDeleteId(_id)
     setShowDeleteMap(false)
   }
@@ -107,7 +106,6 @@ const HomeScreen = (props) => {
               user={props.user}
               setShowCreate={false}
               setShowLogin={true}
-              // reloadMaps={refetch}
             />
           </ul>
         </WNavbar>

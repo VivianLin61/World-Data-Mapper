@@ -2,12 +2,9 @@ import Login from '../modals/Login'
 import MainLogo from '../welcomescreen/MainLogo'
 import CreateAccount from '../modals/CreateAccount'
 import NavbarOptions from '../navbar/NavbarOptions'
-import * as mutations from '../../cache/mutations'
-// import { GET_DB_MAPS } from '../../cache/queries'
 import React, { useState } from 'react'
-import { useMutation, useQuery } from '@apollo/client'
-import { WNavbar, WNavItem, WCard } from 'wt-frontend'
-import { WLayout, WLHeader, WLMain, WLSide } from 'wt-frontend'
+import { WNavbar, WNavItem } from 'wt-frontend'
+import { WLayout, WLHeader, WLMain } from 'wt-frontend'
 
 const WelcomeScreen = (props) => {
   const keyCombination = (e, callback) => {
@@ -24,10 +21,6 @@ const WelcomeScreen = (props) => {
   document.onkeydown = keyCombination
 
   const auth = props.user === null ? false : true
-  let todolists = []
-  let SidebarData = []
-  const [sortRule, setSortRule] = useState('unsorted') // 1 is ascending, -1 desc
-  const [activeList, setActiveList] = useState({})
   const [showLogin, toggleShowLogin] = useState(false)
   const [showCreate, toggleShowCreate] = useState(false)
   const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
