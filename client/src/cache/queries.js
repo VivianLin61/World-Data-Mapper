@@ -68,6 +68,11 @@ export const GET_REGION = gql`
         landmarks
         parentId
         mapId
+        subregions {
+          _id
+          name
+          landmarks
+        }
       }
     }
   }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Ancestor from '../regionspreedsheet/Ancestor'
+import { useMutation, useQuery } from '@apollo/client'
 import NavbarOptions from '../navbar/NavbarOptions'
 import { useHistory } from 'react-router-dom'
 import {
@@ -14,27 +15,46 @@ import {
   WNavItem,
 } from 'wt-frontend'
 import WInput from 'wt-frontend/build/components/winput/WInput'
+import { GET_ANCESTORS, GET_DB_REGIONS, GET_REGION } from '../../cache/queries'
 
 const RegionViewer = (props) => {
   let history = useHistory()
   let data = props.location.state.data
-  let parent = props.location.state.parent
+  let parent
   let ancestors = props.location.state.ancestors
   let url = props.location.state.url
   let ids = props.location.state.ids
   let prevSibling
   let nextSibling
-  ids.push(data._id)
-  ancestors = [...ancestors, parent]
-  if (parent.subregions) {
-    let indexOfChild = parent.subregions.findIndex(
-      (region) => region._id == ids[ids.length - 1]
-    )
-    if (indexOfChild > 0) {
-      prevSibling = parent.subregions[indexOfChild - 1]
-    }
-    if (indexOfChild < parent.subregions.length - 1) {
-      nextSibling = parent.subregions[indexOfChild + 1]
+
+  const { loading, error, data: parentData, refetch } = useQuery(GET_REGION, {
+    variables: { ids: ids },
+  })
+
+  if (loading) {
+    console.log(loading, 'loading ancestors')
+  }
+  if (error) {
+    console.log(error, 'error loading ancestors')
+  }
+  if (parentData) {
+    parent = parentData.getRegion
+
+    if (parent) {
+      ancestors = [...ancestors, parent]
+      if (parent.subregions) {
+        let indexOfChild = parent.subregions.findIndex(
+          (region) => region._id == data._id
+        )
+        if (indexOfChild > 0) {
+          prevSibling = parent.subregions[indexOfChild - 1]
+          console.log(prevSibling)
+        }
+        if (indexOfChild < parent.subregions.length - 1) {
+          nextSibling = parent.subregions[indexOfChild + 1]
+          console.log(nextSibling)
+        }
+      }
     }
   }
 
@@ -61,24 +81,25 @@ const RegionViewer = (props) => {
     history.push(path, { data: region })
   }
   const goToNextSibling = (e) => {
-    // if (nextSibling) {
-    //   let path = url
-    //   path = path.split('/')
-    //   path.push(nextSibling._id)
-    //   path = path.toString()
-    //   path = path.replaceAll(',', '/')
-    //   // history.push(path, { data: nextSibling })
-    //   history.push(`/regionviewer/${data._id}`, {
-    //     data: data,
-    //     parent: parent,
-    //     url: url,
-    //     ancestors: ancestors,
-    //     ids: ids,
-    //   })
-    // }
+    console.log(nextSibling)
+    if (nextSibling) {
+      let path = url
+      path = path.split('/')
+      path.push(nextSibling._id)
+      path = path.toString()
+      path = path.replaceAll(',', '/')
+      history.push(`/regionviewer/${nextSibling._id}`, {
+        data: nextSibling,
+        parent: parent,
+        url: url,
+        ancestors: ancestors.slice(0, ancestors.length - 1),
+        ids: ids,
+      })
+    }
   }
 
   const goToPreviousSibling = (e) => {
+    console.log(prevSibling)
     // if (prevSibling) {
     //   let path = url
     //   path = path.split('/')
@@ -161,7 +182,7 @@ const RegionViewer = (props) => {
                         style={{ cursor: 'pointer', color: 'var(--baby-blue)' }}
                         onClick={navigateBackToRegionSpreadshhet}
                       >
-                        Parent Region: {parent.name}
+                        Parent Region: {parent ? parent.name : ''}
                       </div>
                       <div className='region-details'>
                         Region Captial: {data.capital}
