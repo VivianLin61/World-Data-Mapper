@@ -112,7 +112,6 @@ const RegionViewer = (props) => {
         ids: ids,
       })
     }
-    }
   }
 
   return (

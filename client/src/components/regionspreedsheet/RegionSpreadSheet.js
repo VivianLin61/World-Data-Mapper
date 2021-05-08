@@ -206,30 +206,6 @@ const RegionSpreadSheet = (props) => {
     tpsRedo()
   }
 
-  const goToNextSibling = (e) => {
-    if (nextSibling) {
-      let path = props.match.url
-      path = path.split('/')
-      path.pop()
-      path.push(nextSibling._id)
-      path = path.toString()
-      path = path.replaceAll(',', '/')
-      history.push(path, { data: nextSibling })
-    }
-  }
-
-  const goToPreviousSibling = (e) => {
-    if (prevSibling) {
-      let path = props.match.url
-      path = path.split('/')
-      path.pop()
-      path.push(prevSibling._id)
-      path = path.toString()
-      path = path.replaceAll(',', '/')
-      history.push(path, { data: prevSibling })
-    }
-  }
-
   const navigateToAncestorRegion = (region, index) => {
     let path = props.match.url
     path = path.split('/')
@@ -273,31 +249,6 @@ const RegionSpreadSheet = (props) => {
                       navigateToAncestorRegion={navigateToAncestorRegion}
                     />
                   ))}
-                </ul>
-                <ul>
-                  <WNavItem>
-                    <WButton
-                      onClick={goToPreviousSibling}
-                      className={'arrow-back'}
-                    >
-                      <i className='arrows material-icons'>arrow_back</i>
-                    </WButton>
-                  </WNavItem>
-                  <WNavItem>
-                    <WButton
-                      onClick={goToNextSibling}
-                      className={'arrow-forward'}
-                    >
-                      <i className='arrows material-icons'>arrow_forward</i>
-                    </WButton>
-                  </WNavItem>
-                  <NavbarOptions
-                    fetchUser={props.fetchUser}
-                    auth={true}
-                    user={props.user}
-                    setShowCreate={false}
-                    setShowLogin={true}
-                  />
                 </ul>
               </WNavbar>
             </WLHeader>
