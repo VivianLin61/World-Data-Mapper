@@ -81,7 +81,6 @@ const RegionViewer = (props) => {
     history.push(path, { data: region })
   }
   const goToNextSibling = (e) => {
-    console.log(nextSibling)
     if (nextSibling) {
       let path = url
       path = path.split('/')
@@ -99,15 +98,21 @@ const RegionViewer = (props) => {
   }
 
   const goToPreviousSibling = (e) => {
-    console.log(prevSibling)
-    // if (prevSibling) {
-    //   let path = url
-    //   path = path.split('/')
-    //   path.push(prevSibling._id)
-    //   path = path.toString()
-    //   path = path.replaceAll(',', '/')
-    //   history.push(path, { data: prevSibling })
-    // }
+    if (prevSibling) {
+      let path = url
+      path = path.split('/')
+      path.push(nextSibling._id)
+      path = path.toString()
+      path = path.replaceAll(',', '/')
+      history.push(`/regionviewer/${prevSibling._id}`, {
+        data: prevSibling,
+        parent: parent,
+        url: url,
+        ancestors: ancestors.slice(0, ancestors.length - 1),
+        ids: ids,
+      })
+    }
+    }
   }
 
   return (
