@@ -250,6 +250,15 @@ const RegionSpreadSheet = (props) => {
                     />
                   ))}
                 </ul>
+                <ul>
+                  <NavbarOptions
+                    fetchUser={props.fetchUser}
+                    auth={true}
+                    user={props.user}
+                    setShowCreate={false}
+                    setShowLogin={true}
+                  />
+                </ul>
               </WNavbar>
             </WLHeader>
             <WLMain>
