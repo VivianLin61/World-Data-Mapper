@@ -30,6 +30,7 @@ const RegionViewer = (props) => {
   let prevSibling
   let nextSibling
   let landmarks
+  let editable
   const [landmark, setLandmark] = useState('')
 
   //#region Get Landmarks
@@ -126,20 +127,33 @@ const RegionViewer = (props) => {
   //#endregion
 
   const handleAddLankmark = async () => {
-    // let transaction = new UpdateLandmark_Transaction(ids)
-    await AddLandmark({
-      variables: { ids: ids, landmark: landmark, regionId: data._id },
-    })
-    // props.tps.addTransaction(transaction)
-    // tpsRedo()
-    console.log(landmark)
+    let opcode = 1
+    let transaction = new UpdateLandmark_Transaction(
+      ids,
+      opcode,
+      data._id,
+      landmark,
+      AddLandmark,
+      DeleteLandmark
+    )
+
+    props.tps.addTransaction(transaction)
+    tpsRedo()
   }
 
   const handleDeleteLandmark = async (deletedLandmark) => {
-    console.log(deletedLandmark)
-    await DeleteLandmark({
-      variables: { ids: ids, landmark: deletedLandmark, regionId: data._id },
-    })
+    let opcode = 0
+    let transaction = new UpdateLandmark_Transaction(
+      ids,
+      opcode,
+      data._id,
+      deletedLandmark,
+      AddLandmark,
+      DeleteLandmark
+    )
+
+    props.tps.addTransaction(transaction)
+    tpsRedo()
   }
 
   const handleLandmarkEdit = (e) => {

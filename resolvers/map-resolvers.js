@@ -113,6 +113,7 @@ module.exports = {
       }
 
       let editable = landmarks[0]
+      // landmarks.push(editable.length.toString())
       return landmarks.flat()
     },
   },

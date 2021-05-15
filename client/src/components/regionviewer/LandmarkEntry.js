@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 const LandmarkEntry = (props) => {
   let history = useHistory()
   const landmark = props.landmark
+  const editing = props.editing
 
   const [editingName, toggleNameEdit] = useState(false)
 
@@ -37,27 +38,31 @@ const LandmarkEntry = (props) => {
           <div className='table-text'>{landmark}</div>
         )}
       </WCol>
-      <WCol size='1'>
-        <WRow>
-          <WCol size='1'>
-            <WButton
-              className='name-text'
-              wType='texted'
-              onClick={handleDeleteLandmark}
-            >
-              <i className='name-button material-icons'>close</i>
-            </WButton>
-          </WCol>
-          <WCol size='1'>
-            <WButton
-              className='name-text'
-              onClick={() => toggleNameEdit(!editingName)}
-            >
-              <i className='name-button material-icons'>mode_edit</i>
-            </WButton>
-          </WCol>
-        </WRow>
-      </WCol>
+      {editing ? (
+        <WCol size='1'>
+          <WRow>
+            <WCol size='1'>
+              <WButton
+                className='name-text'
+                wType='texted'
+                onClick={handleDeleteLandmark}
+              >
+                <i className='name-button material-icons'>close</i>
+              </WButton>
+            </WCol>
+            <WCol size='1'>
+              <WButton
+                className='name-text'
+                onClick={() => toggleNameEdit(!editingName)}
+              >
+                <i className='name-button material-icons'>mode_edit</i>
+              </WButton>
+            </WCol>
+          </WRow>
+        </WCol>
+      ) : (
+        <div className='table-text'></div>
+      )}
     </WRow>
   )
 }
