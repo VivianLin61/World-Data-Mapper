@@ -50,7 +50,10 @@ const RegionViewer = (props) => {
     console.log(error, 'error loading landmarks')
   }
   if (dataLandmarks) {
-    landmarks = dataLandmarks.getLandmarks
+    let landmarkData = JSON.parse(dataLandmarks.getLandmarks)
+    landmarks = landmarkData.landmarks
+    landmarks = landmarks.sort()
+    editable = landmarkData.editable
   }
 
   const mutationOptions = {
@@ -304,6 +307,7 @@ const RegionViewer = (props) => {
                     <div className='landmarks-list-container'>
                       <LandmarkContents
                         landmarks={landmarks}
+                        editable={editable}
                         deleteLandmark={handleDeleteLandmark}
                       ></LandmarkContents>
                     </div>

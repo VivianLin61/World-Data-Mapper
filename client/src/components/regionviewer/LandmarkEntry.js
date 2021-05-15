@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 const LandmarkEntry = (props) => {
   let history = useHistory()
   const landmark = props.landmark
-  const editing = props.editing
+  const editing = props.editable.indexOf(landmark) > -1 ? true : false
 
   const [editingName, toggleNameEdit] = useState(false)
 

@@ -11,7 +11,7 @@ const LandmarkContents = (props) => {
           landmark={landmark}
           deleteLandmark={props.deleteLandmark}
           key={index}
-          editing={true}
+          editable={props.editable}
         />
       ))}
     </div>
