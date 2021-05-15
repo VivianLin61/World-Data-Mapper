@@ -32,9 +32,6 @@ const RegionViewer = (props) => {
   let landmarks
   const [landmark, setLandmark] = useState('')
 
-  const [AddLandmark] = useMutation(ADD_LANDMARK)
-  const [DeleteLandmark] = useMutation(DELETE_LANDMARK)
-
   //#region Get Landmarks
   const {
     loading,
@@ -54,6 +51,16 @@ const RegionViewer = (props) => {
   if (dataLandmarks) {
     landmarks = dataLandmarks.getLandmarks
   }
+
+  const mutationOptions = {
+    refetchQueries: [
+      { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
+    ],
+    awaitRefetchQueries: true,
+  }
+
+  const [AddLandmark] = useMutation(ADD_LANDMARK, mutationOptions)
+  const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
   //#endregion
   //#region UNDO REDO
 
@@ -126,6 +133,13 @@ const RegionViewer = (props) => {
     // props.tps.addTransaction(transaction)
     // tpsRedo()
     console.log(landmark)
+  }
+
+  const handleDeleteLandmark = async (deletedLandmark) => {
+    console.log(deletedLandmark)
+    await DeleteLandmark({
+      variables: { ids: ids, landmark: deletedLandmark, regionId: data._id },
+    })
   }
 
   const handleLandmarkEdit = (e) => {
@@ -276,6 +290,7 @@ const RegionViewer = (props) => {
                     <div className='landmarks-list-container'>
                       <LandmarkContents
                         landmarks={landmarks}
+                        deleteLandmark={handleDeleteLandmark}
                       ></LandmarkContents>
                     </div>
                     <div className='add-landmark'>

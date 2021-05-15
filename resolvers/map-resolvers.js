@@ -293,7 +293,26 @@ module.exports = {
      @returns {array} the updated landmark array on success, or initial ordering on failure
    **/
     deleteLandmark: async (_, args) => {
-      
+      const { ids, landmark, regionId } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+      if (ids.length == 1) {
+        mapSubregions.map((region) => {
+          if (region._id.toString() == regionId) {
+            region.landmarks = region.landmarks.filter(
+              (regionLandmark) => regionLandmark !== landmark
+            )
+          }
+        })
+      } else {
+        deleteDbLandmark(mapSubregions, regionId, landmark)
+      }
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
     },
     /**
      @param   {object} args - a region objectID, landmark name to update, and new landmark
@@ -329,6 +348,19 @@ module.exports = {
   },
 }
 
+function deleteDbLandmark(arr, regionId, landmark) {
+  arr.forEach((i) => {
+    if (i._id == regionId) {
+      if (i.landmarks) {
+        i.landmarks = i.landmarks.filter(
+          (regionLandmark) => regionLandmark !== landmark
+        )
+      }
+    } else {
+      deleteDbLandmark(i.subregions, regionId, landmark)
+    }
+  })
+}
 function getChildren(arr) {
   arr.forEach((i) => {
     if (i.landmarks) {

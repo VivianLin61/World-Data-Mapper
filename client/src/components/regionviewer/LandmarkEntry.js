@@ -17,9 +17,7 @@ const LandmarkEntry = (props) => {
     }
   }
   const handleDeleteLandmark = (e) => {
-    props.showDeleteRegionModal({
-      index: props.index,
-    })
+    props.deleteLandmark(landmark)
   }
   return (
     <WRow className='table-entry'>

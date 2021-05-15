@@ -7,7 +7,11 @@ const LandmarkContents = (props) => {
   return landmarks !== undefined && landmarks.length > 0 ? (
     <div className=' table-entries container-primary'>
       {landmarks.map((landmark, index) => (
-        <LandmarkEntry landmark={landmark} />
+        <LandmarkEntry
+          landmark={landmark}
+          deleteLandmark={props.deleteLandmark}
+          key={index}
+        />
       ))}
     </div>
   ) : (
