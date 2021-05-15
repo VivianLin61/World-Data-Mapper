@@ -1,6 +1,6 @@
 import React from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NavbarOptions from '../navbar/NavbarOptions'
 import MainContents from '../regionspreedsheet/MainContents'
 import DeleteRegion from '../modals/DeleteRegion'
@@ -27,8 +27,6 @@ const RegionSpreadSheet = (props) => {
   let regions = []
   var ancestors = []
 
-  const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
-  const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
   const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
   const [regionToDeleteParams, setRegionToDeleteParams] = useState({})
 
@@ -97,20 +95,28 @@ const RegionSpreadSheet = (props) => {
   const [UpdateRegionField] = useMutation(UPDATE_SUBREGION, mutationOptions)
   const [SortRegions] = useMutation(SORT_REGIONS, mutationOptions)
   //#region UNDO REDO
+  useEffect(() => {
+    document.addEventListener('keyup', keyboardUndoRedo, false)
+    return () => {
+      document.removeEventListener('keyup', keyboardUndoRedo, false)
+    }
+  })
+
+  const keyboardUndoRedo = (e) => {
+    if (e.ctrlKey && e.key === 'z') {
+      tpsUndo()
+    } else if (e.ctrlKey && e.key === 'y') {
+      tpsRedo()
+    }
+  }
   const tpsUndo = async () => {
     const ret = await props.tps.undoTransaction()
-    if (ret) {
-      setCanUndo(props.tps.hasTransactionToUndo())
-      setCanRedo(props.tps.hasTransactionToRedo())
-    }
+    return ret
   }
 
   const tpsRedo = async () => {
     const ret = await props.tps.doTransaction()
-    if (ret) {
-      setCanUndo(props.tps.hasTransactionToUndo())
-      setCanRedo(props.tps.hasTransactionToRedo())
-    }
+    return ret
   }
   //#endregion
 
@@ -307,5 +313,4 @@ const RegionSpreadSheet = (props) => {
     </>
   )
 }
-
 export default RegionSpreadSheet

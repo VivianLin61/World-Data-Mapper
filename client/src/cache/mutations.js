@@ -88,7 +88,26 @@ export const UPDATE_SUBREGION = gql`
 `
 
 export const SORT_REGIONS = gql`
-  mutation sortRegions($ids: [String!], $criteria: String!) {
+  mutation SortRegions($ids: [String!], $criteria: String!) {
     sortRegions(ids: $ids, criteria: $criteria)
+  }
+`
+
+export const ADD_LANDMARK = gql`
+  mutation AddLandmark(
+    $ids: [String!]
+    $landmark: String!
+    $regionId: String!
+  ) {
+    addLandmark(ids: $ids, landmark: $landmark, regionId: $regionId)
+  }
+`
+export const DELETE_LANDMARK = gql`
+  mutation DeleteLandmark(
+    $ids: [String!]
+    $landmark: String!
+    $regionId: String!
+  ) {
+    deleteLandmark(ids: $ids, landmark: $landmark, regionId: $regionId)
   }
 `

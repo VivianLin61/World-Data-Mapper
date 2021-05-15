@@ -77,3 +77,9 @@ export const GET_REGION = gql`
     }
   }
 `
+
+export const GET_LANDMARKS = gql`
+  query GetLandmarks($ids: [String!], $regionId: String!) {
+    getLandmarks(ids: $ids, regionId: $regionId)
+  }
+`

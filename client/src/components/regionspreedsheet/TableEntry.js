@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom'
 const TableEntry = (props) => {
   let history = useHistory()
   const { data } = props
-
   const name = data.name
   const capital = data.capital
   const leader = data.leader
@@ -153,7 +152,7 @@ const TableEntry = (props) => {
       </WCol>
       <WCol size='4'>
         <div className='table-text' onClick={goToRegionViewer}>
-          {landmarks}
+          {landmarks.toString()}
         </div>
       </WCol>
     </WRow>

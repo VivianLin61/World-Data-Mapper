@@ -3,6 +3,7 @@ const Map = require('../models/map-model')
 const Region = require('../models/region-model')
 let queryRegions
 let queryRegion
+let landmarks
 module.exports = {
   Query: {
     /**
@@ -91,6 +92,28 @@ module.exports = {
       if (queryAncestors) {
         return queryAncestors
       }
+    },
+
+    getLandmarks: async (_, args) => {
+      landmarks = []
+      const { ids, regionId } = args
+      const mapId = new ObjectId(ids[0])
+      const map = await Map.findOne({ _id: mapId })
+      let mapSubregions = map.subregions
+
+      if (ids.length == 1) {
+        mapSubregions.map((region) => {
+          if (region._id.toString() == regionId) {
+            landmarks.push(region.landmarks)
+            getChildren(region.subregions)
+          }
+        })
+      } else {
+        getDbLandmarks(mapSubregions, regionId)
+      }
+
+      let editable = landmarks[0]
+      return landmarks.flat()
     },
   },
 
@@ -266,21 +289,74 @@ module.exports = {
       return true
     },
     /**
-     @param   {object} args - a region objectID and landmark name
-     @returns {array} the sorted region array on success, or initial ordering on failure
-   **/
-    addLandmark: async (_, args) => {},
-    /**
      @param   {object} args - a region objectID and landmark name to remove
      @returns {array} the updated landmark array on success, or initial ordering on failure
    **/
-    deleteLandmark: async (_, args) => {},
+    deleteLandmark: async (_, args) => {
+      
+    },
     /**
      @param   {object} args - a region objectID, landmark name to update, and new landmark
      @returns {array} the updated landmark array on success, or initial ordering on failure
    **/
     updateLandmark: async (_, args) => {},
+    /**
+     @param   {object} args - a region objectID and landmark name
+     @returns {array} the sorted region array on success, or initial ordering on failure
+   **/
+    addLandmark: async (_, args) => {
+      const { ids, landmark, regionId } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+
+      if (ids.length == 1) {
+        mapSubregions.map((region) => {
+          if (region._id.toString() == regionId) {
+            region.landmarks.push(landmark)
+          }
+        })
+      } else {
+        addDbLandmark(mapSubregions, regionId, landmark)
+      }
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+      return 'args'
+    },
   },
+}
+
+function getChildren(arr) {
+  arr.forEach((i) => {
+    if (i.landmarks) {
+      landmarks.push(i.landmarks)
+    }
+    getChildren(i.subregions)
+  })
+}
+
+function getDbLandmarks(arr, regionId) {
+  arr.forEach((i) => {
+    if (i._id == regionId) {
+      landmarks.push(i.landmarks)
+      getChildren(i.subregions)
+    } else {
+      getDbLandmarks(i.subregions, regionId)
+    }
+  })
+}
+
+function addDbLandmark(arr, regionId, landmark) {
+  arr.forEach((i) => {
+    if (i._id == regionId) {
+      i.landmarks.push(landmark)
+    } else {
+      addDbLandmark(i.subregions, regionId, landmark)
+    }
+  })
 }
 
 function addToSubRegion(arr, value, region, index) {
@@ -379,7 +455,6 @@ function isInIncreasingOrder(regionToTest, sortingCriteria) {
   }
   return true
 }
-
 makeCompareFunction = (criteria, increasing) => {
   return function (item1, item2) {
     let negate = -1
@@ -397,7 +472,6 @@ makeCompareFunction = (criteria, increasing) => {
     }
   }
 }
-
 function getDbRegion(arr, value) {
   arr.forEach((i) => {
     if (i._id == value) {

@@ -135,6 +135,19 @@ export class SortRegions_Transaction extends jsTPS_Transaction {
   }
 }
 
+export class UpdateLandmark_Transaction extends jsTPS_Transaction {
+  // opcodes: 0 - delete, 1 - add
+  constructor(idPath, opcode, landmark, index, callback) {
+    super()
+    this.idPath = idPath
+    this.landmark = landmark
+    this.opcode = opcode
+    this.index = index
+    this.updateFunction = callback
+  }
+
+  
+}
 export class jsTPS {
   constructor() {
     // THE TRANSACTION STACK

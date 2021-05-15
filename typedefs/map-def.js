@@ -24,6 +24,7 @@ const typeDefs = gql`
     getRegion(ids: [String!]): Region
     getAllRegions(ids: [String]): [Region]
     getAncestors(ids: [String!]): [Region]
+    getLandmarks(ids: [String!], regionId: String): [String!]
   }
 
   extend type Mutation {
@@ -39,9 +40,9 @@ const typeDefs = gql`
       field: String!
       value: String!
     ): Boolean
-    addLandmark(_id: String!, landmark: String!): String
-    deleteLandmark(_id: String!, landmark: String!): String
-    updateLandmark(_id: String!, landmark: String!, name: String!): String!
+    addLandmark(ids: [String!], landmark: String!, regionId: String!): String
+    deleteLandmark(ids: [String!], landmark: String!, regionId: String!): String
+    updateLandmark(ids: String!, landmark: String!, name: String!): String!
   }
 
   input MapInput {

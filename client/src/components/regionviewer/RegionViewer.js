@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Ancestor from '../regionspreedsheet/Ancestor'
-import { useQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
+import { ADD_LANDMARK, DELETE_LANDMARK } from '../../cache/mutations.js'
 import NavbarOptions from '../navbar/NavbarOptions'
 import { useHistory } from 'react-router-dom'
 import {
@@ -15,7 +16,9 @@ import {
   WNavItem,
 } from 'wt-frontend'
 import WInput from 'wt-frontend/build/components/winput/WInput'
-import { GET_REGION } from '../../cache/queries'
+import { GET_REGION, GET_LANDMARKS } from '../../cache/queries'
+import LandmarkContents from '../regionviewer/LandmarkContents'
+import { UpdateLandmark_Transaction } from '../../utils/jsTPS'
 
 const RegionViewer = (props) => {
   let history = useHistory()
@@ -26,16 +29,73 @@ const RegionViewer = (props) => {
   let ids = props.location.state.ids
   let prevSibling
   let nextSibling
+  let landmarks
+  const [landmark, setLandmark] = useState('')
 
-  const { loading, error, data: parentData, refetch } = useQuery(GET_REGION, {
-    variables: { ids: ids },
+  const [AddLandmark] = useMutation(ADD_LANDMARK)
+  const [DeleteLandmark] = useMutation(DELETE_LANDMARK)
+
+  //#region Get Landmarks
+  const {
+    loading,
+    error,
+    data: dataLandmarks,
+    refetch,
+  } = useQuery(GET_LANDMARKS, {
+    variables: { ids: ids, regionId: data._id },
   })
 
   if (loading) {
-    console.log(loading, 'loading ancestors')
+    console.log(loading, 'loading landmarks')
   }
   if (error) {
-    console.log(error, 'error loading ancestors')
+    console.log(error, 'error loading landmarks')
+  }
+  if (dataLandmarks) {
+    landmarks = dataLandmarks.getLandmarks
+  }
+  //#endregion
+  //#region UNDO REDO
+
+  useEffect(() => {
+    document.addEventListener('keyup', keyboardUndoRedo, false)
+    return () => {
+      document.removeEventListener('keyup', keyboardUndoRedo, false)
+    }
+  })
+
+  const keyboardUndoRedo = (e) => {
+    if (e.ctrlKey && e.key === 'z') {
+      tpsUndo()
+    } else if (e.ctrlKey && e.key === 'y') {
+      tpsRedo()
+    }
+  }
+  const tpsUndo = async () => {
+    const retVal = await props.tps.undoTransaction()
+    return retVal
+  }
+  const tpsRedo = async () => {
+    const retVal = await props.tps.doTransaction()
+    return retVal
+  }
+  //#endregion
+
+  //#region GET PARENT
+  const {
+    loading: loadingParent,
+    error: parentError,
+    data: parentData,
+    refetch: refetchParent,
+  } = useQuery(GET_REGION, {
+    variables: { ids: ids },
+  })
+
+  if (loadingParent) {
+    console.log(loadingParent, 'loading ancestors')
+  }
+  if (parentError) {
+    console.log(parentError, 'error loading ancestors')
   }
   if (parentData) {
     parent = parentData.getRegion
@@ -48,20 +108,29 @@ const RegionViewer = (props) => {
         )
         if (indexOfChild > 0) {
           prevSibling = parent.subregions[indexOfChild - 1]
-          console.log(prevSibling)
         }
         if (indexOfChild < parent.subregions.length - 1) {
           nextSibling = parent.subregions[indexOfChild + 1]
-          console.log(nextSibling)
         }
       }
     }
   }
 
-  const handleAddLankmark = (e) => {
-    console.log('add landmark')
+  //#endregion
+
+  const handleAddLankmark = async () => {
+    // let transaction = new UpdateLandmark_Transaction(ids)
+    await AddLandmark({
+      variables: { ids: ids, landmark: landmark, regionId: data._id },
+    })
+    // props.tps.addTransaction(transaction)
+    // tpsRedo()
+    console.log(landmark)
   }
 
+  const handleLandmarkEdit = (e) => {
+    setLandmark(e.target.value)
+  }
   const navigateBackToRegionSpreadshhet = (e) => {
     history.push(`${props.location.state.url}/${parent._id}`, { data: parent })
   }
@@ -96,7 +165,6 @@ const RegionViewer = (props) => {
       })
     }
   }
-
   const goToPreviousSibling = (e) => {
     if (prevSibling) {
       let path = url
@@ -164,11 +232,13 @@ const RegionViewer = (props) => {
         <div>
           <WCard className='viewer-container' wLayout='header-content'>
             <WLHeader className='viewer-header'>
-              <WButton className={'undo-button'}>
+              <WButton className={'undo-button'} onClick={tpsUndo}>
                 <i className='material-icons'>undo</i>
               </WButton>
               <WButton className={'redo-button'}>
-                <i className='material-icons'>redo</i>
+                <i className='material-icons' onClick={tpsRedo}>
+                  redo
+                </i>
               </WButton>
               <div className='region-landmarks-text'>Regional Landmarks:</div>
             </WLHeader>
@@ -204,7 +274,9 @@ const RegionViewer = (props) => {
                 <WCol size='6'>
                   <div className='viewer-right'>
                     <div className='landmarks-list-container'>
-                      {/* <img className='center' src={globe}></img> */}
+                      <LandmarkContents
+                        landmarks={landmarks}
+                      ></LandmarkContents>
                     </div>
                     <div className='add-landmark'>
                       <WRow style={{ height: '100%' }}>
@@ -219,7 +291,17 @@ const RegionViewer = (props) => {
                           </WButton>
                         </WCol>
                         <WCol size='11'>
-                          <WInput className='landmark-input'></WInput>
+                          <WInput
+                            className='landmark-input'
+                            onBlur={handleLandmarkEdit}
+                            onKeyDown={(e) => {
+                              if (e.keyCode === 13) handleLandmarkEdit(e)
+                            }}
+                            autoFocus={true}
+                            defaultValue={landmark}
+                            type='text'
+                            inputClass='table-input-class'
+                          />
                         </WCol>
                       </WRow>
                     </div>

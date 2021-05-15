@@ -84,6 +84,7 @@ const App = () => {
           path='/regionviewer'
           render={({ match, location }) => (
             <RegionViewer
+              tps={transactionStack}
               fetchUser={refetch}
               user={user}
               match={match}
