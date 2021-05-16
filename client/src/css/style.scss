@@ -378,3 +378,10 @@ body {
   margin-left: 25px;
   pointer-events: none;
 }
+
+.edit-parent-btn {
+  background-color: var(--background-color);
+  font-size: 24px !important;
+  padding: 0px 10px !important;
+  color: orange !important;
+}

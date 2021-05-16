@@ -35,8 +35,9 @@ const RegionViewer = (props) => {
   let nextSibling
   let landmarks
   let editable
-  let parents
+  let parents = []
   const [landmark, setLandmark] = useState('')
+  const [editingParent, toggleParentEdit] = useState(false)
 
   //#region Get Landmarks
   const {
@@ -117,9 +118,8 @@ const RegionViewer = (props) => {
 
     if (parent) {
       ancestors = [...ancestors, parent]
-      if (ancestors.length > 2) {
+      if (ancestors.length >= 2) {
         parents = ancestors[ancestors.length - 2].subregions
-        console.log(parents)
       }
       if (parent.subregions) {
         let indexOfChild = parent.subregions.findIndex(
@@ -235,6 +235,13 @@ const RegionViewer = (props) => {
     }
   }
 
+  const handleParentEdit = (e) => {
+    toggleParentEdit(false)
+    const newParent = e.target.value ? e.target.value : false
+    const prevParent = parent.name
+    // props.editParent()
+  }
+
   return (
     <WLayout wLayout='header'>
       <WLHeader>
@@ -312,16 +319,65 @@ const RegionViewer = (props) => {
                       </div>
                       <div
                         className='region-details'
-                        style={{ cursor: 'pointer', color: 'var(--baby-blue)' }}
-                        onClick={navigateBackToRegionSpreadshhet}
+                        style={{
+                          cursor: 'pointer',
+                          color: 'var(--baby-blue)',
+                          display: 'inline-block',
+                        }}
                       >
-                        Parent Region: {parent ? parent.name : ''}{' '}
-                        <WButton>
+                        Parent Region:
+                        <div
+                          style={{
+                            display: 'inline-block',
+                          }}
+                        >
+                          {' '}
+                          {editingParent ? (
+                            <select
+                              className='table-select'
+                              style={{
+                                color: 'var(--baby-blue)',
+                                fontWeight: 'bold',
+                              }}
+                              onBlur={handleParentEdit}
+                              autoFocus={true}
+                              defaultValue={parent.name}
+                            >
+                              {parents.map((p, index) => (
+                                <option value={p.name}>{p.name}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <div
+                              style={{
+                                display: 'inline-block',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  cursor: 'pointer',
+                                  color: 'var(--baby-blue)',
+                                  display: 'inline-block',
+                                }}
+                                onClick={() => {
+                                  navigateBackToRegionSpreadshhet()
+                                }}
+                              >
+                                {parent ? parent.name : ''}{' '}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <WButton
+                          onClick={() => toggleParentEdit(!editingParent)}
+                          className='edit-parent-btn'
+                        >
                           <i className='parent-button material-icons'>
                             mode_edit
                           </i>
                         </WButton>
                       </div>
+
                       <div className='region-details'>
                         Region Captial: {data.capital}
                       </div>
