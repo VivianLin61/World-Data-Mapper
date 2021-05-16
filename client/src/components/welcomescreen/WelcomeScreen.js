@@ -7,40 +7,9 @@ import { WNavbar, WNavItem } from 'wt-frontend'
 import { WLayout, WLHeader, WLMain } from 'wt-frontend'
 
 const WelcomeScreen = (props) => {
-  const keyCombination = (e, callback) => {
-    if (e.key === 'z' && e.ctrlKey) {
-      if (props.tps.hasTransactionToUndo()) {
-        tpsUndo()
-      }
-    } else if (e.key === 'y' && e.ctrlKey) {
-      if (props.tps.hasTransactionToRedo()) {
-        tpsRedo()
-      }
-    }
-  }
-  document.onkeydown = keyCombination
-
   const auth = props.user === null ? false : true
   const [showLogin, toggleShowLogin] = useState(false)
   const [showCreate, toggleShowCreate] = useState(false)
-  const [canUndo, setCanUndo] = useState(props.tps.hasTransactionToUndo())
-  const [canRedo, setCanRedo] = useState(props.tps.hasTransactionToRedo())
-
-  const tpsUndo = async () => {
-    const ret = await props.tps.undoTransaction()
-    if (ret) {
-      setCanUndo(props.tps.hasTransactionToUndo())
-      setCanRedo(props.tps.hasTransactionToRedo())
-    }
-  }
-
-  const tpsRedo = async () => {
-    const ret = await props.tps.doTransaction()
-    if (ret) {
-      setCanUndo(props.tps.hasTransactionToUndo())
-      setCanRedo(props.tps.hasTransactionToRedo())
-    }
-  }
 
   const setShowLogin = () => {
     toggleShowCreate(false)

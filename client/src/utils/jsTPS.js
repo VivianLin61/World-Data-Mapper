@@ -1,5 +1,4 @@
 export class jsTPS_Transaction {
-  constructor() {}
   doTransaction() {}
   undoTransaction() {}
 }

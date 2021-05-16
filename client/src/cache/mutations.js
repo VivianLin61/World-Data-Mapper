@@ -122,3 +122,6 @@ export const UPDATE_LANDMARK = gql`
     updateLandmark(ids: $ids, value: $value, regionId: $regionId, prev: $prev)
   }
 `
+
+// export const CHANGE_PARENT = gql`
+// mutation ChangeParent($ids:[String!], $newParent: String!)`

@@ -42,7 +42,6 @@ const RegionViewer = (props) => {
     loading,
     error,
     data: dataLandmarks,
-    refetch,
   } = useQuery(GET_LANDMARKS, {
     variables: { ids: ids, regionId: data._id },
   })
@@ -102,7 +101,6 @@ const RegionViewer = (props) => {
     loading: loadingParent,
     error: parentError,
     data: parentData,
-    refetch: refetchParent,
   } = useQuery(GET_REGION, {
     variables: { ids: ids },
   })
@@ -167,7 +165,6 @@ const RegionViewer = (props) => {
   }
 
   const editRegionLandmark = (prev, value) => {
-    console.log(prev, value)
     let transaction = new EditRegionLandmark_Transaction(
       ids,
       data._id,

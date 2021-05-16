@@ -47,7 +47,6 @@ const RegionSpreadSheet = (props) => {
     loading: loadingAll,
     error: errorAll,
     data: dataAll,
-    refetch: refetchAll,
   } = useQuery(GET_DB_REGIONS, {
     variables: { ids },
   })
@@ -70,7 +69,6 @@ const RegionSpreadSheet = (props) => {
     loading: loadingAncestors,
     error: errorAncestors,
     data: dataAncestors,
-    refetch: refetchAncestors,
   } = useQuery(GET_ANCESTORS, {
     variables: { ids: ids },
   })

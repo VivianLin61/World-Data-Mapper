@@ -13,7 +13,7 @@ const LoggedIn = (props) => {
     Logout()
     const { data } = await props.fetchUser()
     if (data) {
-      let reset = await client.resetStore()
+      await client.resetStore()
     }
     history.push(`/welcome`)
   }

@@ -25,7 +25,7 @@ const HomeScreen = (props) => {
     userId = props.user._id
   }
 
-  const { loading, error, data, refetch } = useQuery(GET_DB_MAPS, {
+  const { loading, error, data } = useQuery(GET_DB_MAPS, {
     variables: { userId: userId },
   })
 
@@ -51,7 +51,7 @@ const HomeScreen = (props) => {
   }
 
   const createNewMap = async (name) => {
-    const { data } = await AddMap({
+    await AddMap({
       variables: {
         name: name,
         owner: props.user._id,
@@ -61,7 +61,7 @@ const HomeScreen = (props) => {
   }
 
   const deleteMap = async (_id) => {
-    const { data } = await DeleteMap({
+    await DeleteMap({
       variables: {
         _id: _id,
       },
@@ -75,7 +75,7 @@ const HomeScreen = (props) => {
   }
 
   const renameMap = async (value, _id) => {
-    const { data } = await RenameMap({
+    await RenameMap({
       variables: {
         name: value,
         _id: _id,

@@ -32,7 +32,7 @@ const UpdateScreen = (props) => {
   }
 
   const handleUpdateAccount = async (e) => {
-    const { data } = await UpdateUser({
+    await UpdateUser({
       variables: {
         _id: props.user._id,
         email: input.email,
