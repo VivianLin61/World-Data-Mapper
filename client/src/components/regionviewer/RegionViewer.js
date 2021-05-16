@@ -35,6 +35,7 @@ const RegionViewer = (props) => {
   let nextSibling
   let landmarks
   let editable
+  let parents
   const [landmark, setLandmark] = useState('')
 
   //#region Get Landmarks
@@ -116,6 +117,10 @@ const RegionViewer = (props) => {
 
     if (parent) {
       ancestors = [...ancestors, parent]
+      if (ancestors.length > 2) {
+        parents = ancestors[ancestors.length - 2].subregions
+        console.log(parents)
+      }
       if (parent.subregions) {
         let indexOfChild = parent.subregions.findIndex(
           (region) => region._id === data._id
@@ -257,12 +262,18 @@ const RegionViewer = (props) => {
           </ul>
           <ul>
             <WNavItem>
-              <WButton onClick={goToPreviousSibling} className={'arrow-back'}>
+              <WButton
+                onClick={goToPreviousSibling}
+                className={prevSibling ? 'arrow-back' : 'arrow-disabled'}
+              >
                 <i className='arrows material-icons'>arrow_back</i>
               </WButton>
             </WNavItem>
             <WNavItem>
-              <WButton onClick={goToNextSibling} className={'arrow-forward'}>
+              <WButton
+                onClick={goToNextSibling}
+                className={nextSibling ? 'arrow-forward' : 'arrow-disabled'}
+              >
                 <i className='arrows material-icons'>arrow_forward</i>
               </WButton>
             </WNavItem>
@@ -304,7 +315,12 @@ const RegionViewer = (props) => {
                         style={{ cursor: 'pointer', color: 'var(--baby-blue)' }}
                         onClick={navigateBackToRegionSpreadshhet}
                       >
-                        Parent Region: {parent ? parent.name : ''}
+                        Parent Region: {parent ? parent.name : ''}{' '}
+                        <WButton>
+                          <i className='parent-button material-icons'>
+                            mode_edit
+                          </i>
+                        </WButton>
                       </div>
                       <div className='region-details'>
                         Region Captial: {data.capital}

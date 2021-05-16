@@ -131,7 +131,7 @@ const HomeScreen = (props) => {
                 <WCol size='6'>
                   <div className='maps-right'>
                     <div className='maps-image-container'>
-                      <img className='center' src={globe}></img>
+                      <img alt='map-pic' className='center' src={globe}></img>
                     </div>
                     <WButton
                       onClick={setShowCreateMap}
