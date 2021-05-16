@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
-import { useHistory } from 'react-router-dom'
 
 const LandmarkEntry = (props) => {
-  let history = useHistory()
   const landmark = props.landmark
   const editing = props.editable.indexOf(landmark) > -1 ? true : false
 
@@ -14,7 +12,7 @@ const LandmarkEntry = (props) => {
     const newLandmark = e.target.value ? e.target.value : 'No Name'
     const prevLandmark = landmark
     if (newLandmark !== prevLandmark) {
-      //   props.editRegion(data._id, 'name', newName, prevName)
+      props.editRegionLandmark(prevLandmark, newLandmark)
     }
   }
   const handleDeleteLandmark = (e) => {

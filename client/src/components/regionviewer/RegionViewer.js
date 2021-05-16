@@ -17,8 +17,12 @@ import {
 } from 'wt-frontend'
 import WInput from 'wt-frontend/build/components/winput/WInput'
 import { GET_REGION, GET_LANDMARKS } from '../../cache/queries'
+import { UPDATE_LANDMARK } from '../../cache/mutations.js'
 import LandmarkContents from '../regionviewer/LandmarkContents'
-import { UpdateLandmark_Transaction } from '../../utils/jsTPS'
+import {
+  UpdateLandmark_Transaction,
+  EditRegionLandmark_Transaction,
+} from '../../utils/jsTPS'
 
 const RegionViewer = (props) => {
   let history = useHistory()
@@ -65,6 +69,7 @@ const RegionViewer = (props) => {
 
   const [AddLandmark] = useMutation(ADD_LANDMARK, mutationOptions)
   const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
+  const [UpdateLandmark] = useMutation(UPDATE_LANDMARK, mutationOptions)
   //#endregion
   //#region UNDO REDO
 
@@ -156,6 +161,19 @@ const RegionViewer = (props) => {
       DeleteLandmark
     )
 
+    props.tps.addTransaction(transaction)
+    tpsRedo()
+  }
+
+  const editRegionLandmark = (prev, value) => {
+    console.log(prev, value)
+    let transaction = new EditRegionLandmark_Transaction(
+      ids,
+      data._id,
+      prev,
+      value,
+      UpdateLandmark
+    )
     props.tps.addTransaction(transaction)
     tpsRedo()
   }
@@ -310,6 +328,7 @@ const RegionViewer = (props) => {
                         landmarks={landmarks}
                         editable={editable}
                         deleteLandmark={handleDeleteLandmark}
+                        editRegionLandmark={editRegionLandmark}
                       ></LandmarkContents>
                     </div>
                     <div className='add-landmark'>

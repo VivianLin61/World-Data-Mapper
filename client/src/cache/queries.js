@@ -83,3 +83,4 @@ export const GET_LANDMARKS = gql`
     getLandmarks(ids: $ids, regionId: $regionId)
   }
 `
+

@@ -12,6 +12,7 @@ const LandmarkContents = (props) => {
           deleteLandmark={props.deleteLandmark}
           key={index}
           editable={props.editable}
+          editRegionLandmark={props.editRegionLandmark}
         />
       ))}
     </div>

@@ -1,6 +1,5 @@
 const ObjectId = require('mongoose').Types.ObjectId
 const Map = require('../models/map-model')
-const Region = require('../models/region-model')
 let queryRegions
 let queryRegion
 let landmarks
@@ -113,7 +112,6 @@ module.exports = {
       }
 
       let editable = landmarks[0]
-      // landmarks.push(editable.length.toString())
       let landmarkObj = { landmarks: landmarks.flat(), editable: editable }
 
       return JSON.stringify(landmarkObj)
@@ -348,9 +346,47 @@ module.exports = {
       )
       return 'args'
     },
+
+    updateLandmark: async (_, args) => {
+      const { ids, value, regionId, prev } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+      // console.log(args)
+      if (ids.length == 1) {
+        mapSubregions.map((region) => {
+          if (region._id.toString() == regionId) {
+            if (region.landmarks.length > 0) {
+              let idx = region.landmarks.indexOf(prev)
+              region.landmarks[idx] = value
+            }
+          }
+        })
+      } else {
+        updateDbLandmark(mapSubregions, regionId, landmark)
+      }
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+      return 'args'
+    },
   },
 }
 
+function updateDbLandmark(arr, regionId, value, prev) {
+  arr.forEach((i) => {
+    if (i._id == regionId) {
+      if (i.landmarks) {
+        let idx = i.landmarks.indexOf(prev)
+        i.landmarks[idx] = value
+      }
+    } else {
+      deleteDbLandmark(i.subregions, regionId, landmark)
+    }
+  })
+}
 function deleteDbLandmark(arr, regionId, landmark) {
   arr.forEach((i) => {
     if (i._id == regionId) {

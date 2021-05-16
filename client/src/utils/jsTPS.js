@@ -67,6 +67,42 @@ export class UpdateRegion_Transaction extends jsTPS_Transaction {
   }
 }
 
+export class EditRegionLandmark_Transaction extends jsTPS_Transaction {
+  constructor(idPath, regionId, prev, update, callback) {
+    super()
+    this.idPath = idPath
+    this.regionId = regionId
+    this.prev = prev
+    this.update = update
+    this.updateFunction = callback
+  }
+
+  async doTransaction() {
+    const { data } = await this.updateFunction({
+      variables: {
+        regionId: this.regionId,
+        ids: this.idPath,
+        value: this.update,
+        prev: this.prev,
+      },
+    })
+    return data
+  }
+
+  async undoTransaction() {
+    const { data } = await this.updateFunction({
+      variables: {
+        regionId: this.regionId,
+        ids: this.idPath,
+        value: this.prev,
+        prev: this.update,
+      },
+    })
+    if (data) console.log(data)
+    return data
+  }
+}
+
 export class EditRegion_Transaction extends jsTPS_Transaction {
   constructor(idPath, regionId, field, prev, update, callback) {
     super()

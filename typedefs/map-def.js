@@ -42,7 +42,12 @@ const typeDefs = gql`
     ): Boolean
     addLandmark(ids: [String!], landmark: String!, regionId: String!): String
     deleteLandmark(ids: [String!], landmark: String!, regionId: String!): String
-    updateLandmark(ids: String!, landmark: String!, name: String!): String!
+    updateLandmark(
+      ids: [String!]
+      value: String!
+      regionId: String!
+      prev: String!
+    ): String!
   }
 
   input MapInput {
