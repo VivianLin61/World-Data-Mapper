@@ -271,7 +271,12 @@ body {
   width: 100%;
   height: 100%;
 }
-
+.viewer-left {
+  height: 585.39px;
+}
+.viewer-right {
+  height: 585.39px;
+}
 .maps-right {
   height: 550px;
 }
@@ -286,7 +291,9 @@ body {
   display: flex;
 }
 
-.maps-image-container,
+.maps-image-container {
+  height: 90%;
+}
 .landmarks-list-container {
   height: 90%;
 }

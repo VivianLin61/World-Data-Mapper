@@ -142,6 +142,7 @@ const RegionViewer = (props) => {
 
     props.tps.addTransaction(transaction)
     tpsRedo()
+    setLandmark('')
   }
 
   const handleDeleteLandmark = async (deletedLandmark) => {
@@ -160,7 +161,7 @@ const RegionViewer = (props) => {
   }
 
   const handleLandmarkEdit = (e) => {
-    setLandmark(e.target.value)
+    setLandmark('')
   }
   const navigateBackToRegionSpreadshhet = (e) => {
     history.push(`${props.location.state.url}/${parent._id}`, { data: parent })
