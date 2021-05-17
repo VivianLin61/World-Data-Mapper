@@ -189,8 +189,13 @@ const TableEntry = (props) => {
         )}
       </WCol>
       <WCol size='1'>
-        <div className='table-text'>
-          <img alt='no-flag' className='spreadsheet-flag' src={thisFlag} />
+        <div>
+          <img
+            style={{ height: '40px' }}
+            alt='no-flag'
+            className='spreadsheet-flag'
+            src={thisFlag}
+          />
         </div>
       </WCol>
       <WCol size='4'>

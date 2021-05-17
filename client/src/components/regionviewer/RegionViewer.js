@@ -46,6 +46,19 @@ const RegionViewer = (props) => {
     awaitRefetchQueries: true,
   }
 
+  const importAllFlags = (dir) => {
+    let flags = {}
+    dir.keys().map((flag, index) => {
+      flags[flag.replace('./', '')] = dir(flag)
+    })
+    return flags
+  }
+
+  const flags = importAllFlags(
+    require.context('./The World', false, /\.(png|jpe?g|svg)$/)
+  )
+
+  const thisFlag = flags[data.name + ' Flag.png']
   const [AddLandmark] = useMutation(ADD_LANDMARK, mutationOptions)
   const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
   const [UpdateLandmark] = useMutation(UPDATE_LANDMARK, mutationOptions)
@@ -359,7 +372,13 @@ const RegionViewer = (props) => {
               <WRow>
                 <WCol size='6'>
                   <div className='viewer-left'>
-                    <div className='region-flag-container'></div>
+                    <div className='region-flag-container'>
+                      <img
+                        alt='no-flag'
+                        className='spreadsheet-flag'
+                        src={thisFlag}
+                      />
+                    </div>
                     <div className='region-details-container'>
                       <div className='region-details'>
                         Region Name: {data.name}

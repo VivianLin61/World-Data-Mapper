@@ -146,15 +146,14 @@ const RegionSpreadSheet = (props) => {
   //#endregion
 
   const refetchRegionsAndAncestor = async (refetchR) => {
-    const { data: RRData } = await refetchR()
-    if (RRData) {
-      let newRegions = []
-      for (let region of RRData.getAllRegions) {
-        newRegions.push(region)
-      }
-
-      regions = newRegions
-    }
+    // const { data: RRData } = await refetchR()
+    // if (RRData) {
+    //   let newRegions = []
+    //   for (let region of RRData.getAllRegions) {
+    //     newRegions.push(region)
+    //   }
+    //   regions = newRegions
+    // }
   }
 
   if (props.location.state.refetch) {
