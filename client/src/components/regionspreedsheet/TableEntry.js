@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
 import { useHistory } from 'react-router-dom'
 import Hotkeys from 'react-hot-keys'
 
 const TableEntry = (props) => {
   let history = useHistory()
-
   const importAllFlags = (dir) => {
     let flags = {}
     dir.keys().map((flag, index) => {
@@ -17,8 +16,6 @@ const TableEntry = (props) => {
   const flags = importAllFlags(
     require.context('./The World', false, /\.(png|jpe?g|svg)$/)
   )
-
-  // console.log(flags)
 
   const thisFlag = flags[props.data.name + ' Flag.png']
 
@@ -32,6 +29,23 @@ const TableEntry = (props) => {
   const [editingName, toggleNameEdit] = useState(false)
   const [editingCapital, toggleCapitalEdit] = useState(false)
   const [editingLeader, toggleLeaderEdit] = useState(false)
+  // const handleNavigationUpAndDown = (field) => {
+  //   if (field == 'name') {
+  //     toggleNameEdit(true)
+  //   } else if (field == 'capital') {
+  //     toggleCapitalEdit(true)
+  //   } else if (field == 'ledaer') {
+  //     toggleLeaderEdit(true)
+  //   }
+  // }
+  // if (props.activeField) {
+  //   handleNavigationUpAndDown(props.activeField)
+  // }
+
+  if (props.active) {
+    console.log(props.index)
+    console.log(props.activeField)
+  }
 
   const handleNameEdit = (e) => {
     toggleNameEdit(false)
@@ -40,6 +54,8 @@ const TableEntry = (props) => {
     if (newName !== prevName) {
       props.editRegion(data._id, 'name', newName, prevName)
     }
+    props.setActiveField('')
+    props.setCursor(-1)
   }
 
   const handleCapitalEdit = (e) => {
@@ -49,6 +65,8 @@ const TableEntry = (props) => {
     if (newCapital !== prevCapital) {
       props.editRegion(data._id, 'capital', newCapital, prevCapital)
     }
+    props.setActiveField('')
+    props.setCursor(-1)
   }
 
   const handleLeaderEdit = (e) => {
@@ -58,6 +76,8 @@ const TableEntry = (props) => {
     if (newLeader !== prevLeader) {
       props.editRegion(data._id, 'leader', newLeader, prevLeader)
     }
+    props.setActiveField('')
+    props.setCursor(-1)
   }
 
   const goToSubRegion = (e) => {
@@ -81,34 +101,86 @@ const TableEntry = (props) => {
     })
   }
 
+  const handleEditing = (field) => {
+    if (field == 'name') {
+      props.navigateUpAndDown(props.index, 'name')
+      // props.setCursor(props.index)
+      // props.setActiveField('name')
+    }
+  }
   const handleNavigate = (field) => {
     if (field == 'name') {
-      editingName(true)
-      editingCapital(false)
-      editingLeader(false)
+      toggleNameEdit(true)
+      toggleCapitalEdit(false)
+      toggleLeaderEdit(false)
     }
     if (field == 'capital') {
-      editingName(false)
-      editingCapital(true)
-      editingLeader(false)
+      toggleNameEdit(false)
+      toggleCapitalEdit(true)
+      toggleLeaderEdit(false)
     }
     if (field == 'leader') {
-      editingName(false)
-      editingCapital(false)
-      editingLeader(true)
+      toggleNameEdit(false)
+      toggleCapitalEdit(false)
+      toggleLeaderEdit(true)
     }
-    console.log('here')
   }
+
+  const editNavigation = (e) => {
+    if (e.key == 'ArrowLeft') {
+      if (editingCapital || (props.active && props.activeField == 'capital')) {
+        handleNavigate('name')
+      } else if (
+        editingLeader ||
+        (props.active && props.activeField == 'leader')
+      ) {
+        handleNavigate('capital')
+      }
+    } else if (e.key == 'ArrowRight') {
+      if (editingName || (props.active && props.activeField == 'name')) {
+        console.log('navigate')
+        handleNavigate('capital')
+      } else if (
+        editingCapital ||
+        (props.active && props.activeField == 'capital')
+      ) {
+        handleNavigate('leader')
+      }
+    }
+    // } else if (e.key === 'ArrowDown') {
+    //   if (editingCapital || (props.active && props.activeField == 'capital')) {
+    //     // props.navigateUpAndDown(e, 1, 'capital', props.index)
+    //   } else if (editingName || (props.active && props.activeField == 'name')) {
+    //     props.navigateUpAndDown(e, 1, 'name', props.index)
+    //   } else if (
+    //     editingLeader ||
+    //     (props.active && props.activeField == 'leader')
+    //   ) {
+    //     props.navigateUpAndDown(e, 1, 'leader', props.index)
+    //   }
+    // } else if (e.key === 'ArrowUp') {
+    //   if (editingCapital) {
+    //     props.navigateUpAndDown(e, -1, 'capital', props.index)
+    //   } else if (editingName) {
+    //     props.navigateUpAndDown(e, -1, 'name', props.index)
+    //   } else if (editingLeader) {
+    //     props.navigateUpAndDown(e, -1, 'leader', props.index)
+    //   }
+    // }
+  }
+  useEffect(() => {
+    document.addEventListener('keydown', editNavigation, false)
+    return () => {
+      document.removeEventListener('keydown', editNavigation, false)
+    }
+  })
+
   return (
     <WRow className='table-entry'>
       <WCol size='2'>
-        <Hotkeys
-          keyName='LeftArrow'
-          onKeyDown={() => handleNavigate('name')}
-        ></Hotkeys>
-        {editingName ? (
+        {editingName || props.active ? (
           <WInput
-            className='table-input'
+            className={'table-input'}
             onBlur={handleNameEdit}
             autoFocus={true}
             defaultValue={name}
@@ -118,7 +190,7 @@ const TableEntry = (props) => {
             inputclass='table-input-class'
           />
         ) : (
-          <div className='table-text' onClick={goToSubRegion}>
+          <div className={'table-text'} onClick={goToSubRegion}>
             {name}
           </div>
         )}
@@ -137,7 +209,10 @@ const TableEntry = (props) => {
           <WCol size='1'>
             <WButton
               className='name-text'
-              onClick={() => toggleNameEdit(!editingName)}
+              onClick={() => {
+                toggleNameEdit(!editingName)
+                handleEditing('name')
+              }}
             >
               <i className='name-button material-icons'>mode_edit</i>
             </WButton>
@@ -145,7 +220,9 @@ const TableEntry = (props) => {
         </WRow>
       </WCol>
       <WCol size='2'>
-        {editingCapital || capital === '' ? (
+        {editingCapital ||
+        (props.active && props.activeField == 'capital') ||
+        capital === '' ? (
           <WInput
             className='table-input'
             onBlur={handleCapitalEdit}
@@ -168,7 +245,7 @@ const TableEntry = (props) => {
       </WCol>
 
       <WCol size='2'>
-        {editingLeader ? (
+        {editingLeader || (props.active && props.activeField == 'leader') ? (
           <WInput
             className='table-input'
             onBlur={handleLeaderEdit}

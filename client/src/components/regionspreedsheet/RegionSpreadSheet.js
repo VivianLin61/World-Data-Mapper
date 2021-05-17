@@ -32,6 +32,7 @@ const RegionSpreadSheet = (props) => {
 
   const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
   const [regionToDeleteParams, setRegionToDeleteParams] = useState({})
+  // const [updateParent, setUpdateParent] = useState(null)
 
   const setShowDeleteRegion = async (e) => {
     toggleShowDeleteRegion(false)
@@ -66,13 +67,6 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
-
-  const disableUndoRedo = () => {
-    document.getElementsByClassName('undo-button')[0].className +=
-      ' disable-list-item-control'
-    document.getElementsByClassName('redo-button')[0].className +=
-      ' disable-list-item-control'
-  }
 
   //#region QUERY ANCESTORS
   const {
@@ -145,7 +139,13 @@ const RegionSpreadSheet = (props) => {
   }
   //#endregion
 
-  const refetchRegionsAndAncestor = async (refetchR) => {
+  const refetchRegionsAndAncestor = async (prevIds, deleteId) => {
+    await DeleteSubRegion({
+      variables: { regionId: deleteId, ids: prevIds, index: 0 },
+    })
+
+    refetchAll()
+
     // const { data: RRData } = await refetchR()
     // if (RRData) {
     //   let newRegions = []
@@ -157,12 +157,19 @@ const RegionSpreadSheet = (props) => {
   }
 
   if (props.location.state.refetch) {
-    refetchRegionsAndAncestor(refetchAll)
+    let prevIds = props.location.state.ids
+    let deleteId = props.location.state.regionId
+
+    refetchRegionsAndAncestor(prevIds, deleteId)
   }
 
-  if (props.refetchRegions) {
-    refetchRegionsAndAncestor(props.refetchRegions)
-  }
+  // if (props.updateParent) {
+  //   // console.log('update')
+  //   refetchRegionsAndAncestor(
+  //     props.updateParent.prevIds,
+  //     props.updateParent.deleteId
+  //   )
+  // }
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -354,9 +361,9 @@ const RegionSpreadSheet = (props) => {
                       editRegion={editRegion}
                       showDeleteRegionModal={showDeleteRegionModal}
                       ids={ids}
-                      //   undo={tpsUndo}
-                      //   redo={tpsRedo}
                       sort={sort}
+                      // editBelow={editBelow}
+                      // editAbove={editAbove}
                     />
                   </div>
                 </WCard>
@@ -383,7 +390,6 @@ const RegionSpreadSheet = (props) => {
               user={props.user}
               match={match}
               location={location}
-              refetchRegions={refetchAll}
             />
           )}
         />

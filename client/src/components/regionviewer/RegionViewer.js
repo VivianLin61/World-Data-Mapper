@@ -22,6 +22,7 @@ import LandmarkContents from '../regionviewer/LandmarkContents'
 import {
   UpdateLandmark_Transaction,
   EditRegionLandmark_Transaction,
+  ChangeParent_Transaction,
 } from '../../utils/jsTPS'
 
 const RegionViewer = (props) => {
@@ -30,18 +31,23 @@ const RegionViewer = (props) => {
   let parent
   let ancestors = props.location.state.ancestors
   let url = props.location.state.url
-  let ids = props.location.state.ids
+  // let ids = props.location.state.ids
   let prevSibling
   let nextSibling
   let landmarks
   let editable
+  let prevIds = props.location.state.ids
   let parents = []
   const [landmark, setLandmark] = useState('')
   const [editingParent, toggleParentEdit] = useState(false)
+  const [ids, setIds] = useState(props.location.state.ids)
+  const [prevParent, setPrevParent] = useState({})
+  const [refetch, toggleRefecth] = useState(false)
   const mutationOptions = {
     refetchQueries: [
       { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
       { query: GET_REGION, variables: { ids: ids } },
+      { query: GET_REGION, variables: { ids: [...ids, data._id] } },
     ],
     awaitRefetchQueries: true,
   }
@@ -127,6 +133,26 @@ const RegionViewer = (props) => {
   //#endregion
 
   //#region GET PARENT
+  // const {
+  //   loading: loadingRegion,
+  //   error: regionError,
+  //   data: regionData,
+  // } = useQuery(GET_REGION, {
+  //   variables: { ids: [...ids, data._id] },
+  // })
+
+  // if (loadingRegion) {
+  //   console.log(loadingRegion, 'loading ancestors')
+  // }
+  // if (regionError) {
+  //   console.log(regionError, 'error loading ancestors')
+  // }
+  // if (regionData) {
+  //   data = regionData.getRegion
+  // }
+  //#endregion
+
+  //#region GET REGION
   const {
     loading: loadingParent,
     error: parentError,
@@ -162,6 +188,7 @@ const RegionViewer = (props) => {
       }
     }
   }
+
   //#endregion
 
   const handleAddLankmark = async () => {
@@ -220,21 +247,6 @@ const RegionViewer = (props) => {
       refetch: true,
     })
   }
-
-  const navigateToAncestorRegion = (region, index) => {
-    let path = url
-    path = path.split('/')
-    path = path.splice(0, 2)
-    for (let i = 0; i < ids.length; i++) {
-      if (i === index + 1) {
-        break
-      }
-      path.push(ids[i])
-    }
-    path = path.toString()
-    path = path.replaceAll(',', '/')
-    history.push(path, { data: region, refetch: true })
-  }
   const goToNextSibling = (e) => {
     if (nextSibling) {
       let path = url
@@ -255,7 +267,7 @@ const RegionViewer = (props) => {
     if (prevSibling) {
       let path = url
       path = path.split('/')
-      path.push(nextSibling._id)
+      path.push(prevSibling._id)
       path = path.toString()
       path = path.replaceAll(',', '/')
       history.push(`/regionviewer/${prevSibling._id}`, {
@@ -270,22 +282,58 @@ const RegionViewer = (props) => {
 
   const handleParentEdit = async (e) => {
     toggleParentEdit(false)
+
     const index = e.target.selectedIndex
     const newParent = parents[index]
     const prevParent = parent
-    const prevIds = ids
-    ids.pop()
-    ids.push(newParent._id)
-    parent = newParent
-    await ChangeParent({
-      variables: {
-        ids: prevIds,
-        regionId: data._id,
-        prevParentId: prevParent._id,
-        newParentId: newParent._id,
-      },
+    if (newParent._id != prevParent._id) {
+      setPrevParent(parent)
+      toggleRefecth(true)
+      ids.pop()
+      ids.push(newParent._id)
+      setIds(ids)
+      let transaction = new ChangeParent_Transaction(
+        prevIds,
+        data._id,
+        prevParent._id,
+        newParent._id,
+        ChangeParent
+      )
+      props.tps.addTransaction(transaction)
+      tpsRedo()
+      // await ChangeParent({
+      //   variables: {
+      //     ids: prevIds,
+      //     regionId: data._id,
+      //     prevParentId: prevParent._id,
+      //     newParentId: newParent._id,
+      //   },
+      // })
+    }
+  }
+
+  const navigateToAncestorRegion = (region, index) => {
+    let path = url
+    path = path.split('/')
+    path = path.splice(0, 2)
+
+    for (let i = 0; i < ids.length; i++) {
+      if (i === index + 1) {
+        break
+      }
+      path.push(ids[i])
+    }
+    path = path.toString()
+    path = path.replaceAll(',', '/')
+    let temp = ids.splice(0, (ids.length = 1))
+    temp = [...temp, prevParent._id]
+    history.push(path, {
+      data: region,
+      refetch: refetch,
+      ids: temp,
+      regionId: data._id,
+      prevParent: prevParent,
     })
-    enableUndo()
   }
 
   const enableUndo = () => {

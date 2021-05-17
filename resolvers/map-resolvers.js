@@ -414,9 +414,9 @@ function updateParent(arr, regionId, prevParentId, newParentId) {
         (region) => region._id.toString() === regionId
       )
       child = children[0]
-      i.subregions = i.subregions.filter(
-        (region) => region._id.toString() !== regionId
-      )
+      // i.subregions = i.subregions.filter(
+      //   (region) => region._id.toString() !== regionId
+      // )
     } else {
       updateParent(i.subregions, regionId, prevParentId, newParentId)
     }
