@@ -89,13 +89,27 @@ const RegionViewer = (props) => {
       tpsRedo()
     }
   }
+
   const tpsUndo = async () => {
-    const retVal = await props.tps.undoTransaction()
-    return retVal
+    const ret = await props.tps.undoTransaction()
+    if (props.tps.getUndoSize() === 0) {
+      document
+        .getElementsByClassName('undo-button')[0]
+        .classList.add('disable-list-item-control')
+    }
+    enableRedo()
+    return ret
   }
+
   const tpsRedo = async () => {
-    const retVal = await props.tps.doTransaction()
-    return retVal
+    const ret = await props.tps.doTransaction()
+    if (props.tps.getRedoSize() === 0) {
+      document
+        .getElementsByClassName('redo-button')[0]
+        .classList.add('disable-list-item-control')
+    }
+    enableUndo()
+    return ret
   }
   //#endregion
 
@@ -152,6 +166,7 @@ const RegionViewer = (props) => {
     tpsRedo()
     setLandmark('')
     document.getElementsByClassName('landmark-input')[0].firstChild.value = ''
+    enableUndo()
   }
 
   const handleDeleteLandmark = async (deletedLandmark) => {
@@ -167,6 +182,7 @@ const RegionViewer = (props) => {
 
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
 
   const editRegionLandmark = (prev, value) => {
@@ -179,6 +195,7 @@ const RegionViewer = (props) => {
     )
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
 
   const handleLandmarkEdit = (e) => {
@@ -255,8 +272,20 @@ const RegionViewer = (props) => {
         newParentId: newParent._id,
       },
     })
+    enableUndo()
   }
 
+  const enableUndo = () => {
+    document
+      .getElementsByClassName('undo-button')[0]
+      .classList.remove('disable-list-item-control')
+  }
+
+  const enableRedo = () => {
+    document
+      .getElementsByClassName('redo-button')[0]
+      .classList.remove('disable-list-item-control')
+  }
   return (
     <WLayout wLayout='header'>
       <WLHeader>
@@ -313,10 +342,13 @@ const RegionViewer = (props) => {
         <div>
           <WCard className='viewer-container' wLayout='header-content'>
             <WLHeader className='viewer-header'>
-              <WButton className={'undo-button'} onClick={tpsUndo}>
-                <i className='material-icons'>undo</i>
+              <WButton
+                className={'undo-button disable-list-item-control'}
+                onClick={tpsUndo}
+              >
+                <i className='material-icons '>undo</i>
               </WButton>
-              <WButton className={'redo-button'}>
+              <WButton className={'redo-button disable-list-item-control'}>
                 <i className='material-icons' onClick={tpsRedo}>
                   redo
                 </i>

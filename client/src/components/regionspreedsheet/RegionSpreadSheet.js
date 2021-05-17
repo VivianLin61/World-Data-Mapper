@@ -42,6 +42,7 @@ const RegionSpreadSheet = (props) => {
     setRegionToDeleteParams({ regionParams })
     setShowDeleteRegion(false)
   }
+
   //#region QUERY REGIONS
   const {
     loading: loadingAll,
@@ -65,6 +66,13 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
+
+  const disableUndoRedo = () => {
+    document.getElementsByClassName('undo-button')[0].className +=
+      ' disable-list-item-control'
+    document.getElementsByClassName('redo-button')[0].className +=
+      ' disable-list-item-control'
+  }
 
   //#region QUERY ANCESTORS
   const {
@@ -116,11 +124,23 @@ const RegionSpreadSheet = (props) => {
 
   const tpsUndo = async () => {
     const ret = await props.tps.undoTransaction()
+    if (props.tps.getUndoSize() === 0) {
+      document
+        .getElementsByClassName('undo-button')[0]
+        .classList.add('disable-list-item-control')
+    }
+    enableRedo()
     return ret
   }
 
   const tpsRedo = async () => {
     const ret = await props.tps.doTransaction()
+    if (props.tps.getRedoSize() === 0) {
+      document
+        .getElementsByClassName('redo-button')[0]
+        .classList.add('disable-list-item-control')
+    }
+    enableUndo()
     return ret
   }
   //#endregion
@@ -169,6 +189,7 @@ const RegionSpreadSheet = (props) => {
     )
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
   const deleteRegion = async (region, id, index) => {
     const deletedRegion = {
@@ -195,6 +216,7 @@ const RegionSpreadSheet = (props) => {
     )
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
 
   const editRegion = async (regionId, field, value, prev) => {
@@ -208,12 +230,14 @@ const RegionSpreadSheet = (props) => {
     )
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
 
   const sort = async (criteria) => {
     let transaction = new SortRegions_Transaction(ids, criteria, SortRegions)
     props.tps.addTransaction(transaction)
     tpsRedo()
+    enableUndo()
   }
 
   const navigateToAncestorRegion = (region, index) => {
@@ -234,14 +258,15 @@ const RegionSpreadSheet = (props) => {
   }
 
   const enableUndo = () => {
+    console.log('remove undo')
     document
-      .getElementById('undo-button')
+      .getElementsByClassName('undo-button')[0]
       .classList.remove('disable-list-item-control')
   }
 
   const enableRedo = () => {
     document
-      .getElementById('redo-button')
+      .getElementsByClassName('redo-button')[0]
       .classList.remove('disable-list-item-control')
   }
 
@@ -296,10 +321,15 @@ const RegionSpreadSheet = (props) => {
                     >
                       <i className='material-icons'>add</i>
                     </WButton>
-                    <WButton className={'undo-button'} onClick={tpsUndo}>
+                    <WButton
+                      className={'undo-button disable-list-item-control'}
+                      onClick={tpsUndo}
+                    >
                       <i className='material-icons'>undo</i>
                     </WButton>
-                    <WButton className={'redo-button'}>
+                    <WButton
+                      className={'redo-button disable-list-item-control'}
+                    >
                       <i className='material-icons' onClick={tpsRedo}>
                         redo
                       </i>
