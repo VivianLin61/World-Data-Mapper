@@ -221,6 +221,46 @@ export class UpdateLandmark_Transaction extends jsTPS_Transaction {
     return data
   }
 }
+
+export class ChangeParent_Transaction extends jsTPS_Transaction {
+  constructor(idPath, regionId, prevParentId, newParentId, callback) {
+    super()
+    this.idPath = idPath
+    this.regionId = regionId
+    this.prevParentId = prevParentId
+    this.newParentId = newParentId
+    this.changeParent = callback
+  }
+  async doTransaction() {
+    const { data } = await this.changeParent({
+      variables: {
+        ids: this.idPath,
+        regionId: this.regionId,
+        prevParentId: this.prevParentId,
+        newParentId: this.newParentId,
+      },
+    })
+    if (data) {
+      console.log(data)
+      return data
+    }
+  }
+
+  async undoTransaction() {
+    const { data } = await this.changeParent({
+      variables: {
+        ids: this.idPath,
+        regionId: this.regionId,
+        prevParentId: this.newParentId,
+        newParentId: this.prevParentId,
+      },
+    })
+    if (data) {
+      console.log(data)
+      return data
+    }
+  }
+}
 export class jsTPS {
   constructor() {
     // THE TRANSACTION STACK
