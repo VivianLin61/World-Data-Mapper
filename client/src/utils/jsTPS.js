@@ -114,7 +114,6 @@ export class EditRegion_Transaction extends jsTPS_Transaction {
   }
 
   async doTransaction() {
-    console.log('do this')
     const { data } = await this.updateFunction({
       variables: {
         regionId: this.regionId,
@@ -127,7 +126,6 @@ export class EditRegion_Transaction extends jsTPS_Transaction {
   }
 
   async undoTransaction() {
-    console.log('undo: ', this.prev, this.update)
     const { data } = await this.updateFunction({
       variables: {
         regionId: this.regionId,
@@ -149,7 +147,6 @@ export class SortRegions_Transaction extends jsTPS_Transaction {
     this.updateFunction = callback
   }
   async doTransaction() {
-    // console.log(this.idPath, this.criteria)
     const { data } = await this.updateFunction({
       variables: { ids: this.idPath, criteria: this.criteria },
     })

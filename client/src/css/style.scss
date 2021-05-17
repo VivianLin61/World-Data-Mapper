@@ -385,3 +385,8 @@ body {
   padding: 0px 10px !important;
   color: orange !important;
 }
+
+.disable-list-item-control {
+  color: black !important;
+  pointer-events: none;
+}

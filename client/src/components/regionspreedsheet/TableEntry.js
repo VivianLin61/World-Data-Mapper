@@ -1,9 +1,27 @@
 import React, { useState } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
 import { useHistory } from 'react-router-dom'
+import Hotkeys from 'react-hot-keys'
 
 const TableEntry = (props) => {
   let history = useHistory()
+
+  const importAllFlags = (dir) => {
+    let flags = {}
+    dir.keys().map((flag, index) => {
+      flags[flag.replace('./', '')] = dir(flag)
+    })
+    return flags
+  }
+
+  const flags = importAllFlags(
+    require.context('./The World', false, /\.(png|jpe?g|svg)$/)
+  )
+
+  // console.log(flags)
+
+  const thisFlag = flags[props.data.name + ' Flag.png']
+
   const { data } = props
   const name = data.name
   const capital = data.capital
@@ -62,9 +80,32 @@ const TableEntry = (props) => {
       index: props.index,
     })
   }
+
+  const handleNavigate = (field) => {
+    if (field == 'name') {
+      editingName(true)
+      editingCapital(false)
+      editingLeader(false)
+    }
+    if (field == 'capital') {
+      editingName(false)
+      editingCapital(true)
+      editingLeader(false)
+    }
+    if (field == 'leader') {
+      editingName(false)
+      editingCapital(false)
+      editingLeader(true)
+    }
+    console.log('here')
+  }
   return (
     <WRow className='table-entry'>
       <WCol size='2'>
+        <Hotkeys
+          keyName='LeftArrow'
+          onKeyDown={() => handleNavigate('name')}
+        ></Hotkeys>
         {editingName ? (
           <WInput
             className='table-input'
@@ -148,7 +189,9 @@ const TableEntry = (props) => {
         )}
       </WCol>
       <WCol size='1'>
-        <div className='table-text'>No Flag</div>
+        <div className='table-text'>
+          <img alt='no-flag' className='spreadsheet-flag' src={thisFlag} />
+        </div>
       </WCol>
       <WCol size='4'>
         <div className='table-text' onClick={goToRegionViewer}>

@@ -48,6 +48,12 @@ const typeDefs = gql`
       regionId: String!
       prev: String!
     ): String!
+    changeParent(
+      ids: [String!]
+      regionId: String!
+      newParentId: String!
+      prevParentId: String!
+    ): String!
   }
 
   input MapInput {
@@ -64,7 +70,6 @@ const typeDefs = gql`
     leader: String
     parentId: String
     mapId: String
-    # flag: [img]
     landmarks: [String]
     subregions: [RegionInput]
   }

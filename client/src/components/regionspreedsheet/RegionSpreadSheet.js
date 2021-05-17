@@ -24,14 +24,14 @@ import {
 
 const RegionSpreadSheet = (props) => {
   let history = useHistory()
-  let regions = []
+  var regions = []
   var ancestors = []
-
-  const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
-  const [regionToDeleteParams, setRegionToDeleteParams] = useState({})
 
   let ids = props.location.pathname.split('/')
   ids.splice(0, 2)
+
+  const [showDeleteRegion, toggleShowDeleteRegion] = useState(false)
+  const [regionToDeleteParams, setRegionToDeleteParams] = useState({})
 
   const setShowDeleteRegion = async (e) => {
     toggleShowDeleteRegion(false)
@@ -47,6 +47,7 @@ const RegionSpreadSheet = (props) => {
     loading: loadingAll,
     error: errorAll,
     data: dataAll,
+    refetch: refetchAll,
   } = useQuery(GET_DB_REGIONS, {
     variables: { ids },
   })
@@ -64,11 +65,13 @@ const RegionSpreadSheet = (props) => {
     }
   }
   //#endregion
+
   //#region QUERY ANCESTORS
   const {
     loading: loadingAncestors,
     error: errorAncestors,
     data: dataAncestors,
+    refetch: refetchAncestors,
   } = useQuery(GET_ANCESTORS, {
     variables: { ids: ids },
   })
@@ -82,9 +85,11 @@ const RegionSpreadSheet = (props) => {
     ancestors = dataAncestors.getAncestors
   }
   //#endregion
-
   const mutationOptions = {
-    refetchQueries: [{ query: GET_DB_REGIONS, variables: { ids } }],
+    refetchQueries: [
+      { query: GET_DB_REGIONS, variables: { ids } },
+      { query: GET_ANCESTORS, variables: { ids } },
+    ],
     awaitRefetchQueries: true,
   }
 
@@ -93,6 +98,7 @@ const RegionSpreadSheet = (props) => {
   const [UpdateRegionField] = useMutation(UPDATE_SUBREGION, mutationOptions)
   const [SortRegions] = useMutation(SORT_REGIONS, mutationOptions)
   //#region UNDO REDO
+
   useEffect(() => {
     document.addEventListener('keyup', keyboardUndoRedo, false)
     return () => {
@@ -107,6 +113,7 @@ const RegionSpreadSheet = (props) => {
       tpsRedo()
     }
   }
+
   const tpsUndo = async () => {
     const ret = await props.tps.undoTransaction()
     return ret
@@ -118,6 +125,25 @@ const RegionSpreadSheet = (props) => {
   }
   //#endregion
 
+  const refetchRegionsAndAncestor = async (refetchR) => {
+    const { data: RRData } = await refetchR()
+    if (RRData) {
+      let newRegions = []
+      for (let region of RRData.getAllRegions) {
+        newRegions.push(region)
+      }
+
+      regions = newRegions
+    }
+  }
+
+  if (props.location.state.refetch) {
+    refetchRegionsAndAncestor(refetchAll)
+  }
+
+  if (props.refetchRegions) {
+    refetchRegionsAndAncestor(props.refetchRegions)
+  }
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -202,8 +228,23 @@ const RegionSpreadSheet = (props) => {
     }
     path = path.toString()
     path = path.replaceAll(',', '/')
-    history.push(path, { data: region })
+    history.push(path, {
+      data: region,
+    })
   }
+
+  const enableUndo = () => {
+    document
+      .getElementById('undo-button')
+      .classList.remove('disable-list-item-control')
+  }
+
+  const enableRedo = () => {
+    document
+      .getElementById('redo-button')
+      .classList.remove('disable-list-item-control')
+  }
+
   return (
     <>
       {props.match.isExact && (
@@ -263,13 +304,22 @@ const RegionSpreadSheet = (props) => {
                         redo
                       </i>
                     </WButton>
-                    <div>Region Name: {props.location.state.data.name}</div>
+                    <div>
+                      Region Name:{' '}
+                      {props.location.state.data.name
+                        ? props.location.state.data.name
+                        : ''}
+                    </div>
                   </WLHeader>
                   <div className='regions'>
                     <MainContents
                       regions={regions}
                       url={props.match.url}
-                      parent={props.location.state.data}
+                      parent={
+                        props.location.state.data
+                          ? props.location.state.data
+                          : {}
+                      }
                       ancestors={ancestors}
                       deleteRegion={deleteRegion}
                       editRegion={editRegion}
@@ -304,6 +354,7 @@ const RegionSpreadSheet = (props) => {
               user={props.user}
               match={match}
               location={location}
+              refetchRegions={refetchAll}
             />
           )}
         />

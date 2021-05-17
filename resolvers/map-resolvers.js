@@ -3,6 +3,7 @@ const Map = require('../models/map-model')
 let queryRegions
 let queryRegion
 let landmarks
+let child
 module.exports = {
   Query: {
     /**
@@ -315,11 +316,7 @@ module.exports = {
         { subregions: mapSubregions }
       )
     },
-    /**
-     @param   {object} args - a region objectID, landmark name to update, and new landmark
-     @returns {array} the updated landmark array on success, or initial ordering on failure
-   **/
-    updateLandmark: async (_, args) => {},
+
     /**
      @param   {object} args - a region objectID and landmark name
      @returns {array} the sorted region array on success, or initial ordering on failure
@@ -347,13 +344,18 @@ module.exports = {
       return 'args'
     },
 
+    /**
+     @param   {object} args - a region objectID, landmark name to update, and new landmark
+     @returns {array} the updated landmark array on success, or initial ordering on failure
+   **/
+
     updateLandmark: async (_, args) => {
       const { ids, value, regionId, prev } = args
       const mapId = new ObjectId(ids[0])
       const found = await Map.findOne({ _id: mapId })
       if (!found) return 'Map not found'
       let mapSubregions = found.subregions
-      // console.log(args)
+
       if (ids.length == 1) {
         mapSubregions.map((region) => {
           if (region._id.toString() == regionId) {
@@ -372,7 +374,53 @@ module.exports = {
       )
       return 'args'
     },
+    changeParent: async (_, args) => {
+      const { ids, regionId, prevParentId, newParentId } = args
+      const mapId = new ObjectId(ids[0])
+      const found = await Map.findOne({ _id: mapId })
+      if (!found) return 'Map not found'
+      let mapSubregions = found.subregions
+
+      if (ids.length > 1) {
+        updateParent(mapSubregions, regionId, prevParentId, newParentId)
+        addNewChild(mapSubregions, newParentId, child)
+      }
+
+      //delete the old elemen
+      //insert the old element at the new parent.
+      const updated = await Map.updateOne(
+        { _id: mapId },
+        { subregions: mapSubregions }
+      )
+      return ''
+    },
   },
+}
+function addNewChild(arr, newParentId, child) {
+  arr.forEach((i) => {
+    if (i._id == newParentId) {
+      if (child) {
+        i.subregions.push(child)
+      }
+    } else {
+      addNewChild(i.subregions, newParentId, child)
+    }
+  })
+}
+function updateParent(arr, regionId, prevParentId, newParentId) {
+  arr.forEach((i) => {
+    if (i._id == prevParentId) {
+      let children = i.subregions.filter(
+        (region) => region._id.toString() === regionId
+      )
+      child = children[0]
+      i.subregions = i.subregions.filter(
+        (region) => region._id.toString() !== regionId
+      )
+    } else {
+      updateParent(i.subregions, regionId, prevParentId, newParentId)
+    }
+  })
 }
 
 function updateDbLandmark(arr, regionId, value, prev) {

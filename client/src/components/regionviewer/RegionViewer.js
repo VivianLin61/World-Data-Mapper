@@ -17,7 +17,7 @@ import {
 } from 'wt-frontend'
 import WInput from 'wt-frontend/build/components/winput/WInput'
 import { GET_REGION, GET_LANDMARKS } from '../../cache/queries'
-import { UPDATE_LANDMARK } from '../../cache/mutations.js'
+import { UPDATE_LANDMARK, CHANGE_PARENT } from '../../cache/mutations.js'
 import LandmarkContents from '../regionviewer/LandmarkContents'
 import {
   UpdateLandmark_Transaction,
@@ -38,6 +38,18 @@ const RegionViewer = (props) => {
   let parents = []
   const [landmark, setLandmark] = useState('')
   const [editingParent, toggleParentEdit] = useState(false)
+  const mutationOptions = {
+    refetchQueries: [
+      { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
+      { query: GET_REGION, variables: { ids: ids } },
+    ],
+    awaitRefetchQueries: true,
+  }
+
+  const [AddLandmark] = useMutation(ADD_LANDMARK, mutationOptions)
+  const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
+  const [UpdateLandmark] = useMutation(UPDATE_LANDMARK, mutationOptions)
+  const [ChangeParent] = useMutation(CHANGE_PARENT, mutationOptions)
 
   //#region Get Landmarks
   const {
@@ -60,17 +72,6 @@ const RegionViewer = (props) => {
     landmarks = landmarks.sort()
     editable = landmarkData.editable
   }
-
-  const mutationOptions = {
-    refetchQueries: [
-      { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
-    ],
-    awaitRefetchQueries: true,
-  }
-
-  const [AddLandmark] = useMutation(ADD_LANDMARK, mutationOptions)
-  const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
-  const [UpdateLandmark] = useMutation(UPDATE_LANDMARK, mutationOptions)
   //#endregion
   //#region UNDO REDO
 
@@ -134,7 +135,6 @@ const RegionViewer = (props) => {
       }
     }
   }
-
   //#endregion
 
   const handleAddLankmark = async () => {
@@ -185,7 +185,10 @@ const RegionViewer = (props) => {
     setLandmark(e.target.value)
   }
   const navigateBackToRegionSpreadshhet = (e) => {
-    history.push(`${props.location.state.url}/${parent._id}`, { data: parent })
+    history.push(`${props.location.state.url}/${parent._id}`, {
+      data: parent,
+      refetch: true,
+    })
   }
 
   const navigateToAncestorRegion = (region, index) => {
@@ -200,7 +203,7 @@ const RegionViewer = (props) => {
     }
     path = path.toString()
     path = path.replaceAll(',', '/')
-    history.push(path, { data: region })
+    history.push(path, { data: region, refetch: true })
   }
   const goToNextSibling = (e) => {
     if (nextSibling) {
@@ -235,11 +238,23 @@ const RegionViewer = (props) => {
     }
   }
 
-  const handleParentEdit = (e) => {
+  const handleParentEdit = async (e) => {
     toggleParentEdit(false)
-    const newParent = e.target.value ? e.target.value : false
-    const prevParent = parent.name
-    // props.editParent()
+    const index = e.target.selectedIndex
+    const newParent = parents[index]
+    const prevParent = parent
+    const prevIds = ids
+    ids.pop()
+    ids.push(newParent._id)
+    parent = newParent
+    await ChangeParent({
+      variables: {
+        ids: prevIds,
+        regionId: data._id,
+        prevParentId: prevParent._id,
+        newParentId: newParent._id,
+      },
+    })
   }
 
   return (
@@ -344,7 +359,9 @@ const RegionViewer = (props) => {
                               defaultValue={parent.name}
                             >
                               {parents.map((p, index) => (
-                                <option value={p.name}>{p.name}</option>
+                                <option key={index} value={p.name}>
+                                  {p.name}
+                                </option>
                               ))}
                             </select>
                           ) : (
@@ -360,7 +377,10 @@ const RegionViewer = (props) => {
                                   display: 'inline-block',
                                 }}
                                 onClick={() => {
-                                  navigateBackToRegionSpreadshhet()
+                                  navigateToAncestorRegion(
+                                    parent,
+                                    ids.length - 1
+                                  )
                                 }}
                               >
                                 {parent ? parent.name : ''}{' '}
@@ -368,14 +388,18 @@ const RegionViewer = (props) => {
                             </div>
                           )}
                         </div>
-                        <WButton
-                          onClick={() => toggleParentEdit(!editingParent)}
-                          className='edit-parent-btn'
-                        >
-                          <i className='parent-button material-icons'>
-                            mode_edit
-                          </i>
-                        </WButton>
+                        {ids.length > 1 ? (
+                          <WButton
+                            onClick={() => toggleParentEdit(!editingParent)}
+                            className='edit-parent-btn'
+                          >
+                            <i className='parent-button material-icons'>
+                              mode_edit
+                            </i>
+                          </WButton>
+                        ) : (
+                          <div></div>
+                        )}
                       </div>
 
                       <div className='region-details'>
