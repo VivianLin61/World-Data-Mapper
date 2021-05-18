@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { WButton, WInput, WRow, WCol } from 'wt-frontend'
 import { useHistory } from 'react-router-dom'
 import Hotkeys from 'react-hot-keys'
+import errorImg from '../../images/default.png'
 
 const TableEntry = (props) => {
   let history = useHistory()
@@ -269,7 +270,7 @@ const TableEntry = (props) => {
         <div>
           <img
             style={{ height: '40px' }}
-            alt='no-flag'
+            onError={(e) => console.log('error')}
             className='spreadsheet-flag'
             src={thisFlag}
           />

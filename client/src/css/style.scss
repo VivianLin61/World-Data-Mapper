@@ -225,6 +225,7 @@ body {
 
 .undo-redo {
   color: $text-color;
+  pointer-events: visible;
 }
 
 .table-entry-buttons {
@@ -393,4 +394,8 @@ body {
 
 .red {
   color: red !important;
+}
+
+.add-button :hover {
+  background-color: gray;
 }

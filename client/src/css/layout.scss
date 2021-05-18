@@ -344,7 +344,9 @@ body {
   margin-top: 5px;
   margin-left: 10px;
   color: white;
+  pointer-events: visible;
 }
+
 .add-button {
   padding: 0;
   float: left;

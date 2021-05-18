@@ -25,6 +25,7 @@ import {
   ChangeParent_Transaction,
 } from '../../utils/jsTPS'
 
+import errorImg from '../../images/default.png'
 const RegionViewer = (props) => {
   let history = useHistory()
   let data = props.location.state.data
@@ -347,6 +348,7 @@ const RegionViewer = (props) => {
       .getElementsByClassName('redo-button')[0]
       .classList.remove('disable-list-item-control')
   }
+
   return (
     <WLayout wLayout='header'>
       <WLHeader>
@@ -422,7 +424,10 @@ const RegionViewer = (props) => {
                   <div className='viewer-left'>
                     <div className='region-flag-container'>
                       <img
-                        alt='no-flag'
+                        onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = { errorImg }
+                        }}
                         className='spreadsheet-flag'
                         src={thisFlag}
                       />
