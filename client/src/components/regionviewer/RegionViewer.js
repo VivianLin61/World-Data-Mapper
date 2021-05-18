@@ -403,11 +403,11 @@ const RegionViewer = (props) => {
                   <div className='viewer-left'>
                     <div className='region-flag-container'>
                       <img
+                        style={{ height: '250px' }}
                         onError={(e) => {
                           e.target.onerror = null
                           e.target.src = { errorImg }
                         }}
-                        className='spreadsheet-flag'
                         src={thisFlag}
                       />
                     </div>

@@ -392,10 +392,14 @@ body {
   pointer-events: none;
 }
 
-.red {
-  color: red !important;
-}
-
 .add-button :hover {
   background-color: gray;
+}
+
+.viewer-details {
+  background-color: rgb(51, 51, 51) !important;
+}
+
+.maps {
+  background-color: rgb(51, 51, 51) !important;
 }

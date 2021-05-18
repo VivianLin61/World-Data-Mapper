@@ -271,7 +271,6 @@ const TableEntry = (props) => {
           <img
             style={{ height: '40px' }}
             onError={(e) => console.log('error')}
-            className='spreadsheet-flag'
             src={thisFlag}
           />
         </div>
