@@ -41,12 +41,12 @@ const RegionViewer = (props) => {
   const [landmark, setLandmark] = useState('')
   const [editingParent, toggleParentEdit] = useState(false)
   const [ids, setIds] = useState(props.location.state.ids)
-  const [prevParent, setPrevParent] = useState({})
+
   const [refetch, toggleRefecth] = useState(false)
   const mutationOptions = {
     refetchQueries: [
-      { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
-      { query: GET_REGION, variables: { ids: ids } },
+      { query: GET_LANDMARKS, variables: { ids: prevIds, regionId: data._id } },
+      { query: GET_REGION, variables: { ids: prevIds } },
     ],
     awaitRefetchQueries: true,
   }
@@ -79,7 +79,7 @@ const RegionViewer = (props) => {
     data: dataLandmarks,
     refetch: refetchLandmarks,
   } = useQuery(GET_LANDMARKS, {
-    variables: { ids: ids, regionId: data._id },
+    variables: { ids: prevIds, regionId: data._id },
   })
 
   if (loading) {
@@ -144,7 +144,7 @@ const RegionViewer = (props) => {
     data: parentData,
     refetch: refetchParent,
   } = useQuery(GET_REGION, {
-    variables: { ids: ids },
+    variables: { ids: prevIds },
   })
 
   if (loadingParent) {
@@ -273,13 +273,14 @@ const RegionViewer = (props) => {
 
   const handleParentEdit = async (e) => {
     toggleParentEdit(false)
-
     const index = e.target.selectedIndex
     const newParent = parents[index]
     const prevParent = parent
     if (newParent._id != prevParent._id) {
-      setPrevParent(parent)
       toggleRefecth(true)
+      // let newIds = [...ids]
+      // newIds.pop()
+      // newIds.push(newParent._id)
       ids.pop()
       ids.push(newParent._id)
       setIds(ids)
@@ -308,14 +309,10 @@ const RegionViewer = (props) => {
     }
     path = path.toString()
     path = path.replaceAll(',', '/')
-    let temp = ids.splice(0, (ids.length = 1))
-    temp = [...temp, prevParent._id]
+
     history.push(path, {
       data: region,
-      refetch: refetch,
-      ids: temp,
       regionId: data._id,
-      prevParent: prevParent,
     })
   }
 
