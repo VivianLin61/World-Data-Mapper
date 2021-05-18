@@ -283,15 +283,15 @@ const RegionViewer = (props) => {
       ids.pop()
       ids.push(newParent._id)
       setIds(ids)
-      let transaction = new ChangeParent_Transaction(
-        prevIds,
-        data._id,
-        prevParent._id,
-        newParent._id,
-        ChangeParent
-      )
-      props.tps.addTransaction(transaction)
-      tpsRedo()
+
+      await ChangeParent({
+        variables: {
+          ids: prevIds,
+          regionId: data._id,
+          prevParentId: prevParent._id,
+          newParentId: newParent._id,
+        },
+      })
     }
   }
 
