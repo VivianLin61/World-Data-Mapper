@@ -108,6 +108,11 @@ const RegionSpreadSheet = (props) => {
     }
   })
 
+  useEffect(() => {
+    refetchAll()
+    refetchAncestors()
+  }, [props.location])
+
   const keyboardUndoRedo = (e) => {
     if (e.ctrlKey && e.key === 'z') {
       tpsUndo()
@@ -138,15 +143,12 @@ const RegionSpreadSheet = (props) => {
     return ret
   }
   //#endregion
-
   const refetchRegionsAndAncestor = async (prevIds, deleteId) => {
     await DeleteSubRegion({
       variables: { regionId: deleteId, ids: prevIds, index: 0 },
     })
-
     refetchAll()
-
-    // const { data: RRData } = await refetchR()
+    // const { data: RRData } = await refetchAll()
     // if (RRData) {
     //   let newRegions = []
     //   for (let region of RRData.getAllRegions) {
@@ -163,13 +165,6 @@ const RegionSpreadSheet = (props) => {
     refetchRegionsAndAncestor(prevIds, deleteId)
   }
 
-  // if (props.updateParent) {
-  //   // console.log('update')
-  //   refetchRegionsAndAncestor(
-  //     props.updateParent.prevIds,
-  //     props.updateParent.deleteId
-  //   )
-  // }
   const handleAddSubRegion = async (e) => {
     const region = {
       _id: '',
@@ -224,7 +219,6 @@ const RegionSpreadSheet = (props) => {
     tpsRedo()
     enableUndo()
   }
-
   const editRegion = async (regionId, field, value, prev) => {
     let transaction = new EditRegion_Transaction(
       ids,
@@ -238,14 +232,12 @@ const RegionSpreadSheet = (props) => {
     tpsRedo()
     enableUndo()
   }
-
   const sort = async (criteria) => {
     let transaction = new SortRegions_Transaction(ids, criteria, SortRegions)
     props.tps.addTransaction(transaction)
     tpsRedo()
     enableUndo()
   }
-
   const navigateToAncestorRegion = (region, index) => {
     let path = props.match.url
     path = path.split('/')
@@ -262,14 +254,12 @@ const RegionSpreadSheet = (props) => {
       data: region,
     })
   }
-
   const enableUndo = () => {
     console.log('remove undo')
     document
       .getElementsByClassName('undo-button')[0]
       .classList.remove('disable-list-item-control')
   }
-
   const enableRedo = () => {
     document
       .getElementsByClassName('redo-button')[0]
@@ -390,6 +380,7 @@ const RegionSpreadSheet = (props) => {
               user={props.user}
               match={match}
               location={location}
+              refetch={refetchAll}
             />
           )}
         />

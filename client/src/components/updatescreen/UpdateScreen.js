@@ -57,6 +57,7 @@ const UpdateScreen = (props) => {
                 className='logo'
                 wType='texted'
                 hoverAnimation='text-primary'
+                onClick={() => history.push(`/home`, { user: props.user })}
               >
                 World Data Mapper
               </WButton>
@@ -76,7 +77,7 @@ const UpdateScreen = (props) => {
       <WModal className='signup-modal' cover='true' visible={true}>
         <WMHeader
           className='modal-header'
-          onClose={() => history.push('/home')}
+          onClose={() => history.push(`/home`, { user: props.user })}
         >
           Update Account
         </WMHeader>

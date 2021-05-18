@@ -48,7 +48,6 @@ const RegionViewer = (props) => {
     refetchQueries: [
       { query: GET_LANDMARKS, variables: { ids: ids, regionId: data._id } },
       { query: GET_REGION, variables: { ids: ids } },
-      { query: GET_REGION, variables: { ids: [...ids, data._id] } },
     ],
     awaitRefetchQueries: true,
   }
@@ -70,12 +69,16 @@ const RegionViewer = (props) => {
   const [DeleteLandmark] = useMutation(DELETE_LANDMARK, mutationOptions)
   const [UpdateLandmark] = useMutation(UPDATE_LANDMARK, mutationOptions)
   const [ChangeParent] = useMutation(CHANGE_PARENT, mutationOptions)
-
+  useEffect(() => {
+    refetchLandmarks()
+    refetchParent()
+  }, [props.location])
   //#region Get Landmarks
   const {
     loading,
     error,
     data: dataLandmarks,
+    refetch: refetchLandmarks,
   } = useQuery(GET_LANDMARKS, {
     variables: { ids: ids, regionId: data._id },
   })
@@ -133,31 +136,12 @@ const RegionViewer = (props) => {
   }
   //#endregion
 
-  //#region GET PARENT
-  // const {
-  //   loading: loadingRegion,
-  //   error: regionError,
-  //   data: regionData,
-  // } = useQuery(GET_REGION, {
-  //   variables: { ids: [...ids, data._id] },
-  // })
-
-  // if (loadingRegion) {
-  //   console.log(loadingRegion, 'loading ancestors')
-  // }
-  // if (regionError) {
-  //   console.log(regionError, 'error loading ancestors')
-  // }
-  // if (regionData) {
-  //   data = regionData.getRegion
-  // }
-  //#endregion
-
   //#region GET REGION
   const {
     loading: loadingParent,
     error: parentError,
     data: parentData,
+    refetch: refetchParent,
   } = useQuery(GET_REGION, {
     variables: { ids: ids },
   })
@@ -193,21 +177,25 @@ const RegionViewer = (props) => {
   //#endregion
 
   const handleAddLankmark = async () => {
-    let opcode = 1
-    let transaction = new UpdateLandmark_Transaction(
-      ids,
-      opcode,
-      data._id,
-      landmark,
-      AddLandmark,
-      DeleteLandmark
-    )
+    if (landmarks.indexOf(landmark) == -1) {
+      let opcode = 1
+      let transaction = new UpdateLandmark_Transaction(
+        ids,
+        opcode,
+        data._id,
+        landmark,
+        AddLandmark,
+        DeleteLandmark
+      )
 
-    props.tps.addTransaction(transaction)
-    tpsRedo()
-    setLandmark('')
-    document.getElementsByClassName('landmark-input')[0].firstChild.value = ''
-    enableUndo()
+      props.tps.addTransaction(transaction)
+      tpsRedo()
+      setLandmark('')
+      document.getElementsByClassName('landmark-input')[0].firstChild.value = ''
+      enableUndo()
+    } else {
+      alert('Landmark Already Exists')
+    }
   }
 
   const handleDeleteLandmark = async (deletedLandmark) => {
@@ -227,16 +215,18 @@ const RegionViewer = (props) => {
   }
 
   const editRegionLandmark = (prev, value) => {
-    let transaction = new EditRegionLandmark_Transaction(
-      ids,
-      data._id,
-      prev,
-      value,
-      UpdateLandmark
-    )
-    props.tps.addTransaction(transaction)
-    tpsRedo()
-    enableUndo()
+    if (prev != value) {
+      let transaction = new EditRegionLandmark_Transaction(
+        ids,
+        data._id,
+        prev,
+        value,
+        UpdateLandmark
+      )
+      props.tps.addTransaction(transaction)
+      tpsRedo()
+      enableUndo()
+    }
   }
 
   const handleLandmarkEdit = (e) => {
