@@ -143,27 +143,6 @@ const RegionSpreadSheet = (props) => {
     return ret
   }
   //#endregion
-  const refetchRegionsAndAncestor = async (prevIds, deleteId) => {
-    await DeleteSubRegion({
-      variables: { regionId: deleteId, ids: prevIds, index: 0 },
-    })
-    refetchAll()
-    // const { data: RRData } = await refetchAll()
-    // if (RRData) {
-    //   let newRegions = []
-    //   for (let region of RRData.getAllRegions) {
-    //     newRegions.push(region)
-    //   }
-    //   regions = newRegions
-    // }
-  }
-
-  if (props.location.state.refetch) {
-    let prevIds = props.location.state.ids
-    let deleteId = props.location.state.regionId
-
-    refetchRegionsAndAncestor(prevIds, deleteId)
-  }
 
   const handleAddSubRegion = async (e) => {
     const region = {

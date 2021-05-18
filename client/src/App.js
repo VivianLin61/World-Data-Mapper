@@ -13,7 +13,12 @@ const App = () => {
   let user = null
   let transactionStack = new jsTPS()
   let refreshTps = false
-  const { loading, error, data, refetch } = useQuery(queries.GET_DB_USER)
+  const {
+    loading,
+    error,
+    data,
+    refetch: refetchUser,
+  } = useQuery(queries.GET_DB_USER)
 
   if (error) {
     console.log(error)
@@ -38,7 +43,7 @@ const App = () => {
           render={() => (
             <WelcomeScreen
               tps={transactionStack}
-              fetchUser={refetch}
+              fetchUser={refetchUser}
               user={user}
               refreshTps={refreshTps}
             />
@@ -49,7 +54,7 @@ const App = () => {
           exact
           path='/update'
           render={({ match }) => (
-            <UpdateScreen fetchUser={refetch} user={user} match={match} />
+            <UpdateScreen fetchUser={refetchUser} user={user} match={match} />
           )}
         />
         {!user && <Redirect exact from='/home' to={{ pathname: '/welcome' }} />}
@@ -59,7 +64,7 @@ const App = () => {
           render={({ location }) => (
             <HomeScreen
               tps={transactionStack}
-              fetchUser={refetch}
+              fetchUser={refetchUser}
               user={user}
               refreshTps={refreshTps}
               location={location}
@@ -72,7 +77,7 @@ const App = () => {
           render={({ match, location }) => (
             <RegionSpreadSheet
               tps={transactionStack}
-              fetchUser={refetch}
+              fetchUser={refetchUser}
               user={user}
               match={match}
               location={location}
@@ -85,7 +90,7 @@ const App = () => {
           render={({ match, location }) => (
             <RegionViewer
               tps={transactionStack}
-              fetchUser={refetch}
+              fetchUser={refetchUser}
               user={user}
               match={match}
               location={location}

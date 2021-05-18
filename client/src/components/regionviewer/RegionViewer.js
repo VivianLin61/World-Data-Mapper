@@ -32,7 +32,6 @@ const RegionViewer = (props) => {
   let parent
   let ancestors = props.location.state.ancestors
   let url = props.location.state.url
-  // let ids = props.location.state.ids
   let prevSibling
   let nextSibling
   let landmarks
@@ -175,7 +174,6 @@ const RegionViewer = (props) => {
       }
     }
   }
-
   //#endregion
 
   const handleAddLankmark = async () => {
@@ -294,14 +292,6 @@ const RegionViewer = (props) => {
       )
       props.tps.addTransaction(transaction)
       tpsRedo()
-      // await ChangeParent({
-      //   variables: {
-      //     ids: prevIds,
-      //     regionId: data._id,
-      //     prevParentId: prevParent._id,
-      //     newParentId: newParent._id,
-      //   },
-      // })
     }
   }
 
