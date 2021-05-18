@@ -92,7 +92,9 @@ const RegionViewer = (props) => {
   if (dataLandmarks) {
     let landmarkData = JSON.parse(dataLandmarks.getLandmarks)
     landmarks = landmarkData.landmarks
-    landmarks = landmarks.sort()
+    landmarks = landmarks.sort().filter(function (item, pos, ary) {
+      return !pos || item != ary[pos - 1]
+    })
     editable = landmarkData.editable
   }
   //#endregion
