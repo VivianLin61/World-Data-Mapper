@@ -210,10 +210,7 @@ const TableEntry = (props) => {
           <WCol size='1'>
             <WButton
               className='name-text'
-              onClick={() => {
-                toggleNameEdit(!editingName)
-                handleEditing('name')
-              }}
+              onClick={() => toggleCapitalEdit(!editingName)}
             >
               <i className='name-button material-icons'>mode_edit</i>
             </WButton>
@@ -238,7 +235,7 @@ const TableEntry = (props) => {
         ) : (
           <div
             className='table-text'
-            onDoubleClick={() => toggleCapitalEdit(!editingCapital)}
+            onClick={() => toggleCapitalEdit(!editingCapital)}
           >
             {capital}
           </div>
@@ -260,7 +257,7 @@ const TableEntry = (props) => {
         ) : (
           <div
             className='table-text'
-            onDoubleClick={() => toggleLeaderEdit(!editingLeader)}
+            onClick={() => toggleLeaderEdit(!editingLeader)}
           >
             {leader}
           </div>
