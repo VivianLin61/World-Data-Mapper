@@ -3,6 +3,7 @@ CSE 316 Spring 2021 Final Project <br/>
 
 The world data mapper is a full-stack MERN Web application for managing regional data that is organized hierachically. This application also allows users to edit information about each region's name, capital, leader and landmarks. 
 
+![jkmgW2B58F](https://user-images.githubusercontent.com/33815743/118913081-cc100680-b8f6-11eb-8d3a-fc415f48c0c9.gif)
 
 ## Requirements 
 - Must have Node installed
