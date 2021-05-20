@@ -8,7 +8,7 @@ The world data mapper is a full-stack MERN Web application for managing regional
 - Must have Node installed
 - Set up MongoDB URI
 - Enter a random 32 character sequence for the refresh and access token secrets in `.env`
-- 
+
 ## Installation
 - In the root directory run :
   `npm install`
