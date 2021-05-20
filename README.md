@@ -20,5 +20,3 @@ The world data mapper is a full-stack MERN Web application for managing regional
 - View in browser at `http://localhost:8080`
 
 
-## Project Specification
-+ https://www3.cs.stonybrook.edu/~cse316/hw/WorldDataMapperSpec.pdf
