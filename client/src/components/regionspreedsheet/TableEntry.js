@@ -102,13 +102,6 @@ const TableEntry = (props) => {
     })
   }
 
-  const handleEditing = (field) => {
-    if (field == 'name') {
-      props.navigateUpAndDown(props.index, 'name')
-      // props.setCursor(props.index)
-      // props.setActiveField('name')
-    }
-  }
   const handleNavigate = (field) => {
     if (field == 'name') {
       toggleNameEdit(true)
@@ -148,26 +141,7 @@ const TableEntry = (props) => {
         handleNavigate('leader')
       }
     }
-    // } else if (e.key === 'ArrowDown') {
-    //   if (editingCapital || (props.active && props.activeField == 'capital')) {
-    //     // props.navigateUpAndDown(e, 1, 'capital', props.index)
-    //   } else if (editingName || (props.active && props.activeField == 'name')) {
-    //     props.navigateUpAndDown(e, 1, 'name', props.index)
-    //   } else if (
-    //     editingLeader ||
-    //     (props.active && props.activeField == 'leader')
-    //   ) {
-    //     props.navigateUpAndDown(e, 1, 'leader', props.index)
-    //   }
-    // } else if (e.key === 'ArrowUp') {
-    //   if (editingCapital) {
-    //     props.navigateUpAndDown(e, -1, 'capital', props.index)
-    //   } else if (editingName) {
-    //     props.navigateUpAndDown(e, -1, 'name', props.index)
-    //   } else if (editingLeader) {
-    //     props.navigateUpAndDown(e, -1, 'leader', props.index)
-    //   }
-    // }
+  
   }
   useEffect(() => {
     document.addEventListener('keydown', editNavigation, false)
@@ -210,7 +184,7 @@ const TableEntry = (props) => {
           <WCol size='1'>
             <WButton
               className='name-text'
-              onClick={() => toggleCapitalEdit(!editingName)}
+              onClick={() => toggleNameEdit(!editingName)}
             >
               <i className='name-button material-icons'>mode_edit</i>
             </WButton>
